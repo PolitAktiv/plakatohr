@@ -33,15 +33,16 @@ public class TesterApp {
 		
 		manipulator.setSvgVersion("1.2");
 		manipulator.convertFlowInkscapeToBatik();
+		manipulator.convertCssInkscapeToBatik();
 		
 		
 		//System.out.println(manipulator.getSvgAsXml());
 		String newSvgData = manipulator.getSvgAsXml();
 		
 		SvgConverter converter = new SvgConverter(newSvgData);
-		converter.generateOutput(new File("/tmp/test.jpg"), SvgConverter.JPG);
-		converter.generateOutput(new File("/tmp/test.pdf"), SvgConverter.PDF);
-		converter.generateOutput(new File("/tmp/test.png"), SvgConverter.PNG);
+		//converter.generateOutput(new File("/tmp/test.jpg"), SvgConverter.JPG);
+		converter.generateOutput(new File("/tmp/test2.pdf"), SvgConverter.PDF);
+		//converter.generateOutput(new File("/tmp/test.png"), SvgConverter.PNG);
 		converter.generateOutput(new File("/tmp/test.svg"), SvgConverter.SVG);
 
 

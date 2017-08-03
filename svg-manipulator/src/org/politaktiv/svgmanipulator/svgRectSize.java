@@ -17,7 +17,6 @@ public class svgRectSize {
 	
 	
 	public svgRectSize(String x, String y, String width, String height) {
-		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -45,10 +44,22 @@ public class svgRectSize {
 		return height;
 	}
 	
+	public double getAspetcRatio() {
+		
+		
+		String wNum = getWidth().replaceAll("\\D+$", "");
+		String hNum = getHeight().replaceAll("\\D+$", "");	
+		
+		return ( Double.parseDouble(wNum) / Double.parseDouble(hNum) );
+		
+		
+		
+	}
+	
 
 	
 	public String toString() {
-		return("x: " + x + ", y: "+ y + ", width: " + width + ", height: " + height); 
+		return("x: " + x + ", y: "+ y + ", width: " + width + ", height: " + height + ", aspect ratio: " + getAspetcRatio()); 
 	}
 	
 

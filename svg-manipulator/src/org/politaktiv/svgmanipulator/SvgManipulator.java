@@ -202,7 +202,48 @@ public class SvgManipulator {
 	}
 	
 	/**
-	 * Convert Inkscape's flowRoot version into something that Batik can actually understand.
+	 * Checks all style attributes in the SVG/XML and does some manipulations to them so that
+	 * Batik does not stumble over CSS it cannot understand.
+	 * @return the number of style attribute occurences that have been mended.
+	 */
+	public int convertCssInkscapeToBatik() {
+
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		NodeList nodes;
+		
+		// find flowPara node using xPath
+		try {
+			nodes = (NodeList)xPath.evaluate("//*[@style]",
+			        doc.getDocumentElement(), XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			return 0;
+		}
+		
+		
+		int counter = 0;
+		for (int i = 0; i < nodes.getLength(); ++i) {
+			Node n = nodes.item(i);
+			if (n instanceof Element) {
+				Element e = (Element)n;
+				String style = e.getAttribute("style");
+				
+				// replace evil stuff
+				style = style.replace("text-align:center", "text-align:middle");
+				
+				// store back
+				e.setAttribute("style", style);
+				counter++;
+				
+			}
+		}	
+		
+		return counter;
+		
+	}
+	
+	/**
+	 * Convert Inkscape's flowRoot version into something that Batik can actually understand. Also does some mending
+	 * to CSS styles.
 	 * Works only for a single shape of rect for now, not for other forms of floating elements.
 	 * @return number of times this has been applied
 	 */
@@ -248,6 +289,9 @@ public class SvgManipulator {
 			Element flowDiv = doc.createElement("flowDiv");
 		    flowDiv.appendChild(flowPara);
 			flowRoot.appendChild(flowDiv);
+			
+			// delete style from FlowRoot since Inkscape will store it in FlowPara redundantly, creating a mess for Batik
+			flowRoot.removeAttribute("style");
 			
 			counter++;
 			

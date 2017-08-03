@@ -17,7 +17,15 @@
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="testdatei2.svg">
   <defs
-     id="defs4" />
+     id="defs4">
+    <filter
+       id="filter3112"
+       inkscape:label="Filter1">
+      <feGaussianBlur
+         stdDeviation="8.4598591549295765"
+         id="feGaussianBlur3114" />
+    </filter>
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,9 +33,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497474"
-     inkscape:cx="859.89141"
-     inkscape:cy="1835.1767"
+     inkscape:zoom="0.24748737"
+     inkscape:cx="128.19097"
+     inkscape:cy="1448.3363"
      inkscape:document-units="cm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -91,17 +99,17 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot3035"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#ffffff;font-family:Ubuntu;-inkscape-font-specification:Ubuntu;stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       transform="translate(54.57458,-1251.8988)"><flowRegion
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:1.25;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"
+       transform="translate(54.57458,-1215.5333)"><flowRegion
          id="flowRegion3037"><rect
            id="rect3039"
            width="1791.4406"
            height="1117.8348"
            x="58.57143"
            y="292.36218"
-           style="stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-dasharray:none;stroke:#ffffff;stroke-opacity:1" /></flowRegion><flowPara
+           style="stroke:#ffffff;stroke-width:1.25;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" /></flowRegion><flowPara
          id="flowPara3041"
-         style="font-size:76px;stroke:#ffffff;stroke-opacity:1">$$MEINUNG$$</flowPara></flowRoot>    <flowRoot
+         style="font-size:76px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#c83737;stroke:#ffffff;stroke-opacity:1;font-family:FreeSans;-inkscape-font-specification:FreeSans">$$MEINUNG$$</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3064"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><flowRegion
@@ -137,7 +145,7 @@
            y="292.36218"
            style="text-anchor:middle" /></flowRegion><flowPara
          id="flowPara3041-0"
-         style="font-size:76px;text-anchor:start;text-align:start">$$NAME$$</flowPara></flowRoot>    <text
+         style="font-size:76px;text-anchor:middle;text-align:center">$$NAME$$</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Sans"
        x="113.13708"
@@ -149,5 +157,32 @@
          x="113.13708"
          y="960.93011"
          style="font-size:78px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;stroke:#000000;stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:TlwgMono;-inkscape-font-specification:TlwgMono Bold;fill:#ffffff;fill-opacity:1">Der Polit@ktiv PlakatOhR</tspan></text>
-  </g>
+    <text
+       xml:space="preserve"
+       style="font-size:192.13447571px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="676.87537"
+       y="-22.668438"
+       id="text3006"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3008"
+         x="676.87537"
+         y="-22.668438"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ff2a2a;font-family:Sawasdee;-inkscape-font-specification:Sawasdee">Soso!</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3035-6-7"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"
+       transform="matrix(0.98651964,-0.16364293,0.16364293,0.98651964,-21.945513,71.083547)"
+       inkscape:transform-center-x="-19.839146"
+       inkscape:transform-center-y="1.6469675"><flowRegion
+         id="flowRegion3037-3-9"><rect
+           id="rect3039-3-7"
+           width="2603.6033"
+           height="681.44904"
+           x="58.57143"
+           y="292.36218"
+           style="text-align:start;text-anchor:start" /></flowRegion><flowPara
+         id="flowPara3041-0-2"
+         style="font-size:196px;text-align:start;text-anchor:start">$$NAME$$ möchte was sagen.</flowPara></flowRoot>  </g>
 </svg>
