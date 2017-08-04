@@ -19,7 +19,7 @@ public class cssHelper {
 		List<String> elements = Arrays.asList(css.split("\\s*;\\s*"));
 		for ( String e : elements) {
 			String[] keyValue = e.split("\\s*:\\s*");
-			System.err.println(e);
+			//System.err.println(e);
 			result.put(keyValue[0].trim(), keyValue[1].trim());
 		}
 		
@@ -36,7 +36,17 @@ public class cssHelper {
 			elements.add(e);
 		}
 		
-		return(String.join(";", elements));
+		// no string join in Java 6
+		String result ="";
+		for ( String e : elements) {
+			result = result + ";" +e;
+ 		}
+		result = result.replaceFirst(";", "");
+		
+		//System.err.println(result);
+		
+		
+		return (result);
 		
 	}
 	
