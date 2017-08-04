@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -21,6 +22,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.politaktiv.svgmanipulator.util.EscapeUtil;
+import org.politaktiv.svgmanipulator.util.cssHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -278,6 +280,31 @@ public class SvgManipulator {
 				
 			}
 		}	
+		
+		
+		// merge CSS from <tspan> and <textPath> to superordinate <text>
+		try {
+			nodes = (NodeList)xPath.evaluate("//text/tspan|//text/textPath",
+			        doc.getDocumentElement(), XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO: empty catch block
+		}
+		for (int i = 0; i < nodes.getLength(); ++i) {
+			Node thisNode =nodes.item(i);
+			Node textNode = thisNode.getParentNode();
+			if ("text".equals(textNode.getNodeName())) {
+				//System.err.println("aargl!");
+				HashMap<String, String> parentCSS = cssHelper.splitCss(((Element)textNode).getAttribute("style"));
+				HashMap<String, String>  thisCSS = cssHelper.splitCss(((Element)thisNode).getAttribute("style"));
+				if (thisCSS.get("font-family") != null ) {
+					parentCSS.put("font-family", thisCSS.get("font-family"));
+				}
+				
+				((Element)textNode).setAttribute("style", cssHelper.CssToString(parentCSS));
+				
+				counter++;
+			}
+		}
 		
 		return counter;
 		
