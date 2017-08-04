@@ -168,16 +168,56 @@ public class SvgManipulator {
 		
 	}
 	
+	/**
+	 * Replaces $$text$$ wherever it can in the SVG. $$ are added automatically.
+	 * @param text
+	 * @param replacement
+	 * @return the number of replacements
+	 */
+	public int replaceTextAll(String text, String replacement) {
+		return (replaceTextinText(text, replacement) + replaceTextInFlowPara(text, replacement));
+	}
+	
+	public int replaceTextinText(String text, String replacement) {
+		
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		int replaced = 0;
+		String replacementEscaped = EscapeUtil.escapeXml(replacement);
+		
+		NodeList nodes;
+		
+		// find text nodes using xPath
+		try {
+			nodes = (NodeList)xPath.evaluate("//text/*[contains(text(), " +
+					EscapeUtil.escapeXpath("$$" + text + "$$") +
+					 ")]",
+			        doc.getDocumentElement(), XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			return 0;
+		}
+		
+		for (int i = 0; i<nodes.getLength() ; i++) {
+			String t = nodes.item(i).getTextContent();
+			t = t.replace("$$" + text + "$$", replacementEscaped);
+			nodes.item(i).setTextContent(t);
+			replaced++;
+		}
+		
+		
+		return replaced;
+
+		
+	}
 	
 	
 	
 	/**
-	 * Replace the text of any flowPara SVG node that contains a certain string
+	 * Replace  $$text$$ in any any flowPara SVG node that contains a certain string
 	 * @param text the string to search for/replace, $$ will be added before and after.
 	 * @param replacement the replacement for that string.
 	 * @return The number of flowPara texts replaced
 	 */
-	public int replaceTextInParagraph(String text, String replacement) {
+	public int replaceTextInFlowPara(String text, String replacement) {
 		int replaced = 0;
 		String replacementEscaped = EscapeUtil.escapeXml(replacement);
 		
@@ -193,7 +233,9 @@ public class SvgManipulator {
 		
 		// replace the text in the nodes found
 		for (int i = 0; i < nodes.getLength(); ++i) {
-			nodes.item(i).setTextContent(replacementEscaped);
+			String t = nodes.item(i).getTextContent();
+			t = t.replace("$$" + text + "$$", replacementEscaped);
+			nodes.item(i).setTextContent(t);
 			replaced++;
 		}		
 		
@@ -360,7 +402,7 @@ public class SvgManipulator {
 	 * @param imageHref Link to the Image or base64 encoded data
 	 * @return The number of flowParas replaced by images
 	 */
-	public int replaceTextInParagraphByImage(String text, String imageHref) {
+	public int replaceFlowParaByImage(String text, String imageHref) {
 		
 		int replaced = 0;
 		
