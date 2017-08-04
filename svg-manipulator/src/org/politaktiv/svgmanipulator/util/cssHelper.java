@@ -57,18 +57,30 @@ public class cssHelper {
 	 * @return
 	 */
 	public static HashMap<String,String> addAndOverride(HashMap<String,String> a, HashMap<String,String> b) {
+		return( addAndOverride(a, b, null));
+		
+	}
+	
+	public static HashMap<String,String> addAndOverride(HashMap<String,String> a, HashMap<String,String> b, String prefix) {
 		HashMap<String, String> result = new HashMap<String,String>();
 		result.putAll(a);
-		
-		for ( String key : b.keySet() ) {
-			result.put(key, b.get(key));
+
+		if (prefix == null) {
+			for ( String key : b.keySet() ) {
+				result.put(key, b.get(key));
+			}
+		} else {
+			for ( String key : b.keySet() ) {
+				if (key.startsWith(prefix)) {
+					result.put(key, b.get(key));
+				}	
+			}
+			
 		}
 		
 		return(result);
 		
-		
 	}
-	
 	
 
 }

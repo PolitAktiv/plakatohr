@@ -252,6 +252,7 @@ public class SvgManipulator {
 	 */
 	public int convertCssInkscapeToBatik() {
 
+		int counter = 0;
 		XPath xPath = XPathFactory.newInstance().newXPath();
 		NodeList nodes;
 		
@@ -259,51 +260,52 @@ public class SvgManipulator {
 		try {
 			nodes = (NodeList)xPath.evaluate("//*[@style]",
 			        doc.getDocumentElement(), XPathConstants.NODESET);
+			
+			for (int i = 0; i < nodes.getLength(); ++i) {
+				Node n = nodes.item(i);
+				if (n instanceof Element) {
+					Element e = (Element)n;
+					String style = e.getAttribute("style");
+					
+					// replace evil stuff
+					style = style.replace("text-align:center", "text-align:middle");
+					
+					// store back
+					e.setAttribute("style", style);
+					counter++;
+					
+				}
+			}	
+			
 		} catch (XPathExpressionException e) {
-			return 0;
+			// TODO emtpy catch block
 		}
 		
-		
-		int counter = 0;
-		for (int i = 0; i < nodes.getLength(); ++i) {
-			Node n = nodes.item(i);
-			if (n instanceof Element) {
-				Element e = (Element)n;
-				String style = e.getAttribute("style");
-				
-				// replace evil stuff
-				style = style.replace("text-align:center", "text-align:middle");
-				
-				// store back
-				e.setAttribute("style", style);
-				counter++;
-				
-			}
-		}	
 		
 		
 		// merge CSS from <tspan> and <textPath> to superordinate <text>
 		try {
 			nodes = (NodeList)xPath.evaluate("//text/tspan|//text/textPath",
 			        doc.getDocumentElement(), XPathConstants.NODESET);
+			for (int i = 0; i < nodes.getLength(); ++i) {
+				Node thisNode =nodes.item(i);
+				Node textNode = thisNode.getParentNode();
+				if ("text".equals(textNode.getNodeName())) {
+					HashMap<String, String> parentCSS = cssHelper.splitCss(((Element)textNode).getAttribute("style"));
+					HashMap<String, String>  thisCSS = cssHelper.splitCss(((Element)thisNode).getAttribute("style"));
+					
+					// override all font specifications from <tspan> or <textGraph> in style of parent <text>
+					parentCSS = cssHelper.addAndOverride(parentCSS, thisCSS, "font-");
+
+					// store back into DOM
+					((Element)textNode).setAttribute("style", cssHelper.CssToString(parentCSS));
+					
+					counter++;
+				}
+			}
+			
 		} catch (XPathExpressionException e) {
 			// TODO: empty catch block
-		}
-		for (int i = 0; i < nodes.getLength(); ++i) {
-			Node thisNode =nodes.item(i);
-			Node textNode = thisNode.getParentNode();
-			if ("text".equals(textNode.getNodeName())) {
-				//System.err.println("aargl!");
-				HashMap<String, String> parentCSS = cssHelper.splitCss(((Element)textNode).getAttribute("style"));
-				HashMap<String, String>  thisCSS = cssHelper.splitCss(((Element)thisNode).getAttribute("style"));
-				if (thisCSS.get("font-family") != null ) {
-					parentCSS.put("font-family", thisCSS.get("font-family"));
-				}
-				
-				((Element)textNode).setAttribute("style", cssHelper.CssToString(parentCSS));
-				
-				counter++;
-			}
 		}
 		
 		return counter;
