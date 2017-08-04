@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import org.apache.batik.transcoder.TranscoderException;
 import org.politaktiv.svgmanipulator.util.base64Encoder;
 
 
 public class TesterApp {
 
-	public static void main(String[] args) throws IOException, TranscoderException  {
+	public static void main(String[] args) throws IOException  {
 
 		File fXmlFile = new File(args[0]);
 		File jpgFile = new File(args[1]);
@@ -40,7 +39,7 @@ public class TesterApp {
 		String newSvgData = manipulator.getSvgAsXml();
 		
 		SvgConverter converter = new SvgConverter(newSvgData);
-		//converter.generateOutput(new File("/tmp/test.jpg"), SvgConverter.JPG);
+		converter.generateOutput(new File("/tmp/test.jpg"), SvgConverter.JPG);
 		converter.generateOutput(new File("/tmp/test2.pdf"), SvgConverter.PDF);
 		//converter.generateOutput(new File("/tmp/test.png"), SvgConverter.PNG);
 		converter.generateOutput(new File("/tmp/test.svg"), SvgConverter.SVG);
