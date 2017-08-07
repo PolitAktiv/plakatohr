@@ -15,7 +15,7 @@ public class TesterApp {
 		File fXmlFile = new File(args[0]);
 		File jpgFile = new File(args[1]);
 		
-		String imgBase64 = base64Encoder.fileToBase64Svg(jpgFile);
+		String imgBase64 = base64Encoder.getBase64svg(jpgFile);
 		
 	
 		SvgManipulator manipulator = new SvgManipulator(fXmlFile);

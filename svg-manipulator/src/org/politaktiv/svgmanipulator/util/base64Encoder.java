@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -24,27 +25,51 @@ public class base64Encoder {
 	 * @return the output as base64 encoded string
 	 * @throws IOException if anything goes wrong with the file IO
 	 */
-	public static String fileToBase64(File f) throws IOException {
-		byte[] buf = read(f);
+	public static String getBase64(File f) throws IOException {
+		return(getBase64(new FileInputStream(f)));
+	}
+	
+	/**
+	 * Reads an entire stream and converts it into a base64-encoded string
+	 * @param istream the input stream
+	 * @return the output as base64 encoded string
+	 * @throws IOException on any error in IO
+	 */
+	public static String getBase64(InputStream istream) throws IOException {
+		byte[] buf = read(istream);
 		return bytesToBase64(buf);
 	}
 	
 	/**
-	 * Essentially the same as {@link #bytesToBase64(byte[])} but produces
+	 * Essentially the same as {@link #getBase64(InputStream)} but produces
 	 * output suitable for the xlink:href attribute used in SVG's images.
 	 * @param f the input file
 	 * @return the output as xlink:href compatible base64
-	 * @throws IOException 
+	 * @throws IOException in case of any IO error or when the file type cannot be determined.
 	 */
-	public static String fileToBase64Svg(File f) throws IOException {
-		byte[] buf = read(f);
+	public static String getBase64svg(InputStream istream) throws IOException {
+		byte[] buf = read(istream);
 		String mimeType = simpleFileMagic(buf);
 		if (mimeType == null) {
 			throw new IOException("Cannot determine MIME type for image data");
 		}
 		String svgPrefix = "data:" + mimeType + ";base64,";
 		return (svgPrefix + bytesToBase64(buf));
+		
 	}
+	
+	/**
+	 * Essentially the same as {@link #getBase64(File)} but produces
+	 * output suitable for the xlink:href attribute used in SVG's images.
+	 * @param f the input file
+	 * @return the output as xlink:href compatible base64
+	 * @throws IOException in case of any IO error or when the file type cannot be determined.
+	 */
+	public static String getBase64svg(File f) throws IOException {
+		return(getBase64svg(new FileInputStream(f)));
+	}
+	
+	
 	
 	private static String simpleFileMagic(byte[] buf) {
 		if ( buf.length > 10) {
@@ -61,6 +86,7 @@ public class base64Encoder {
 		
 	}
 	
+	/*
 	
 	private static byte[] read(File file) throws IOException {
 
@@ -81,6 +107,36 @@ public class base64Encoder {
 	    }
 	    return buffer;
 	}
+	*/
 	
-
+	private static byte[] read(InputStream istream) throws IOException {
+		
+		// initial buffer size: estimate of the data to read
+		byte[] result = new byte[0];
+		byte[] buffer = new byte[istream.available()];
+		
+	    try {		
+	    	while ( istream.read(buffer) != -1 ) {
+	    		result = concat(result, buffer);
+	    	}
+	    } finally {
+	        try {
+	            if (istream != null)
+	                istream.close();
+	        } catch (IOException e) {
+	        }
+	    }
+		
+		
+		return buffer;
+		
+	}
+	
+	public static byte[] concat(byte[] first, byte[] second) {
+		  byte[] result = Arrays.copyOf(first, first.length + second.length);
+		  System.arraycopy(second, 0, result, first.length, second.length);
+		  return result;
+		}
+	
+	
 }
