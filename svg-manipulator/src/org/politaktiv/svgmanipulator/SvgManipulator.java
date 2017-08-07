@@ -22,12 +22,18 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.politaktiv.svgmanipulator.util.EscapeUtil;
+import org.politaktiv.svgmanipulator.util.IterableNodeList;
 import org.politaktiv.svgmanipulator.util.cssHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList; 
 
+/**
+ * Class for manipulating SVG files created with Inkscape, in order to be processed further by Batik.
+ * Allows to replace text in FlowPara and text Elements that is indicated by $$fieldname$$, thus providing
+ * some kind of a template engine.
+ */
 public class SvgManipulator {
 	
 	private Document doc;
@@ -58,7 +64,7 @@ public class SvgManipulator {
 	
 
 	/**
-	 * Create a new SvgManipulator from a given SVG File. This will parse the file right away.
+	 * Create a new SvgManipulator from given SVG data to be read from a stream. This will parse the file right away.
 	 * @param inStream the stream to read in XML from to parse and manipulate
 	 * @throws IOException if anything goes wrong during parsing or IO.
 	 */
@@ -104,6 +110,11 @@ public class SvgManipulator {
 		return doc.cloneNode(true);
 	}
 	
+	/**
+	 * Sets the SVG version number in the underlying DOM structure.
+	 * @param version the new version number as a string.
+	 * @return true on success.
+	 */
 	public boolean setSvgVersion(String version) {
 		NodeList svgRoots = doc.getElementsByTagName("svg");
 		if ( svgRoots.getLength() != 1 || ! (svgRoots.item(0) instanceof Element )) {
@@ -117,15 +128,17 @@ public class SvgManipulator {
 	}
 	
 	/**
-	 * Find all field names from FlowParas, that is all text contents wrapped in $$ contained in FlowParas 
+	 * Find all field names from FlowPara and text elements, that is all text contents wrapped in $$ contained in FlowPara and text
+	 * (resp. the corresponding sub-nodes tspan and textGraph). Duplicate names will be ignored (as a set is returned).
 	 * @return the field names
 	 */
-	public Set<String> getFlowParaFieldNames() {
+	public Set<String> getAllFieldNames() {
 		HashSet<String> result = new HashSet<String>();
 		
-		NodeList nodes;
+		IterableNodeList nodes;
 		try {
-			nodes = getAllFlowParas();
+			nodes = getFlowParas();
+			nodes.addAll(getTgraphTspan());
 		} catch (XPathExpressionException e) {
 			return result;
 		}
@@ -133,8 +146,8 @@ public class SvgManipulator {
 		Pattern r = Pattern.compile("\\$\\$(\\w+)\\$\\$");
 		
 		// loop over flowParas and check for text content with $$something$$
-		for (int i = 0; i < nodes.getLength(); ++i) {
-			String text = nodes.item(i).getTextContent();
+		for (Node n : nodes) {
+			String text = n.getTextContent();
 			Matcher m = r.matcher(text);
 			if ( m.matches()) {
 				result.add(m.group(1));
@@ -144,18 +157,47 @@ public class SvgManipulator {
 		return result;
 		
 	}
+
+	private IterableNodeList getTgraphTspan() throws XPathExpressionException {
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		NodeList nodes;
+
+		nodes = (NodeList)xPath.evaluate("//text/tspan|//text/textPath",
+		        doc.getDocumentElement(), XPathConstants.NODESET);
+		
+		return new IterableNodeList(nodes);
+		
+	}
 	
-	private NodeList getAllFlowParas() throws XPathExpressionException {
+	private IterableNodeList getTgraphTspan(String name) throws XPathExpressionException {
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		NodeList nodes;
+
+		nodes = (NodeList)xPath.evaluate("//text/tspan[contains(text(), " +
+				EscapeUtil.escapeXpath("$$" + name + "$$") +
+				 ")]" + 
+				"|//text/textPath[contains(text(), " +
+				EscapeUtil.escapeXpath("$$" + name + "$$") +
+				 ")]",
+		        doc.getDocumentElement(), XPathConstants.NODESET);
+		
+		return new IterableNodeList(nodes);
+		
+	}
+		
+	
+	
+	private IterableNodeList getFlowParas() throws XPathExpressionException {
 		XPath xPath = XPathFactory.newInstance().newXPath();
 		NodeList nodes;
 		
 		nodes = (NodeList)xPath.evaluate("//flowPara",
 		        doc.getDocumentElement(), XPathConstants.NODESET);
-		return nodes;
+		return new IterableNodeList(nodes);
 	}
 	
-	
-	private NodeList getFlowParasByFieldName(String name) throws XPathExpressionException {
+
+	private IterableNodeList getFlowParas(String name) throws XPathExpressionException {
 
 		XPath xPath = XPathFactory.newInstance().newXPath();
 		NodeList nodes;
@@ -166,42 +208,47 @@ public class SvgManipulator {
 				 ")]",
 		        doc.getDocumentElement(), XPathConstants.NODESET);
 
-		return nodes;
+		return new IterableNodeList(nodes);
 		
 	}
 	
 	/**
 	 * Replaces $$text$$ wherever it can in the SVG. $$ are added automatically.
-	 * @param text
-	 * @param replacement
-	 * @return the number of replacements
+	 * Wherever it can means in textGraph and tspan subnodes of text. And in flowPara subnodes of flowRoot.
+	 * If a field occurs multiple times, each occurence will be replaced.
+	 * @param text the field name to be replaced.
+	 * @param replacement the rext of the replacement.
+	 * @return the number of replacements that took place.
 	 */
 	public int replaceTextAll(String text, String replacement) {
 		return (replaceTextinText(text, replacement) + replaceTextInFlowPara(text, replacement));
 	}
 	
+	/**
+	 * Replace  $$text$$ in any text SVG node that contains a certain string. (More precise: in any text node that contains tspan or textGraph)
+	 * If a field name occurs multiple time, it will be replaced in each occurence.
+	 * @param text the field name to search for/replace, $$ will be added before and after.
+	 * @param replacement the replacement for that string.
+	 * @return The number of texts replaced
+	 */	
 	public int replaceTextinText(String text, String replacement) {
 		
-		XPath xPath = XPathFactory.newInstance().newXPath();
 		int replaced = 0;
 		String replacementEscaped = EscapeUtil.escapeXml(replacement);
 		
-		NodeList nodes;
+		IterableNodeList nodes;
 		
 		// find text nodes using xPath
 		try {
-			nodes = (NodeList)xPath.evaluate("//text/*[contains(text(), " +
-					EscapeUtil.escapeXpath("$$" + text + "$$") +
-					 ")]",
-			        doc.getDocumentElement(), XPathConstants.NODESET);
+			nodes = getTgraphTspan(text);
 		} catch (XPathExpressionException e) {
 			return 0;
 		}
 		
-		for (int i = 0; i<nodes.getLength() ; i++) {
-			String t = nodes.item(i).getTextContent();
+		for (Node n :nodes) {
+			String t = n.getTextContent();
 			t = t.replace("$$" + text + "$$", replacementEscaped);
-			nodes.item(i).setTextContent(t);
+			n.setTextContent(t);
 			replaced++;
 		}
 		
@@ -214,8 +261,9 @@ public class SvgManipulator {
 	
 	
 	/**
-	 * Replace  $$text$$ in any any flowPara SVG node that contains a certain string
-	 * @param text the string to search for/replace, $$ will be added before and after.
+	 * Replace  $$text$$ in any any flowPara SVG node that contains a certain string.
+	 * If a field name occurs multiple time, it will be replaced in each occurence.
+	 * @param text the field name to search for/replace, $$ will be added before and after.
 	 * @param replacement the replacement for that string.
 	 * @return The number of flowPara texts replaced
 	 */
@@ -223,21 +271,21 @@ public class SvgManipulator {
 		int replaced = 0;
 		String replacementEscaped = EscapeUtil.escapeXml(replacement);
 		
-		NodeList nodes;
+		IterableNodeList nodes;
 		
 		// find flowPara node using xPath
 		try {
-			nodes = getFlowParasByFieldName(text);
+			nodes = getFlowParas(text);
 		} catch (XPathExpressionException e) {
 			// If in any case the expression should fail, return false
 			return 0;
 		}
 		
 		// replace the text in the nodes found
-		for (int i = 0; i < nodes.getLength(); ++i) {
-			String t = nodes.item(i).getTextContent();
+		for (Node n : nodes) {
+			String t = n.getTextContent();
 			t = t.replace("$$" + text + "$$", replacementEscaped);
-			nodes.item(i).setTextContent(t);
+			n.setTextContent(t);
 			replaced++;
 		}		
 		
@@ -248,21 +296,20 @@ public class SvgManipulator {
 	/**
 	 * Checks all style attributes in the SVG/XML and does some manipulations to them so that
 	 * Batik does not stumble over CSS it cannot understand.
-	 * @return the number of style attribute occurences that have been mended.
+	 * @return the number of style attribute occurrences that have been mended.
 	 */
 	public int convertCssInkscapeToBatik() {
 
 		int counter = 0;
 		XPath xPath = XPathFactory.newInstance().newXPath();
-		NodeList nodes;
+		IterableNodeList nodes;
 		
 		// find flowPara node using xPath
 		try {
-			nodes = (NodeList)xPath.evaluate("//*[@style]",
-			        doc.getDocumentElement(), XPathConstants.NODESET);
+			nodes = new IterableNodeList((NodeList)xPath.evaluate("//*[@style]",
+			        doc.getDocumentElement(), XPathConstants.NODESET));
 			
-			for (int i = 0; i < nodes.getLength(); ++i) {
-				Node n = nodes.item(i);
+			for (Node n :nodes) {
 				if (n instanceof Element) {
 					Element e = (Element)n;
 					String style = e.getAttribute("style");
@@ -285,10 +332,8 @@ public class SvgManipulator {
 		
 		// merge CSS from <tspan> and <textPath> to superordinate <text>
 		try {
-			nodes = (NodeList)xPath.evaluate("//text/tspan|//text/textPath",
-			        doc.getDocumentElement(), XPathConstants.NODESET);
-			for (int i = 0; i < nodes.getLength(); ++i) {
-				Node thisNode =nodes.item(i);
+			nodes = getTgraphTspan();
+			for (Node thisNode : nodes) {
 				Node textNode = thisNode.getParentNode();
 				if ("text".equals(textNode.getNodeName())) {
 					HashMap<String, String> parentCSS = cssHelper.splitCss(((Element)textNode).getAttribute("style"));
@@ -313,28 +358,27 @@ public class SvgManipulator {
 	}
 	
 	/**
-	 * Convert Inkscape's flowRoot version into something that Batik can actually understand. Also does some mending
-	 * to CSS styles.
+	 * Convert Inkscape's flowRoot version into something that Batik can actually understand. Removes any CSS from
+	 * flow root.
 	 * Works only for a single shape of rect for now, not for other forms of floating elements.
 	 * @return number of times this has been applied
 	 */
 	public int convertFlowInkscapeToBatik() {
 		
-		NodeList nodes;
+		IterableNodeList nodes;
 		int counter = 0;
 		
 		// find flowPara node using xPath
 		try {
-			nodes = getAllFlowParas();
+			nodes = getFlowParas();
 		} catch (XPathExpressionException e) {
 			// If in any case the expression should fail, return false
 			return 0;
 		}
 		
 		
-		for (int i = 0; i < nodes.getLength(); ++i) {
+		for (Node flowPara : nodes ) {
 			// check if the parent is a flowRoot, because this is the problematic case caused by Inkscape
-			Node flowPara = nodes.item(i);
 			Element flowRoot= (Element)flowPara.getParentNode();
 			if (! flowPara.getParentNode().getNodeName().equals("flowRoot") || 
 					! ( flowPara.getParentNode() instanceof Element) ) {
@@ -373,26 +417,26 @@ public class SvgManipulator {
 	}
 	
 	/**
-	 * Finds the size of a flowPara as itendified by its contained field name such als $$PHOTO$$, while $$ are added
+	 * Finds the size of a flowPara as identified by its contained field name such as $$PHOTO$$, while $$ are added
 	 * automatically.
 	 * @param fieldName the name of the field in the contents
 	 * @return the size of the first flowPara or null if no unique FlowPara with unique rectangle inside found by that field name.
 	 */
 	public svgRectSize getSizeOfFlowPara(String fieldName) {
 
-		NodeList nodes;
+		IterableNodeList nodes;
 		// find flowPara node using xPath
 		try {
-			nodes = getFlowParasByFieldName(fieldName);
+			nodes = getFlowParas(fieldName);
 		} catch (XPathExpressionException e) {
 			// If in any case the expression should fail, return false
 			return null;
 		}
-		if (nodes.getLength() < 1) {
+		if (nodes.size() < 1) {
 			return null;
 		}
 		
-		Node flowPara = nodes.item(0);
+		Node flowPara = nodes.get(0);
 
 		// climb up until you hit the flow root
 		// (will be direct parent for Inkscape SVG, something else for batik-compatible SVG, most likely flowDiv will 
@@ -426,6 +470,7 @@ public class SvgManipulator {
 	
 	/**
 	 * Replace any flowPara SVG node that contains a certain string by an image.
+	 * Multiple occurrences of $$text$$ ($$ added automatically) will all be replaced by this image.
 	 * Attention: Supports only first flowRegion, so a text flowing into multiple elements will not be supported
 	 * @param text the text contents of the flowPara that is to be replaced.
 	 * @param imageHref Link to the Image or base64 encoded data
@@ -435,11 +480,11 @@ public class SvgManipulator {
 		
 		int replaced = 0;
 		
-		NodeList nodes;
+		IterableNodeList nodes;
 		
 		// find flowPara node using xPath
 		try {
-			nodes = getFlowParasByFieldName(text);
+			nodes = getFlowParas(text);
 		} catch (XPathExpressionException e) {
 			// If in any case the expression should fail, return false
 			return 0;
@@ -448,8 +493,7 @@ public class SvgManipulator {
 		
 		
 		// replace the text in the nodes found
-		for (int i = 0; i < nodes.getLength(); ++i) {
-			Node flowPara = nodes.item(i);
+		for (Node flowPara :nodes ) {
 
 			// climb up until you hit the flow root
 			// (will be direct parent for Inkscape SVG, something else for batik-compatible SVG, most likely flowDiv will 

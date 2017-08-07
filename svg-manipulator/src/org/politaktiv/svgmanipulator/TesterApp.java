@@ -20,7 +20,7 @@ public class TesterApp {
 	
 		SvgManipulator manipulator = new SvgManipulator(fXmlFile);
 		
-		Set<String> fieldNames = manipulator.getFlowParaFieldNames();
+		Set<String> fieldNames = manipulator.getAllFieldNames();
 		for ( String fN : fieldNames) {
 			System.err.println(fN + " - " + manipulator.getSizeOfFlowPara(fN));
 		}
