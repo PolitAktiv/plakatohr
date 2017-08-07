@@ -44,13 +44,25 @@ public class svgRectSize {
 		return height;
 	}
 	
-	public double getAspetcRatio() {
+	/**
+	 * Determines the aspect-ratio of this {@link svgRectSize}. May return null if this fails. 
+	 * Mixed units (e.g., cm and px) in the dimensions of the rect will cause weird effects.
+	 * @return the aspect ratio or null.
+	 */
+	public Double getAspetcRatio() {
 		
 		
 		String wNum = getWidth().replaceAll("\\D+$", "");
 		String hNum = getHeight().replaceAll("\\D+$", "");	
 		
-		return ( Double.parseDouble(wNum) / Double.parseDouble(hNum) );
+		Double result = null;
+		try {
+			result = Double.parseDouble(wNum) / Double.parseDouble(hNum);
+		} catch (NumberFormatException e) {
+			// empty catch block, resulting returning null
+		}
+		
+		return result;
 		
 		
 		

@@ -18,9 +18,8 @@ import org.apache.fop.svg.PDFTranscoder;
 
 /**
  * Converts SVG to various output formats using Apache FOP and Apache Batik. Attention: SVG data might need
- * mending in order to be compatible.
- * @author but
- *
+ * mending in order to be compatible. 
+ * {@link SvgManipulator} can do this mending.
  */
 public class SvgConverter {
 	
@@ -40,9 +39,13 @@ public class SvgConverter {
 	public SvgConverter(String SvgXmlData) {
 		xmlData = SvgXmlData;
 	}
-	
+
 	/**
-	 * See {@link #generateOutput(OutputStream, OutputFormat)}. Same thing but using an output file.
+	 * Generate output to a file from the SVG data stored in this converter. Depending on the format, uses a rasterizer
+	 * or PDF converter (or passthru in case of {@link #SVG})
+	 * @param outputFile this is where the output goes to.
+	 * @param format the file format.
+	 * @throws IOException in any case of evil wrong-going of things.
 	 */
 	public void generateOutput(File outputFile, OutputFormat format) throws IOException {
     	FileOutputStream ostream = new FileOutputStream(outputFile);
@@ -51,7 +54,7 @@ public class SvgConverter {
 	}
 	
 	/**
-	 * Generate output from the SVG data stored in this converter. Depending on the format, uses a rasterizer
+	 * Generate output to a stream from the SVG data stored in this converter. Depending on the format, uses a rasterizer
 	 * or PDF converter (or passthru in case of {@link #SVG})
 	 * @param ostream this is where the output goes to.
 	 * @param format the file format.
