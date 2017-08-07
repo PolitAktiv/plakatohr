@@ -6,7 +6,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Wrapper class around a NodeList
+ * Wrapper class around a NodeList, based on a {@link LinkedList}. This allows to do
+ * all the {@link Iterable} and other magic with nodes that regular lists in Java can do.
  * @author but
  *
  */
