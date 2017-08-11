@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="docroot/WEB-INF/src"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="com.liferay.ide.sdk.container">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=PA-Plakatohr-portlet&amp;ivyXmlPath=ivy.xml&amp;confs=*&amp;ivySettingsPath=%24%7Bliferay_sdk_dir%3APA-Plakatohr-portlet%7D%2Fivy-settings.xml&amp;loadSettingsOnDemand=false&amp;ivyUserDir=%24%7Bliferay_sdk_dir%3APA-Plakatohr-portlet%7D%2F.ivy&amp;propertyFiles=">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="/usr/share/tomcat7/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/usr/share/tomcat7/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="lib/batik-all-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/fop-transcoder-allinone-2.2.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-ext-1.3.04.jar"/>
+	<classpathentry kind="lib" path="lib/xmlgraphics-commons-2.2.jar"/>
+	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
+</classpath>
