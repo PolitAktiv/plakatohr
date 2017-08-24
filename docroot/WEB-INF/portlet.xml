@@ -4,7 +4,7 @@
 	<portlet>
 		<portlet-name>PA-Plakatohr</portlet-name>
 		<display-name>PA Plakatohr</display-name>
-		<portlet-class>org.politaktiv.portlet.plakahohr.controller.PlakatohrPortlet</portlet-class>
+		<portlet-class>org.politaktiv.portlet.plakatohr.controller.PlakatohrPortlet</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/view.jsp</value>
