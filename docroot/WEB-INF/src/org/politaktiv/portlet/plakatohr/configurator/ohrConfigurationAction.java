@@ -1,35 +1,29 @@
 package org.politaktiv.portlet.plakatohr.configurator;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import com.liferay.portal.kernel.portlet.ConfigurationAction;
-import com.liferay.portal.kernel.servlet.SessionMessages;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
-import javax.portlet.PortletPreferences;
+import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 
-public class ohrConfigurationAction implements ConfigurationAction {
+public class ohrConfigurationAction extends DefaultConfigurationAction {
 
+	/*
 	@Override
-	public void processAction(PortletConfig config, ActionRequest actionRequest, ActionResponse actionResponse) throws Exception { 
-		
-			  String portletResource = ParamUtil.getString(actionRequest, "portletResource"); 
+	public void processAction(
+	    PortletConfig portletConfig, ActionRequest actionRequest,
+	    ActionResponse actionResponse) throws Exception {  
 
-			 PortletPreferences prefs = PortletPreferencesFactoryUtil.getPortletSetup(actionRequest, portletResource); 
+	    super.processAction(portletConfig, actionRequest, actionResponse);
 
-			  //Read, validate, and then set form parameters as portlet preferences
-			  // TODO: implement
+	    PortletPreferences prefs = actionRequest.getPreferences();
 
-			  prefs.store();
+	    String somePreferenceKey = prefs.getValue(
+	        "somePreferenceKey", "true");
 
-			  SessionMessages.add(actionRequest, config.getPortletName() + ".doConfigure");
-			
-		
+	    // Add any preference processing here.
 	}
+	*/
 
 	@Override
 	public String render(PortletConfig arg0, RenderRequest arg1, RenderResponse arg2) throws Exception {
