@@ -99,7 +99,7 @@ String portletId = PortletKeys.DOCUMENT_LIBRARY;
                 String taglibRemoveFolder = "Liferay.Util.removeFolderSelection('sourceFolderId', 'sourceFolderName', '" + renderResponse.getNamespace() + "');";
                 %>
          
-                <aui:button disabled="<%= sourceFolderId <= 0 %>" name="removeFolderButton" onClick="<%= taglibRemoveFolder %>" value="remove" />
+                <aui:button disabled="<%= sourceFolderId <= 0 %>" name="removeSourceFolderButton" onClick="<%= taglibRemoveFolder %>" value="remove" />
             </div>
         </aui:field-wrapper>
         
@@ -117,7 +117,7 @@ String portletId = PortletKeys.DOCUMENT_LIBRARY;
                 String taglibRemoveFolder = "Liferay.Util.removeFolderSelection('targetFolderId', 'targetFolderName', '" + renderResponse.getNamespace() + "');";
                 %>
          
-                <aui:button disabled="<%= targetFolderId <= 0 %>" name="removeFolderButton" onClick="<%= taglibRemoveFolder %>" value="remove" />
+                <aui:button disabled="<%= targetFolderId <= 0 %>" name="removeTargetFolderButton" onClick="<%= taglibRemoveFolder %>" value="remove" />
             </div>
         </aui:field-wrapper>
  <!--         
