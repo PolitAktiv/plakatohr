@@ -1,4 +1,6 @@
 
+<%@page import="com.liferay.portlet.documentlibrary.model.DLFolder"%>
+<%@page import="com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %> 
@@ -45,18 +47,34 @@ final String formatHelp = "Im Ziel-Ordner werden die Plakate in den hier ausgew√
 
 <%
 
-// get preferences (or defaults)
+// get source folder ID, or use default
 long sourceFolderId = GetterUtil.getLong(
-		portletPreferences.getValue("sourceFolderID", StringPool.TRUE),
+		portletPreferences.getValue("sourceFolderId", StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 String sourceFolderName = StringPool.BLANK;
+if (sourceFolderId > 0) {
+	// if source folder is set, retrieve name
+	DLFolder dir = DLFolderLocalServiceUtil.getDLFolder(sourceFolderId);
+	//sourceFolderName = dir.getPath();
+	sourceFolderName = dir.getName();
+}
 
+//get source target ID, or use default
 long targetFolderId = GetterUtil.getLong(
-		portletPreferences.getValue("targetFolderID", StringPool.TRUE),
+		portletPreferences.getValue("targetFolderId", StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 String targetFolderName = StringPool.BLANK;
+if (targetFolderId > 0) {
+	// if target folder is set, retrieve name
+	DLFolder dir = DLFolderLocalServiceUtil.getDLFolder(targetFolderId);
+	//targetFolderName = dir.getPath();
+	targetFolderName = dir.getName();
+}
+
+
+
     
-    String portletId = PortletKeys.DOCUMENT_LIBRARY;
+String portletId = PortletKeys.DOCUMENT_LIBRARY;
 %>
 
 

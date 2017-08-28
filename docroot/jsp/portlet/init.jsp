@@ -14,12 +14,12 @@
 <%
 // get preferences (or defaults)
 long sourceFolderId = GetterUtil.getLong(
-		portletPreferences.getValue("sourceFolderID", StringPool.TRUE),
+		portletPreferences.getValue("sourceFolderId", StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 String sourceFolderName = StringPool.BLANK;
 
 long targetFolderId = GetterUtil.getLong(
-		portletPreferences.getValue("targetFolderID", StringPool.TRUE),
+		portletPreferences.getValue("targetFolderId", StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 String targetFolderName = StringPool.BLANK;
     
