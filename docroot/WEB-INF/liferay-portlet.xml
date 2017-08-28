@@ -7,7 +7,7 @@
 		<icon>/icon.png</icon>
 		
 		  <configuration-action-class>org.politaktiv.portlet.plakatohr.configurator.ohrConfigurationAction</configuration-action-class>
-		
+		<instanceable>true</instanceable>
 		
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>

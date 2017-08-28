@@ -1,4 +1,5 @@
 
+<%@page import="org.politaktiv.portlet.plakatohr.controller.MediaHelper"%>
 <%@page import="com.liferay.portlet.documentlibrary.model.DLFolder"%>
 <%@page import="com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
@@ -47,28 +48,26 @@ final String formatHelp = "Im Ziel-Ordner werden die Plakate in den hier ausgew√
 
 <%
 
+MediaHelper media = new MediaHelper();
+
 // get source folder ID, or use default
 long sourceFolderId = GetterUtil.getLong(
 		portletPreferences.getValue("sourceFolderId", StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 String sourceFolderName = StringPool.BLANK;
-if (sourceFolderId > 0) {
-	// if source folder is set, retrieve name
-	DLFolder dir = DLFolderLocalServiceUtil.getDLFolder(sourceFolderId);
-	//sourceFolderName = dir.getPath();
-	sourceFolderName = dir.getName();
+String tmpName = media.getFolderName(sourceFolderId);
+if (tmpName != null) {
+	sourceFolderName = tmpName;
 }
-
+	
 //get source target ID, or use default
 long targetFolderId = GetterUtil.getLong(
 		portletPreferences.getValue("targetFolderId", StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 String targetFolderName = StringPool.BLANK;
-if (targetFolderId > 0) {
-	// if target folder is set, retrieve name
-	DLFolder dir = DLFolderLocalServiceUtil.getDLFolder(targetFolderId);
-	//targetFolderName = dir.getPath();
-	targetFolderName = dir.getName();
+tmpName = media.getFolderName(targetFolderId);
+if (tmpName != null) {
+	targetFolderName = tmpName;
 }
 
 
