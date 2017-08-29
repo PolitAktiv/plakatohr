@@ -15,7 +15,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="testdatei2.svg">
+   sodipodi:docname="Grüne Wiese.svg"
+   inkscape:export-filename="/home/but/code/liferaysdk/portlets/PA-Plakatohr-portlet/test/testdata/Grüne Wiese.png"
+   inkscape:export-xdpi="30.200001"
+   inkscape:export-ydpi="30.200001">
   <defs
      id="defs4">
     <filter
@@ -34,13 +37,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="1139.6051"
+     inkscape:cx="1145.3194"
      inkscape:cy="983.76443"
      inkscape:document-units="cm"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="926"
+     inkscape:window-height="918"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="1"
@@ -73,7 +76,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
