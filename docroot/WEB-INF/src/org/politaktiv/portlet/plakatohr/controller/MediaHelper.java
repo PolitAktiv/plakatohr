@@ -1,11 +1,14 @@
 package org.politaktiv.portlet.plakatohr.controller;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.DLFolder;
@@ -75,6 +78,19 @@ public class MediaHelper {
 		return(result);
 	
 		
+		
+	}
+	
+	public URL getDlFileUrl(ThemeDisplay themeDisplay, DLFileEntry fileEntry) {
+		
+		String url = themeDisplay.getPortalURL() + themeDisplay.getPathContext() + "/documents/" + themeDisplay.getScopeGroupId() + StringPool.SLASH + fileEntry.getUuid();
+		
+		try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			_log.error(e);
+			return null;
+		}
 		
 	}
 	

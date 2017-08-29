@@ -42,7 +42,12 @@ targetFolderId=<%= targetFolderId %>
 
 <%
 for ( DLFileEntry entry : media.getBackgroundPreviews(sourceFolderId, themeDisplay)) {
-	%><li><%= entry.getName()%></li><%
+	%><li><%= entry.getName()%>
+	<%= entry.getExtension()%>
+	<%= entry.getTitle()%>
+	<%= media.getDlFileUrl(themeDisplay, entry)%>
+	
+	</li><%
 }
 
 %>
