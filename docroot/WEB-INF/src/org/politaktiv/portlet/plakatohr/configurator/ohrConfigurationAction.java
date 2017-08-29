@@ -7,7 +7,7 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.politaktiv.strutil.logUtil;
+import org.politaktiv.strutil.stringUtil;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -55,7 +55,7 @@ public class ohrConfigurationAction extends DefaultConfigurationAction {
 	    prefs.setValue("sourceFolderId", "" + sourceFolderId);
 	    prefs.setValue("targetFolderId", "" + targetFolderId);
 
-	    logUtil.logMapDebug(_log,"Portlet Preferences", prefs.getMap());
+	    _log.debug(stringUtil.formatMapForLog("New portlet preferences: ", prefs.getMap()));
 
 	    prefs.store();
 

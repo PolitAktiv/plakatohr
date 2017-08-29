@@ -1,7 +1,9 @@
 package org.politaktiv.strutil;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class stringUtil {
 
@@ -25,6 +27,21 @@ public class stringUtil {
 		result = result.replaceFirst(delim, "");
 		
 		return(result);
+	}
+	
+	
+	public static String formatMapForLog(String prefix, Map<String,String[]> m) {
+		
+		
+		LinkedList<String> result = new LinkedList<String>();
+		
+		for ( String k : m.keySet() ) {
+			
+			result.add(k + "=[" + strJoin(m.get(k), ",") + "]");
+			
+		}
+		
+		return(prefix + "{" + strJoin(result, ",") + "}");
 	}
 	
 }

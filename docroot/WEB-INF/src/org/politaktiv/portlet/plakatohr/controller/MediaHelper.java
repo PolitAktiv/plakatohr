@@ -47,13 +47,47 @@ public class MediaHelper {
 			_log.error(e);
 			return result;
 		}
+		
+		try {
+			_log.debug("Scanning source folder: " + dir.getPath());
+		} catch (Exception e) {
+			_log.error("Cannot retrieve source folder path, perhaps not a problem?");
+			_log.error(e);
+		} 
 
-		// filter entries
+		// filter entries: collect all JPGs and SVGs
+		LinkedList<DLFileEntry> jpgEntries = new LinkedList<DLFileEntry>();
+		LinkedList<DLFileEntry> svgEntries = new LinkedList<DLFileEntry>();
 		for (DLFileEntry entry : dlFileEntries) {
-			// TODO: check for SVGs!
 			if (entry.getMimeType().toLowerCase().equals("image/jpeg")) {
-				result.add(entry);
+				jpgEntries.add(entry);
 			}
+			if (entry.getMimeType().toLowerCase().equals("image/svg+xml")) {
+				svgEntries.add(entry);
+			}
+			_log.debug("Folder entry: " + entry.getTitle() + " " + entry.getMimeType());
+		}
+		
+		// now check for JPG files that have a corresponding SVG file
+		for ( DLFileEntry jpgFile : jpgEntries) {
+			String jpgTitle = jpgFile.getTitle();
+			String jpgExt = jpgFile.getExtension();
+			if (jpgExt.length() > 0) {
+				jpgExt = "." + jpgExt;
+			}
+			String jpgBaseName = jpgTitle.substring(0, jpgTitle.length()-jpgExt.length());
+			String svgName = jpgBaseName + ".svg";
+			boolean found = false;
+			for ( DLFileEntry svgFile : svgEntries ) {
+				if (svgFile.getTitle().toLowerCase().equals(svgName.toLowerCase())) {
+					result.add(jpgFile);
+					found = true;
+				}
+			}
+			if (!found) {
+				_log.error("Background previews: No SVG file found for file " + jpgTitle);
+			}
+			
 		}
 		
 		
