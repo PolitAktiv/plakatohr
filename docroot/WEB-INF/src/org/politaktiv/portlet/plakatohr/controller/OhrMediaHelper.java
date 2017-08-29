@@ -15,12 +15,12 @@ import com.liferay.portlet.documentlibrary.model.DLFolder;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
 
-public class MediaHelper {
+public class OhrMediaHelper {
 	
 	private static Log _log;
 	
-	public MediaHelper() {
-		_log = LogFactoryUtil.getLog(MediaHelper.class);
+	public OhrMediaHelper() {
+		_log = LogFactoryUtil.getLog(OhrMediaHelper.class);
 	}
 	
 	public List<DLFileEntry> getBackgroundPreviews(long folderId, ThemeDisplay themeDisplay)  {

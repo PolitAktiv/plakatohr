@@ -1,7 +1,7 @@
 
+<%@page import="org.politaktiv.portlet.plakatohr.controller.OhrMediaHelper"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 <%@page import="com.liferay.portal.theme.ThemeDisplay"%>
-<%@page import="org.politaktiv.portlet.plakatohr.controller.MediaHelper"%>
 <%@page import="com.liferay.portlet.documentlibrary.model.DLFileEntry"%>
 <%@page import="com.liferay.portal.util.PortletKeys"%>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %> 
@@ -17,7 +17,7 @@
 
 <%
 
-MediaHelper media = new MediaHelper();
+OhrMediaHelper media = new OhrMediaHelper();
 
 ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 

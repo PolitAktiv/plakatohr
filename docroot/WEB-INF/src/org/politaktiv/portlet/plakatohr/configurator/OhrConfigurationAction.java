@@ -14,12 +14,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-public class ohrConfigurationAction extends DefaultConfigurationAction {
+public class OhrConfigurationAction extends DefaultConfigurationAction {
 	
 	private static Log _log;
 	
-	public ohrConfigurationAction() {
-		_log = LogFactoryUtil.getLog(ohrConfigurationAction.class);
+	public OhrConfigurationAction() {
+		_log = LogFactoryUtil.getLog(OhrConfigurationAction.class);
 	}
 	
 
