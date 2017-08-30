@@ -2,6 +2,7 @@ package org.politaktiv.portlet.plakatohr.controller;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -90,6 +91,7 @@ public class OhrMediaHelper {
 			
 		}
 		
+		Collections.sort(result);
 		
 		return result;
 		

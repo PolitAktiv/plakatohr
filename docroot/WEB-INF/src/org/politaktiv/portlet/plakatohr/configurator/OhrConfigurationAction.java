@@ -58,12 +58,6 @@ public class OhrConfigurationAction extends DefaultConfigurationAction {
 	    _log.debug(stringUtil.formatMapForLog("New portlet preferences: ", prefs.getMap()));
 
 	    prefs.store();
-
-
-	   /* String somePreferenceKey = prefs.getValue(
-	        "somePreferenceKey", "true");*/
-
-	    // Add any preference processing here.
 	}
 
 	@Override

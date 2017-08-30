@@ -1,5 +1,5 @@
 
-<%@page import="org.politaktiv.portlet.plakatohr.controller.MediaHelper"%>
+<%@page import="org.politaktiv.portlet.plakatohr.controller.OhrMediaHelper"%>
 <%@page import="com.liferay.portlet.documentlibrary.model.DLFolder"%>
 <%@page import="com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
@@ -31,7 +31,7 @@
 
 final String sourceFolderLabel = "Vorlagen-Ordner:";
 final String sourceFolderHelp = "In diesem Ordner liegen die Vorlagen (Hintergründe) " + 
-	"für die Kampagne dieses PlakatOhR-Portlets sowohl als PNG-Dateien " +
+	"für die Kampagne dieses PlakatOhR-Portlets sowohl als JPG-Dateien " +
 	"wie auch die dazugehörigen SVG-Dateien.";
 
 final String targetFolderLabel = "Ziel-Ordner:";
@@ -48,7 +48,7 @@ final String formatHelp = "Im Ziel-Ordner werden die Plakate in den hier ausgew�
 
 <%
 
-MediaHelper media = new MediaHelper();
+OhrMediaHelper media = new OhrMediaHelper();
 
 // get source folder ID, or use default
 long sourceFolderId = GetterUtil.getLong(
