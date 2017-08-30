@@ -16,6 +16,10 @@ import com.liferay.portlet.documentlibrary.model.DLFolder;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
 
+/**
+ * Helper class for all kinds of interaction with LifeRay's file/media library. Needs to be instantiated
+ * so that the logging works.
+ */
 public class OhrMediaHelper {
 	
 	private static Log _log;
@@ -24,6 +28,15 @@ public class OhrMediaHelper {
 		_log = LogFactoryUtil.getLog(OhrMediaHelper.class);
 	}
 	
+	/**
+	 * Retrieves a list of file entries that serve as previews for the background images from the source folder.
+	 * This will only return file entries for which both a JPG and SVG version exist. JPGs and SVGs are determined
+	 * by their MIME type. SVGs are looked up from the JPGs by replacing the file extension (if any) by ".svg". The
+	 * comparison is case-insensitive. Any errors are logged. 
+	 * @param folderId the source folder ID
+	 * @param themeDisplay used by backend methods.
+	 * @return a list of file entries or empty list on failure.
+	 */
 	public List<DLFileEntry> getBackgroundPreviews(long folderId, ThemeDisplay themeDisplay)  {
 		
 		List<DLFileEntry> result = new LinkedList<DLFileEntry>();
@@ -98,6 +111,11 @@ public class OhrMediaHelper {
 		
 	}
 	
+	/**
+	 * Translates a folder ID into a folder name.
+	 * @param folderId the folder ID to translate.
+	 * @return the folder name or null in any case of error (errors are logged in detail).
+	 */
 	public String getFolderName(long folderId) {
 		String result = "";
 		
@@ -117,6 +135,12 @@ public class OhrMediaHelper {
 		
 	}
 	
+	/**
+	 * Get the public URL for a file entry in the media library.
+	 * @param themeDisplay needed by service methods.
+	 * @param fileEntry the file entry to find the URL for
+	 * @return the public URL for that file entry or null in any case of error (errors are logged in detail).
+	 */
 	public URL getDlFileUrl(ThemeDisplay themeDisplay, DLFileEntry fileEntry) {
 		
 		String url = themeDisplay.getPortalURL() + themeDisplay.getPathContext() + "/documents/" + themeDisplay.getScopeGroupId() + StringPool.SLASH + fileEntry.getUuid();
