@@ -48,7 +48,7 @@ public class OhrConfigurationAction extends DefaultConfigurationAction {
 	    // them into the preferences
 	    for (Field f : OhrConfigConstants.class.getDeclaredFields()) {
 	        String fieldValue = (String) f.get(OhrConfigConstants.class);
-	        prefs.setValue(fieldValue, "" + ParamUtil.getLong(actionRequest,fieldValue));
+	        prefs.setValue(fieldValue, ParamUtil.getString(actionRequest,fieldValue));
 	    }	    
 	    
 	    

@@ -110,8 +110,8 @@ String portletId = PortletKeys.DOCUMENT_LIBRARY;
 			<aui:input name="<%= OhrConfigConstants.SOURCE_FOLDER_ID %>" type="hidden"
 				value="<%= sourceFolderId %>" />
 			<aui:field-wrapper
-				label="<%= HtmlUtil.escapeAttribute(sourceFolderLabel) %>"
-				helpMessage="<%= HtmlUtil.escapeAttribute(sourceFolderHelp) %>">
+				label="<%= sourceFolderLabel %>"
+				helpMessage="<%= sourceFolderHelp %>">
 				<div class="input-append">
 					<liferay-ui:input-resource id="sourceFolderName"
 						url="<%=sourceFolderName%>" />
@@ -131,8 +131,8 @@ String portletId = PortletKeys.DOCUMENT_LIBRARY;
 			<aui:input name="<%= OhrConfigConstants.TARGET_FOLDER_ID %>" type="hidden"
 				value="<%= targetFolderId %>" />
 			<aui:field-wrapper
-				label="<%= HtmlUtil.escapeAttribute(targetFolderLabel) %>"
-				helpMessage="<%= HtmlUtil.escapeAttribute(targetFolderHelp) %>">
+				label="<%= targetFolderLabel %>"
+				helpMessage="<%= targetFolderHelp %>">
 				<div class="input-append">
 					<liferay-ui:input-resource id="targetFolderName"
 						url="<%=targetFolderName%>" />
@@ -149,16 +149,16 @@ String portletId = PortletKeys.DOCUMENT_LIBRARY;
 				</div>
 			</aui:field-wrapper>
 
-				<p><%= HtmlUtil.escape(eMailIntroText) %>
+				<p><%= eMailIntroText %></p>
 
 				<aui:input type="email" name="<%=  OhrConfigConstants.E_MAIL_RECIPIENT %>" 
-					label="<%= HtmlUtil.escapeAttribute(eMailRecipientLabel) %>"
-					value="<%= HtmlUtil.escapeAttribute(eMailRecipient) %>" />
+					label="<%= eMailRecipientLabel %>"
+					value="<%= eMailRecipient %>" />
 
 				<aui:input type="text" 
 					name="<%=  OhrConfigConstants.E_MAIL_SUBJECT %>" 
-					label="<%= HtmlUtil.escapeAttribute(eMailSubjectLabel) %>" 
-					value="<%= HtmlUtil.escapeAttribute(eMailSubject) %>" />
+					label="<%= eMailSubjectLabel %>" 
+					value="<%= eMailSubject %>" />
 
 
 	</aui:layout>
@@ -166,7 +166,6 @@ String portletId = PortletKeys.DOCUMENT_LIBRARY;
 
 	<aui:button-row>
 		<aui:button type="submit" />
-		<aui:button name="cancelButton" type="button" value="Abbrechen" />
 	</aui:button-row>
 
 
@@ -214,6 +213,7 @@ String portletId = PortletKeys.DOCUMENT_LIBRARY;
                         id: '_<%= HtmlUtil.escapeJS(portletId) %>_selectFolder',
                         title: '<liferay-ui:message arguments="folder" key="select-x" />',
                         uri: '<%= selectFolderURL.toString() %>'
+                        
                     },
                     function(event) {
                         var folderData = {
