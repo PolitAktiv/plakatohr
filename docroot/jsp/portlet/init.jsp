@@ -1,4 +1,5 @@
 
+<%@page import="org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants"%>
 <%@page import="org.politaktiv.portlet.plakatohr.controller.OhrMediaHelper"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 <%@page import="com.liferay.portal.theme.ThemeDisplay"%>
@@ -23,11 +24,11 @@ ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DI
 
 // get preferences (or defaults)
 long sourceFolderId = GetterUtil.getLong(
-		portletPreferences.getValue("sourceFolderId", StringPool.TRUE),
+		portletPreferences.getValue(OhrConfigConstants.SOURCE_FOLDER_ID, StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 long targetFolderId = GetterUtil.getLong(
-		portletPreferences.getValue("targetFolderId", StringPool.TRUE),
+		portletPreferences.getValue(OhrConfigConstants.TARGET_FOLDER_ID, StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
     
     String portletId = PortletKeys.DOCUMENT_LIBRARY;

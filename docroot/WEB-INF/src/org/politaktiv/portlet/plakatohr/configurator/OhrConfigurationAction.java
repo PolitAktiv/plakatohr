@@ -1,5 +1,7 @@
 package org.politaktiv.portlet.plakatohr.configurator;
 
+import java.lang.reflect.Field;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
@@ -42,12 +44,14 @@ public class OhrConfigurationAction extends DefaultConfigurationAction {
 
 	    PortletPreferences prefs = actionRequest.getPreferences();
 	    
-	    long sourceFolderId = ParamUtil.getLong(actionRequest, "sourceFolderId");
-	    long targetFolderId = ParamUtil.getLong(actionRequest, "targetFolderId");
+	    // fancy hack: use reflection to walk through all config constants and get them from the request, store
+	    // them into the preferences
+	    for (Field f : OhrConfigConstants.class.getDeclaredFields()) {
+	        String fieldValue = (String) f.get(OhrConfigConstants.class);
+	        prefs.setValue(fieldValue, "" + ParamUtil.getLong(actionRequest,fieldValue));
+	    }	    
 	    
-	    prefs.setValue("sourceFolderId", "" + sourceFolderId);
-	    prefs.setValue("targetFolderId", "" + targetFolderId);
-
+	    
 	    _log.debug(stringUtil.formatMapForLog("New portlet preferences: ", prefs.getMap()));
 
 	    prefs.store();
