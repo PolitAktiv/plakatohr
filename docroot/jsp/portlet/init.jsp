@@ -1,4 +1,7 @@
 
+<%@page import="com.liferay.portal.kernel.util.PropsKeys"%>
+<%@page import="com.liferay.portal.kernel.util.PrefsPropsUtil"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants"%>
 <%@page import="org.politaktiv.portlet.plakatohr.controller.OhrMediaHelper"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
@@ -51,5 +54,15 @@ for ( DLFileEntry entry : media.getBackgroundPreviews(sourceFolderId, themeDispl
 	
 	</li><%
 }
+
+
+/*
+OhrMailHelper mailer = new OhrMailHelper();
+HashMap<String,String> m = new HashMap<String,String>();
+m.put("Name", "Hugo");
+m.put("Meinung", "Lieber keine\n\nOder doch?");
+mailer.sendMail(m, portletPreferences, themeDisplay, "info@politaktiv.org");
+*/
+
 
 %>

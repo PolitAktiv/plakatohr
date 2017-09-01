@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 /**
  * Static class with useful stuff to do with strings
  */
@@ -86,5 +88,31 @@ public class stringUtil {
 	public static String formatMapForLog(Map<String,String[]> m) {
 		return formatMapForLog("", m);
 	}	
+	
+	
+	
+	public static String[] addressesToStrings(InternetAddress[] a) {
+		if ( a == null) {
+			return addressesToStrings("");
+		}
+
+		String[] result = new String[a.length];
+
+		for (int i = 0 ; i < a.length; i++) {
+			result[i] = a[i].getAddress();
+		}
+		return result;
+	}
+	public static String[] addressesToStrings(InternetAddress a) {
+		String[] result = new String[1];
+		result[0] = (a == null) ? "" : a.getAddress();
+		return result;
+	}
+	public static String[] addressesToStrings(String a) {
+		String[] result = new String[1];
+		result[0] = (a == null) ? "" : a;
+		return result;
+	}
+	
 	
 }
