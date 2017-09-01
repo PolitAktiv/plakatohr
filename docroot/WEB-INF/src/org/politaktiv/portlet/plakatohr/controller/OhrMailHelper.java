@@ -48,10 +48,10 @@ public class OhrMailHelper {
 	 * @param subject the subject of the message.
 	 * @param from from address.
 	 * @param to recipient address.
+	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	
-	public void sendMail(String body, String subject, String from, String to) {
-		sendMail(body, subject, from, to, null);
+	public boolean sendMail(String body, String subject, String from, String to) {
+		return sendMail(body, subject, from, to, null);
 	}
 	
 	/**
@@ -63,8 +63,9 @@ public class OhrMailHelper {
 	 * @param from from address.
 	 * @param to recipient address.
 	 * @param replyTo a reply-to address.
+	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public void sendMail(String body, String subject, String from, String to, String replyTo) {
+	public boolean sendMail(String body, String subject, String from, String to, String replyTo) {
 		MailMessage mail = new MailMessage();
 		
 		// check/set recipient, give up on error
@@ -74,7 +75,7 @@ public class OhrMailHelper {
 		} catch ( AddressException e )  {
 			_log.error("Cannot create recipient InternetAddress from " + to + ". Giving up sending this e-mail!");
 			_log.error(e);
-			return;
+			return false;
 		}		
 		
 		// check/set reply-to, be failsafe
@@ -101,7 +102,7 @@ public class OhrMailHelper {
 		} catch (AddressException e) {
 			_log.error("Cannot create sender InternetAddress from " + from + ". Giving up sending this e-mail!");
 			_log.error(e);
-			return;
+			return false;
 		}
 
 		
@@ -121,7 +122,9 @@ public class OhrMailHelper {
 				stringUtil.formatMapForLog(debugData));
 		
 		// ... go for it
-		MailServiceUtil.sendEmail(mail);		
+		MailServiceUtil.sendEmail(mail);
+		
+		return true;
 	}
 	
 	/**
@@ -131,9 +134,10 @@ public class OhrMailHelper {
 	 * @param fields the fields to create the message body from.
 	 * @param prefs portlet preferences for recipient and subject.
 	 * @param themeDisplay used to obtain system preferences for sender address.
+	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public void sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay) {
-		sendMail(fields, prefs, themeDisplay, null);
+	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay) {
+		return sendMail(fields, prefs, themeDisplay, null);
 	}
 
 	/**
@@ -143,9 +147,10 @@ public class OhrMailHelper {
 	 * @param body the body of the e-mail message.
 	 * @param prefs portlet preferences for recipient and subject.
 	 * @param themeDisplay used to obtain system preferences for sender address.
+	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public void sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay) {
-		sendMail(body, prefs, themeDisplay, null);
+	public boolean sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay) {
+		return sendMail(body, prefs, themeDisplay, null);
 	}
 	
 	/**
@@ -156,9 +161,10 @@ public class OhrMailHelper {
 	 * @param prefs portlet preferences for recipient and subject.
 	 * @param themeDisplay used to obtain system preferences for sender address.
 	 * @param replyTo a reply to address to set for this message.
+ 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public void sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo) {
-		sendMail(formatFieldsToMailBody(fields), prefs, themeDisplay, replyTo);
+	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo) {
+		return sendMail(formatFieldsToMailBody(fields), prefs, themeDisplay, replyTo);
 	}
 
 	/**
@@ -169,8 +175,9 @@ public class OhrMailHelper {
 	 * @param prefs portlet preferences for recipient and subject.
 	 * @param themeDisplay used to obtain system preferences for sender address.
 	 * @param replyTo a reply to address to set for this message.
+	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public void sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo) {
+	public boolean sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo) {
 		
 		// collect preferences
 		String subjectPref = GetterUtil.getString(
@@ -187,10 +194,10 @@ public class OhrMailHelper {
 		} catch (SystemException e) {
 			_log.error("Cannot get from address from system configuration, giving up on this e-mail.");
 			_log.error(e);
-			return;
+			return false;
 		}
 
-		sendMail(body, subjectPref, fromAddress, toPref, replyTo);
+		return sendMail(body, subjectPref, fromAddress, toPref, replyTo);
 
 		
 		
