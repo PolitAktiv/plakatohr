@@ -1,4 +1,11 @@
 
+<%@page import="java.util.Map"%>
+<%@page import="java.io.InputStream"%>
+<%@page import="com.liferay.portlet.documentlibrary.service.DLAppServiceUtil"%>
+<%@page import="com.liferay.portal.service.ServiceContextFactory"%>
+<%@page import="com.liferay.portal.service.ServiceContext"%>
+<%@page import="com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil"%>
+<%@page import="com.liferay.portlet.documentlibrary.model.DLFolder"%>
 <%@page import="com.liferay.portal.kernel.util.PropsKeys"%>
 <%@page import="com.liferay.portal.kernel.util.PrefsPropsUtil"%>
 <%@page import="java.util.HashMap"%>
@@ -48,15 +55,40 @@ targetFolderId=<%= targetFolderId %>
 <p>Im Source folder leben diese Bilder:</p>
 
 <%
-for ( DLFileEntry entry : media.getBackgroundPreviews(sourceFolderId, themeDisplay)) {
-	%><li><%= entry.getName() %>
+DLFileEntry last =null;
+Map<DLFileEntry,DLFileEntry> jpegsUndSVGs =  media.getBackgroundPreviewsAndTemplates(sourceFolderId, themeDisplay);
+
+for ( DLFileEntry entry :jpegsUndSVGs.keySet()) {
+	%><li>JPPEG Gedönse: <%= entry.getName() %>
 	<%= entry.getFileEntryId() %>
 	<%= entry.getExtension()%>
 	<%= entry.getTitle()%>
 	<img src="<%= media.getDlFileUrl(themeDisplay, entry)%>" />
+	SVG Gedönse:
+	<%= jpegsUndSVGs.get(entry).getTitle() %>
 	
 	</li><%
+
+	last=entry;
 }
+
+// Stream zum Lesen von "Datei", aber: SVG benötigt.
+// entry.getContentStream();
+//DLFolder targetF = media.getFolder(targetFolderId);
+
+/*DLFileEntry neu = DLFileEntryLocalServiceUtil.createDLFileEntry(0);
+neu.setTitle("Huhu du!");
+neu.setMimeType("image/jpg");
+neu.setFolderId(targetFolderId);*/
+
+media.storeFile(targetFolderId, "image/jpeg", "Superdatei! 2.jpg", last.getContentStream(), renderRequest, themeDisplay);
+
+
+/*	DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(themeDisplay.getUserId(), 10153, dlFolder.getRepositoryId(), 
+        dlFolder.getRepositoryId(), title, file.getContentType(), title, "fileDesc", "sss",
+        fileEntryTypeId, fieldsMap, file, inputStream, file.length(), serviceContext);
+*/
+
 
 
 

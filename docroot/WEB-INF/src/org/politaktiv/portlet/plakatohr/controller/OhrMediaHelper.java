@@ -1,18 +1,31 @@
 package org.politaktiv.portlet.plakatohr.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import javax.portlet.PortletRequest;
+
+import org.apache.commons.io.IOUtils;
+
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.DLFolder;
+import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
 
@@ -37,9 +50,20 @@ public class OhrMediaHelper {
 	 * @param themeDisplay used by backend methods.
 	 * @return a list of file entries or empty list on failure.
 	 */
-	public List<DLFileEntry> getBackgroundPreviews(long folderId, ThemeDisplay themeDisplay)  {
+	public Set<DLFileEntry> getBackgroundPreviews(long folderId, ThemeDisplay themeDisplay)  {
+		Map<DLFileEntry,DLFileEntry> map = getBackgroundPreviewsAndTemplates(folderId, themeDisplay);
+		if (map == null) {
+			return null;
+		}
+		return map.keySet();
 		
-		List<DLFileEntry> result = new LinkedList<DLFileEntry>();
+	}
+	
+	
+	public Map<DLFileEntry,DLFileEntry> getBackgroundPreviewsAndTemplates(long folderId, ThemeDisplay themeDisplay)  {
+		
+		Map<DLFileEntry,DLFileEntry> result = new HashMap<DLFileEntry, DLFileEntry>();
+		
 		
 		
 		// obtain the folder from the ID
@@ -94,7 +118,7 @@ public class OhrMediaHelper {
 			boolean found = false;
 			for ( DLFileEntry svgFile : svgEntries ) {
 				if (svgFile.getTitle().toLowerCase().equals(svgName.toLowerCase())) {
-					result.add(jpgFile);
+					result.put(jpgFile, svgFile);
 					found = true;
 				}
 			}
@@ -103,8 +127,6 @@ public class OhrMediaHelper {
 			}
 			
 		}
-		
-		Collections.sort(result);
 		
 		return result;
 		
@@ -117,12 +139,33 @@ public class OhrMediaHelper {
 	 * @return the folder name or null in any case of error (errors are logged in detail).
 	 */
 	public String getFolderName(long folderId) {
-		String result = "";
+		String result = null;
+		
+		DLFolder dir = getFolder(folderId);
+		if ( dir == null) {
+			return null;
+		}
 		
 		try {
-			DLFolder dir = DLFolderLocalServiceUtil.getDLFolder(folderId);
-			result= dir.getName();
-			//result = dir.getPath();
+			result = dir.getName();
+		} catch (Exception e) {
+			_log.error("Cannot get name for folder with ID: " + folderId);
+			_log.error(e);
+			return(null);
+		}
+			
+		
+		return result;
+		
+		
+	}
+	
+	public DLFolder getFolder(long folderId) {
+		
+		DLFolder result = null;
+		
+		try {
+			result = DLFolderLocalServiceUtil.getDLFolder(folderId);
 		} catch (Exception e) {
 			_log.error("Illegal folder ID: " + folderId);
 			_log.error(e);
@@ -130,7 +173,6 @@ public class OhrMediaHelper {
 		}
 		
 		return(result);
-	
 		
 		
 	}
@@ -151,6 +193,22 @@ public class OhrMediaHelper {
 			_log.error(e);
 			return null;
 		}
+		
+	}
+	
+	public void storeFile(long targetFolderId, String mimeType, String title, InputStream is, PortletRequest request, ThemeDisplay themeDisplay) throws IOException, PortalException, SystemException {
+		
+		byte[] bytes = IOUtils.toByteArray(is);
+		long size = bytes.length;
+		
+		InputStream bufferIs = new ByteArrayInputStream(bytes);
+		
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(), request);
+
+		// TODO: file name null geht irgendwie nicht gut? Preview generator macht Quatsch!
+		DLAppServiceUtil.addFileEntry(themeDisplay.getScopeGroupId(), targetFolderId, null, mimeType, 
+				title, "", "", bufferIs,  size, serviceContext);
+		
 		
 	}
 	
