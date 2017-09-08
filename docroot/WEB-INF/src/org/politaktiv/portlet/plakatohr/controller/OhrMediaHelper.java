@@ -15,7 +15,6 @@ import javax.portlet.PortletRequest;
 
 import org.apache.commons.io.IOUtils;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -48,7 +47,7 @@ public class OhrMediaHelper {
 	 * comparison is case-insensitive. Any errors are logged. 
 	 * @param folderId the source folder ID
 	 * @param themeDisplay used by backend methods.
-	 * @return a list of file entries or empty list on failure.
+	 * @return a set of file entries or empty list on failure.
 	 */
 	public Set<DLFileEntry> getBackgroundPreviews(long folderId, ThemeDisplay themeDisplay)  {
 		Map<DLFileEntry,DLFileEntry> map = getBackgroundPreviewsAndTemplates(folderId, themeDisplay);
@@ -59,20 +58,24 @@ public class OhrMediaHelper {
 		
 	}
 	
-	
+	/**
+	 * Retrieves a map of file entries that serve as previews for the background images from the source folder 
+	 * – each preview entry is mapped to an SVG template entry.
+	 * This will only return file entries for which both a JPG and SVG version exist. JPGs and SVGs are determined
+	 * by their MIME type. SVGs are looked up from the JPGs by replacing the file extension (if any) by ".svg". The
+	 * comparison is case-insensitive. Any errors are logged. 
+	 * @param folderId the source folder ID
+	 * @param themeDisplay used by backend methods.
+	 * @return a mapping from preview entries (JPG) to template entries (SVG) or an empty map on failure.
+	 */
 	public Map<DLFileEntry,DLFileEntry> getBackgroundPreviewsAndTemplates(long folderId, ThemeDisplay themeDisplay)  {
 		
 		Map<DLFileEntry,DLFileEntry> result = new HashMap<DLFileEntry, DLFileEntry>();
 		
-		
-		
 		// obtain the folder from the ID
 		DLFolder dir; 
-		try {
-			dir = DLFolderLocalServiceUtil.getDLFolder(folderId);
-		} catch (Exception e) {
-			_log.error("Illegal source folder ID: " + folderId);
-			_log.error(e);
+		dir = getFolder(folderId);
+		if (dir == null) {
 			return result;
 		}
 		
@@ -160,6 +163,11 @@ public class OhrMediaHelper {
 		
 	}
 	
+	/**
+	 * Retrieves a folder object by its ID. Errors will yield null, details being logged.
+	 * @param folderId the ID of the folder to revtrieve
+	 * @return the folder object or null on any kind of error.
+	 */
 	public DLFolder getFolder(long folderId) {
 		
 		DLFolder result = null;
@@ -196,19 +204,34 @@ public class OhrMediaHelper {
 		
 	}
 	
-	public void storeFile(long targetFolderId, String mimeType, String title, InputStream is, PortletRequest request, ThemeDisplay themeDisplay) throws IOException, PortalException, SystemException {
+	/**
+	 * Uploads a file into a folder. File contents is taken from a stream.
+	 * File titles must be unique in that folder, otherwise an exception will be thrown.
+	 * @param targetFolderId the folder to upload data to.
+	 * @param mimeType the mime type of the new file.
+	 * @param title the title (displayed as name) of the new file.
+	 * @param is a stream to read data from.
+	 * @param request actionRequest or renderRequest
+	 * @param themeDisplay the themeDisplay
+	 * @throws IOException on any kind of error. 
+	 */
+	public void storeFile(long targetFolderId, String mimeType, String title, InputStream is, PortletRequest request, ThemeDisplay themeDisplay) throws IOException {
 		
 		byte[] bytes = IOUtils.toByteArray(is);
 		long size = bytes.length;
 		
 		InputStream bufferIs = new ByteArrayInputStream(bytes);
 		
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(), request);
-
-		// TODO: file name null geht irgendwie nicht gut? Preview generator macht Quatsch!
-		DLAppServiceUtil.addFileEntry(themeDisplay.getScopeGroupId(), targetFolderId, null, mimeType, 
-				title, "", "", bufferIs,  size, serviceContext);
-		
+		ServiceContext serviceContext;
+		try {
+			serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(), request);
+			// TODO: file name null geht irgendwie nicht gut? Preview generator macht Quatsch!
+			DLAppServiceUtil.addFileEntry(themeDisplay.getScopeGroupId(), targetFolderId, null, mimeType, 
+					title, "", "", bufferIs,  size, serviceContext);
+		} catch (Exception e) {
+			_log.error(e);
+			throw new IOException(e);
+		}
 		
 	}
 	
