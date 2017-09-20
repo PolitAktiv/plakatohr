@@ -43,6 +43,9 @@ long sourceFolderId = GetterUtil.getLong(
 long targetFolderId = GetterUtil.getLong(
 		portletPreferences.getValue(OhrConfigConstants.TARGET_FOLDER_ID, StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+//request.setAttribute("sourceFolderId", sourceFolderId);
+//request.setAttribute("targetFolderId", targetFolderId);
     
     String portletId = PortletKeys.DOCUMENT_LIBRARY;
 %>
@@ -81,7 +84,7 @@ neu.setTitle("Huhu du!");
 neu.setMimeType("image/jpg");
 neu.setFolderId(targetFolderId);*/
 
-media.storeFile(targetFolderId, "image/jpeg", "Superdatei! 2.jpg", last.getContentStream(), renderRequest, themeDisplay);
+//media.storeFile(targetFolderId, "image/jpeg", "Superdatei! 2.jpg", last.getContentStream(), renderRequest, themeDisplay);
 
 
 /*	DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(themeDisplay.getUserId(), 10153, dlFolder.getRepositoryId(), 
@@ -104,7 +107,7 @@ mailer.sendMail(m, portletPreferences, themeDisplay, "info@politaktiv.org");
 
 %>
 
-<aui:form action="<%= userDataSubmit %>" method="post" name="fm">
+<aui:form action="<%= userDataSubmit %>" method="post" name="fm" enctype="multipart/form-data">
 	<aui:input name="firstname" label="Vorname" placeholder="Vorname" required="<%= true %>" type="text" >
     	 <aui:validator name="alpha" />
     </aui:input>
