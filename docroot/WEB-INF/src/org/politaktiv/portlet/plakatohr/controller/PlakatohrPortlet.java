@@ -6,10 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.Random;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Map;
 import java.util.Set;
 
 import javax.portlet.ActionRequest;
@@ -28,8 +29,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
@@ -79,8 +78,19 @@ public class PlakatohrPortlet extends MVCPortlet {
 
 		System.out.println("Starting manipulation");
 		// Has to be changed to the user selection
-		String svgFile = "GrueneWiese.svg";
-		startManipulation(firstname, lastname, oppinion, inStream, svgFile, request);
+		//String svgFile = "Grüne Wiese.svg";
+		
+		OhrMediaHelper media = new OhrMediaHelper();
+		PortletPreferences portletPreferences = request.getPreferences();
+		Long sourceDirectoryID = GetterUtil.getLong(
+				portletPreferences.getValue(OhrConfigConstants.SOURCE_FOLDER_ID, StringPool.TRUE),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);		
+		
+		Map<DLFileEntry, DLFileEntry> previewTemplateMap = media.getBackgroundPreviewsAndTemplates(sourceDirectoryID, (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY));
+		DLFileEntry einTemplate = previewTemplateMap.values().iterator().next(); // TODO das ist per se kaputt ;-)
+		
+		
+		startManipulation(firstname, lastname, oppinion, inStream, einTemplate, request);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -98,7 +108,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * @param svgPath
 	 */
 	private void startManipulation(String firstname, String lastname, String oppinion, InputStream inStream,
-			String svgFilename, ActionRequest request) {
+			DLFileEntry svgFile, ActionRequest request) {
 
 		try {
 			/*
@@ -122,10 +132,11 @@ public class PlakatohrPortlet extends MVCPortlet {
 			
 			PortletPreferences portletPreferences = request.getPreferences();
 			
+			/*
 			Long sourceDirectoryID = GetterUtil.getLong(
 					portletPreferences.getValue(OhrConfigConstants.SOURCE_FOLDER_ID, StringPool.TRUE),
 					DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-			String sourceDirectoryPath = DLFolderLocalServiceUtil.getFolder(sourceDirectoryID).getPath();
+			String sourceDirectoryPath = DLFolderLocalServiceUtil.getFolder(sourceDirectoryID).getPath();*/
 			
 			Long targetDirectoryID = GetterUtil.getLong(
 					portletPreferences.getValue(OhrConfigConstants.TARGET_FOLDER_ID, StringPool.TRUE),
@@ -140,16 +151,20 @@ public class PlakatohrPortlet extends MVCPortlet {
 			//Long targetDirectoryID = Long.parseLong("357446", 10);
 			System.out.println("Target: " + targetDirectoryID);
 			System.out.println("Target Path: " + DLFolderLocalServiceUtil.getFolder(targetDirectoryID).getPath());
-			System.out.println("Source: " + sourceDirectoryID);
+			//System.out.println("Source: " + sourceDirectoryID);
 
 			//File svgFile = new File(sourceDirectoryPath + "/" + svgFilename);
-			InputStream svgFile = new FileInputStream(sourceDirectoryPath + "/" + svgFilename);
 			
-			System.out.println("Source Path:" + sourceDirectoryPath + "/" + svgFilename);
+			
+			
+			//InputStream svgInputStream = new FileInputStream(sourceDirectoryPath + "/" + svgFilename);
+			InputStream svgInputStream = svgFile.getContentStream();
+			
+			System.out.println("Source File:" + svgFile.getTitle());
 
 			String imgBase64 = base64Encoder.getBase64svg(inStream);
 
-			SvgManipulator manipulator = new SvgManipulator(svgFile);
+			SvgManipulator manipulator = new SvgManipulator(svgInputStream);
 
 			Set<String> fieldNames = manipulator.getAllFieldNames();
 			for (String fN : fieldNames) {
@@ -180,7 +195,8 @@ public class PlakatohrPortlet extends MVCPortlet {
 			
 			ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
-			String filename = firstname + lastname + request.getPortletSession().getId() + (int) (Math.random() * 1000000);
+			//String filename = firstname + lastname + request.getPortletSession().getId() + (int) (Math.random() * 1000000);
+			String filename = getUniqueID(lastname + "-" + firstname);
 			media.storeFile(targetDirectoryID, "image/jpeg", filename + ".jpg", is, request, themeDisplay);
 			System.out.println("Files created in the output directory");
 
@@ -194,6 +210,31 @@ public class PlakatohrPortlet extends MVCPortlet {
 			e.printStackTrace();
 		}
 
+	}
+	
+	private String getUniqueID(String name) {
+		
+		Calendar cal =  Calendar.getInstance();
+			
+		long millis = cal.getTimeInMillis();
+		
+		int rand = (int) (Math.random() * 1000000);
+		
+		String md4input = name + millis + rand;
+		
+		MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+		
+		String md5 =String.format("%032x", new BigInteger(1, md.digest(md4input.getBytes())));
+		
+		return name + "-" + md5; 
+		
+		
+		
 	}
 
 }
