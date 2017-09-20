@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
 
 import org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants;
 import org.politaktiv.strutil.stringUtil;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.mail.MailMessage;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
 
 /**
@@ -139,7 +141,22 @@ public class OhrMailHelper {
 	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay) {
 		return sendMail(fields, prefs, themeDisplay, null);
 	}
+	
+	/**
+	 * Sends an e-mail with a message created from form fields. 
+	 * All other relevant data (sender, recipient, subject etc.) are obtained from
+	 * preferences and system configuration. The mail-message is sent asynchronously in the background.
+	 * @param fields the fields to create the message body from.
+	 * @param prefs portlet preferences for recipient and subject.
+	 * @param request used to obtain system preferences for sender address.
+	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
+	 */
+	
+	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, PortletRequest request) {
+		return sendMail(fields, prefs, request, null);
+	}
 
+	
 	/**
 	 * Sends an e-mail with a message with a body from a string.
 	 * All other relevant data (sender, recipient, subject etc.) are obtained from
@@ -152,6 +169,21 @@ public class OhrMailHelper {
 	public boolean sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay) {
 		return sendMail(body, prefs, themeDisplay, null);
 	}
+
+	/**
+	 * Sends an e-mail with a message with a body from a string.
+	 * All other relevant data (sender, recipient, subject etc.) are obtained from
+	 * preferences and system configuration. The mail-message is sent asynchronously in the background.
+	 * @param body the body of the e-mail message.
+	 * @param prefs portlet preferences for recipient and subject.
+	 * @param request used to obtain system preferences for sender address.
+	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
+	 */
+	
+	public boolean sendMail(String body, PortletPreferences prefs, PortletRequest request) {
+		return sendMail(body, prefs, request, null);
+	}
+	
 	
 	/**
 	 * Sends an e-mail with a message created from form fields. 
@@ -165,6 +197,20 @@ public class OhrMailHelper {
 	 */
 	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo) {
 		return sendMail(formatFieldsToMailBody(fields), prefs, themeDisplay, replyTo);
+	}
+
+	/**
+	 * Sends an e-mail with a message created from form fields. 
+	 * All other relevant data (sender, recipient, subject etc.) are obtained from
+	 * preferences and system configuration. The mail-message is sent asynchronously in the background.
+	 * @param fields the fields to create the message body from.
+	 * @param prefs portlet preferences for recipient and subject.
+	 * @param request used to obtain system preferences for sender address.
+	 * @param replyTo a reply to address to set for this message.
+ 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
+	 */
+	boolean sendMail(Map<String, String> fields, PortletPreferences prefs, PortletRequest request, String replyTo) {
+		return sendMail(formatFieldsToMailBody(fields), prefs, request, replyTo);
 	}
 
 	/**
@@ -202,5 +248,25 @@ public class OhrMailHelper {
 		
 		
 	}	
+	
+	/**
+	 * Sends an e-mail with a message with a body from a string.
+	 * All other relevant data (sender, recipient, subject etc.) are obtained from
+	 * preferences and system configuration. The mail-message is sent asynchronously in the background.
+	 * @param body the body of the e-mail message.
+	 * @param prefs portlet preferences for recipient and subject.
+	 * @param request used to obtain system preferences for sender address.
+	 * @param replyTo a reply to address to set for this message.
+	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
+	 */
+	public boolean sendMail(String body, PortletPreferences prefs, PortletRequest request, String replyTo) {
+		return sendMail(body, prefs, getThemeDisplay(request), replyTo);
+		
+	}
+	
+	private ThemeDisplay getThemeDisplay(PortletRequest request) {
+		return (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+	}
+	
 
 }

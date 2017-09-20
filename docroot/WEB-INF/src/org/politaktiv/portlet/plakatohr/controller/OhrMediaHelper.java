@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -215,7 +216,26 @@ public class OhrMediaHelper {
 	 * @param themeDisplay the themeDisplay
 	 * @throws IOException on any kind of error. 
 	 */
+	@Deprecated
 	public void storeFile(long targetFolderId, String mimeType, String title, InputStream is, PortletRequest request, ThemeDisplay themeDisplay) throws IOException {
+
+			storeFile(targetFolderId, mimeType, title, is, request);
+		
+	}
+
+	
+	
+	/**
+	 * Uploads a file into a folder. File contents is taken from a stream.
+	 * File titles must be unique in that folder, otherwise an exception will be thrown.
+	 * @param targetFolderId the folder to upload data to.
+	 * @param mimeType the mime type of the new file.
+	 * @param title the title (displayed as name) of the new file.
+	 * @param is a stream to read data from.
+	 * @param request actionRequest or renderRequest
+	 * @throws IOException on any kind of error. 
+	 */
+	public void storeFile(long targetFolderId, String mimeType, String title, InputStream is, PortletRequest request) throws IOException {
 		
 		byte[] bytes = IOUtils.toByteArray(is);
 		long size = bytes.length;
@@ -226,7 +246,7 @@ public class OhrMediaHelper {
 		try {
 			serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(), request);
 			// TODO: file name null geht irgendwie nicht gut? Preview generator macht Quatsch!
-			DLAppServiceUtil.addFileEntry(themeDisplay.getScopeGroupId(), targetFolderId, null, mimeType, 
+			DLAppServiceUtil.addFileEntry(getThemeDisplay(request).getScopeGroupId(), targetFolderId, null, mimeType, 
 					title, "", "", bufferIs,  size, serviceContext);
 		} catch (Exception e) {
 			_log.error(e);
@@ -234,7 +254,12 @@ public class OhrMediaHelper {
 		}
 		
 	}
+
 	
+	
+	private ThemeDisplay getThemeDisplay(PortletRequest request) {
+		return (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+	}
 	
 
 }
