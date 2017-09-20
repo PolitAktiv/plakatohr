@@ -14,6 +14,7 @@ public class OhrConfigConstants {
 	public static String TARGET_FOLDER_ID="targetFolderId";
 	public static String E_MAIL_RECIPIENT="eMailRecipient";
 	public static String E_MAIL_SUBJECT="eMailSubject";
+	public static String USER_FEEDBACK_HTML="userFeedbackHtml";
 	
 	
 	/**
