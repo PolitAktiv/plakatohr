@@ -1,1 +1,0 @@
-package org.politaktiv.portlet.plakatohr.alloyUI;
