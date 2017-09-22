@@ -16,8 +16,10 @@ import java.util.Set;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletSession;
 
 import org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants;
+import org.politaktiv.strutil.stringUtil;
 import org.politaktiv.svgmanipulator.SvgConverter;
 import org.politaktiv.svgmanipulator.SvgManipulator;
 import org.politaktiv.svgmanipulator.util.base64Encoder;
@@ -265,6 +267,12 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String backgroundID = uploadRequest.getParameter("background");
 
 		System.out.println("===> Background ID: " + backgroundID);
+		
+		
+		PortletSession s = request.getPortletSession();
+		s.setAttribute("testTextText", "Dies ist voll der Test-Text");
+		
+				
 
 		response.setRenderParameter("backgroundID", backgroundID);
 		response.setRenderParameter("jspPage", USER_DATA_FORMULAR_JSP);

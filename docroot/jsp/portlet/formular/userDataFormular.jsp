@@ -8,6 +8,11 @@
 String backgroundID = renderRequest.getParameter("backgroundID");
 %>
 
+
+<a href="<%= renderRequest.getContextPath() %>/jsp/portlet/previewProvider.jsp">
+Klicklick!</a>
+
+
 <aui:form action="<%= userDataSubmit %>" method="post" name="fm" enctype="multipart/form-data">
 	<aui:input name="firstname" label="Vorname" placeholder="Vorname" required="<%= true %>" type="text" >
     	 <aui:validator name="alpha" />
