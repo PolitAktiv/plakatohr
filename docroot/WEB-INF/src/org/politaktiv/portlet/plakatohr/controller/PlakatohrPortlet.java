@@ -49,6 +49,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 	private static final String BACKGROUND_SELECTION_JSP = JSP_PATH + "formular/backgroundSelection.jsp";
 	private static final String USER_DATA_FORMULAR_JSP = JSP_PATH + "formular/userDataFormular.jsp";
 	private static final String PREVIEW_JSP = JSP_PATH + "formular/preview.jsp";
+	private static final String DATA_PROVIDER_JSP = JSP_PATH + "/dataProvider.jsp";
 
 	public PlakatohrPortlet() {
 
@@ -270,12 +271,22 @@ public class PlakatohrPortlet extends MVCPortlet {
 		
 		
 		PortletSession s = request.getPortletSession();
+		//s.setAttribute("testTextText", "Dies ist voll der Test-Text",PortletSession.APPLICATION_SCOPE);
 		s.setAttribute("testTextText", "Dies ist voll der Test-Text");
-		
 				
 
 		response.setRenderParameter("backgroundID", backgroundID);
 		response.setRenderParameter("jspPage", USER_DATA_FORMULAR_JSP);
 	}
+	
+	public void providePreviewImage(ActionRequest request, ActionResponse response) {
+		response.setRenderParameter("type", "jpg");
+		response.setRenderParameter("jspPage", DATA_PROVIDER_JSP);
+	}
+	public void providePdfImage(ActionRequest request, ActionResponse response) {
+		response.setRenderParameter("type", "pdf");
+		response.setRenderParameter("jspPage", DATA_PROVIDER_JSP);
+	}
+	
 
 }

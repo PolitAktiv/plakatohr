@@ -1,3 +1,4 @@
+<%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@ include file="/jsp/portlet/import.jsp" %>
 
 <portlet:actionURL name="userDataSubmit" var="userDataSubmit" />
@@ -9,8 +10,12 @@ String backgroundID = renderRequest.getParameter("backgroundID");
 %>
 
 
-<a href="<%= renderRequest.getContextPath() %>/jsp/portlet/previewProvider.jsp">
-Klicklick!</a>
+
+<portlet:actionURL name="providePreviewImage" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>" var="providePreviewImage" />
+
+<a href="<%= providePreviewImage %>">Klicklick!</a>
+
+
 
 
 <aui:form action="<%= userDataSubmit %>" method="post" name="fm" enctype="multipart/form-data">
