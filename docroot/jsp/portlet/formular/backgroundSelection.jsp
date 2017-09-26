@@ -2,7 +2,49 @@
 
 <portlet:actionURL name="backgroundSelection" var="backgroundSelection" />
 
-<p>Schritt 1: Bitte wählen Sie ein Hintergrundmotiv für Ihr Plakat aus</p>
+
+<style>
+
+div.PlakatOhR_BackgroundSelect label {
+
+  display:flex;
+  vertical-align: middle;
+  width:30%;
+  min-width:200px;
+  flex-grow: 1;
+  
+    background-color: #f4f4f4;
+  border: 1px solid #cccccc;
+  
+  padding:10px !important;;
+  margin:10px;
+  
+}
+
+div.PlakatOhR_BackgroundSelect label img {
+    border-top: 2px solid #dedede;
+  border-left: 2px solid #dedede;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  border-radius:2px;
+  margin-bottom:4px;
+}
+
+div.PlakatOhR_BackgroundSelect  input {
+  margin :5px !important;
+  margin-right:15px !important;;
+}
+
+div.PlakatOhR_BackgroundSelect div.field-wrapper {
+  display:flex;
+  flex-direction: row;
+  flex-wrap:wrap;
+}
+</style>
+
+
+
+<h2>Schritt 1: Bitte wählen Sie ein Hintergrundmotiv für Ihr Plakat aus</h2>
 
 <%
 	OhrMediaHelper media = new OhrMediaHelper();
@@ -15,23 +57,29 @@
 
 	String portletId = PortletKeys.DOCUMENT_LIBRARY;
 
-	DLFileEntry last = null;
 	Map<DLFileEntry, DLFileEntry> jpegsUndSVGs = media.getBackgroundPreviewsAndTemplates(sourceFolderId,
 			themeDisplay);
 
-	for (DLFileEntry entry : jpegsUndSVGs.keySet()) {%>
-	<li><img width="300" src="<%=media.getDlFileUrl(themeDisplay, entry)%>" /><%=entry.getTitle().substring(0,entry.getTitle().lastIndexOf('.'))%></li>
-<%
-	last = entry;
-	}
 %>
 
+
 <aui:form action="<%=backgroundSelection%>" method="post" name="fm">
-	<aui:select name="background" label="Hintergrund auswählen" enctype="multipart/form-data">
+
+<div class="PlakatOhR_BackgroundSelect">
+<aui:field-wrapper name="backgroundwrapper" label="">
+		
 	<%	for (DLFileEntry entry : jpegsUndSVGs.keySet()) {%>
-	<aui:option value="<%=entry.getFileEntryId()%>"><%=entry.getTitle().substring(0,entry.getTitle().lastIndexOf('.'))%></aui:option>
-<%}%>
-	</aui:select>
+		<%
+		String imgTag = "<img src=\"" + media.getDlFileUrl(themeDisplay, entry) + "\" />";
+		%>
 	
-	<aui:button type="submit" />
+		<aui:input inlineLabel="right" name="background" 
+			type="radio" value="<%=entry.getFileEntryId()%>" label="<%= imgTag %>" />
+		
+
+<%}%>
+</aui:field-wrapper>		
+</div>		
+	
+	<aui:button type="submit" value="Nächster Schritt: Inhalt des Plakats" />
 </aui:form>

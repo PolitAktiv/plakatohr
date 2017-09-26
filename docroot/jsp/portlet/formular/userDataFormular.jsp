@@ -1,9 +1,12 @@
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@ include file="/jsp/portlet/import.jsp" %>
 
+<portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
 <portlet:actionURL name="userDataSubmit" var="userDataSubmit" />
+<portlet:actionURL name="providePreviewImage" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>" var="providePreviewImage" />
 
-<p>Schritt 2: Bitte geben Sie die notwendigen Daten für den Inhalt Ihres Plakats an</p>
+
+<h2>Schritt 2: Bitte geben Sie die notwendigen Daten für den Inhalt Ihres Plakats an</h2>
 
 <%
 String backgroundID = renderRequest.getParameter("backgroundID");
@@ -11,7 +14,6 @@ String backgroundID = renderRequest.getParameter("backgroundID");
 
 
 
-<portlet:actionURL name="providePreviewImage" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>" var="providePreviewImage" />
 
 <a href="<%= providePreviewImage %>">Klicklick!</a>
 
@@ -35,5 +37,8 @@ String backgroundID = renderRequest.getParameter("backgroundID");
 		<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
 	</aui:input>
     
-    <aui:button type="submit"/>
+    <aui:button-row>
+   	 <aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen" onClick="<%=  initializePlakatohr %>" />
+    	<aui:button type="submit" value="Nächster Schritt: Vorschau" />
+    </aui:button-row>
 </aui:form>
