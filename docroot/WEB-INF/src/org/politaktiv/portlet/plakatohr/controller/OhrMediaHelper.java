@@ -18,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.service.ServiceContext;
@@ -235,7 +236,9 @@ public class OhrMediaHelper {
 	 * @param request actionRequest or renderRequest
 	 * @throws IOException on any kind of error. 
 	 */
-	public void storeFile(long targetFolderId, String mimeType, String title, InputStream is, PortletRequest request) throws IOException {
+	public long storeFile(long targetFolderId, String mimeType, String title, InputStream is, PortletRequest request) throws IOException {
+		
+		long id;
 		
 		byte[] bytes = IOUtils.toByteArray(is);
 		long size = bytes.length;
@@ -246,15 +249,28 @@ public class OhrMediaHelper {
 		try {
 			serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(), request);
 			// TODO: file name null geht irgendwie nicht gut? Preview generator macht Quatsch!
-			DLAppServiceUtil.addFileEntry(getThemeDisplay(request).getScopeGroupId(), targetFolderId, null, mimeType, 
+			FileEntry file = DLAppServiceUtil.addFileEntry(getThemeDisplay(request).getScopeGroupId(), targetFolderId, null, mimeType, 
 					title, "", "", bufferIs,  size, serviceContext);
+			id = file.getFileEntryId();
 		} catch (Exception e) {
 			_log.error(e);
 			throw new IOException(e);
 		}
 		
+		return id;
+		
 	}
 
+	public DLFileEntry getDLFileByTitle(long folderID, String title) throws SystemException {
+		List<DLFileEntry> listOfFiles = DLFileEntryLocalServiceUtil.getFileEntries(folderID, title);
+		DLFileEntry result = null;
+		for (DLFileEntry file : listOfFiles) {
+			if(file.getName() == title) {
+				result = file;
+			}
+		}
+		return result;
+	}
 	
 	
 	private ThemeDisplay getThemeDisplay(PortletRequest request) {

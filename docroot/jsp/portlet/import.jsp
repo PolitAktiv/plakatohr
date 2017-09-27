@@ -14,6 +14,7 @@
 <%@page import="com.liferay.portal.theme.ThemeDisplay"%>
 <%@page import="com.liferay.portlet.documentlibrary.model.DLFileEntry"%>
 <%@page import="com.liferay.portal.util.PortletKeys"%>
+<%@page import="javax.portlet.PortletSession"%>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %> 
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
 

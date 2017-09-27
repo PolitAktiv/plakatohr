@@ -1,2 +1,2 @@
-<%@ include file="/jsp/portlet/init.jsp" %>
+<%@ include file="/jsp/portlet/formular/backgroundSelection.jsp" %>
 

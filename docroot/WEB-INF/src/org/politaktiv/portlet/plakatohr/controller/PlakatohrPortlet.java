@@ -19,7 +19,6 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
 
 import org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants;
-import org.politaktiv.strutil.stringUtil;
 import org.politaktiv.svgmanipulator.SvgConverter;
 import org.politaktiv.svgmanipulator.SvgManipulator;
 import org.politaktiv.svgmanipulator.util.base64Encoder;
@@ -35,6 +34,7 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
+import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
@@ -50,6 +50,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 	private static final String USER_DATA_FORMULAR_JSP = JSP_PATH + "formular/userDataFormular.jsp";
 	private static final String PREVIEW_JSP = JSP_PATH + "formular/preview.jsp";
 	private static final String DATA_PROVIDER_JSP = JSP_PATH + "/dataProvider.jsp";
+	private static final String SUCCESS_JSP = JSP_PATH + "formular/success.jsp";
 
 	public PlakatohrPortlet() {
 
@@ -64,13 +65,14 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * @param request
 	 * @param reponse
 	 */
-	public void userDataSubmit(ActionRequest request, ActionResponse response) {
+	public void userDataSubmit(ActionRequest request, ActionResponse response) throws RuntimeException {
 
 		UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(request);
 		String firstname = ParamUtil.getString(uploadPortletRequest, "firstname");
 		String lastname = ParamUtil.getString(uploadPortletRequest, "lastname");
 		String email = ParamUtil.getString(uploadPortletRequest, "email");
 		String oppinion = ParamUtil.getString(uploadPortletRequest, "oppinion");
+		long backgroundID = Long.parseLong(ParamUtil.getString(uploadPortletRequest, "backgroundID"));
 
 		// String fileName = uploadPortletRequest.getFileName("picture");
 		File file = uploadPortletRequest.getFile("picture");
@@ -102,8 +104,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 			Map<DLFileEntry, DLFileEntry> previewTemplateMap = media.getBackgroundPreviewsAndTemplates(
 					sourceDirectoryID, (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY)); // TODO
 
-			// TODO: Render -> Action Parameter für ID
-			long backgroundID = 123456789;
+			System.out.println("Final background ID: " + backgroundID);
 			DLFileEntry result = null;
 			for (DLFileEntry jpg : previewTemplateMap.keySet()) {
 				if (jpg.getFileEntryId() == backgroundID) {
@@ -111,10 +112,19 @@ public class PlakatohrPortlet extends MVCPortlet {
 				}
 			}
 			if (result != null) {
-				startManipulation(firstname, lastname, oppinion, inStream, result, request);
+				//PortletSession s = request.getPortletSession();
+				
+				//DLFileEntry jpgFileEntry = startManipulation(firstname, lastname, oppinion, inStream, result, request);
+				//String jpgID = String.valueOf(jpgFileEntry.getFileEntryId());
+				
+				String id = startManipulation(firstname, lastname, oppinion, inStream, result, request);
+				
+				//s.setAttribute("picture", jpgFileEntry);
+				response.setRenderParameter("picture", id);
+				response.setRenderParameter("email", email);
 				response.setRenderParameter("jspPage", PREVIEW_JSP);
 			} else {
-				//TODO ERROR
+				throw new RuntimeException("Illegal background ID: " + backgroundID);
 			}
 
 		} catch (Exception e) {
@@ -134,8 +144,10 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * @param imagePath
 	 * @param svgPath
 	 */
-	private void startManipulation(String firstname, String lastname, String oppinion, InputStream inStream,
+	private String startManipulation(String firstname, String lastname, String oppinion, InputStream inStream,
 			DLFileEntry svgFile, ActionRequest request) {
+		
+		String id = null;
 
 		try {
 			/*
@@ -225,8 +237,10 @@ public class PlakatohrPortlet extends MVCPortlet {
 			// request.getPortletSession().getId() + (int) (Math.random() *
 			// 1000000);
 			String filename = getUniqueID(lastname + "-" + firstname);
-			media.storeFile(targetDirectoryID, "image/jpeg", filename + ".jpg", is, request);
+			String jpgFilename = filename + ".jpg";
+			id = String.valueOf(media.storeFile(targetDirectoryID, "image/jpeg", jpgFilename, is, request));
 			System.out.println("Files created in the output directory");
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -237,6 +251,8 @@ public class PlakatohrPortlet extends MVCPortlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return id;
 
 	}
 
@@ -277,6 +293,22 @@ public class PlakatohrPortlet extends MVCPortlet {
 
 		response.setRenderParameter("backgroundID", backgroundID);
 		response.setRenderParameter("jspPage", USER_DATA_FORMULAR_JSP);
+	}
+	
+	public void publish(ActionRequest request, ActionResponse response) throws NumberFormatException, PortalException, SystemException {
+		OhrMailHelper mail = new OhrMailHelper();
+		UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(request);
+		String email = uploadRequest.getParameter("email");
+		String plakatID = uploadRequest.getParameter("plakatID");
+		DLFileEntry plakat = DLFileEntryLocalServiceUtil.getDLFileEntry(Long.parseLong(plakatID));
+		String plakatTitle = plakat.getTitle();
+		
+		String content = "Anfrage zur Veröffentlichung eines Plakats mit der ID " + plakatID + " und Titel " + plakatTitle + "</br> Nutzer E-Mail Adresse: " + email;
+		String subject = "Plakatohr Anfrage zur Freischaltung";
+		String sender = "";
+		String recipent = "";
+		mail.sendMail(content, subject, sender, recipent);
+		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}
 	
 	public void providePreviewImage(ActionRequest request, ActionResponse response) {

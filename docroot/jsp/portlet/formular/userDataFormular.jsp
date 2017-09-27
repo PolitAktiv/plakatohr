@@ -36,6 +36,8 @@ String backgroundID = renderRequest.getParameter("backgroundID");
 	<aui:input name="picture" label="Bild" required="<%= true %>" type="file" >
 		<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
 	</aui:input>
+	<aui:input name="backgroundID" value="<%=backgroundID%>" type="hidden">
+	</aui:input>
     
     <aui:button-row>
    	 <aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen" onClick="<%=  initializePlakatohr %>" />
