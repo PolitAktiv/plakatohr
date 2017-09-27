@@ -1,4 +1,16 @@
 <%@ include file="/jsp/portlet/import.jsp"%>
 
-Ihr Plakat wurde nun zur Freischaltung weitergeleitet. Wir werden uns schnellstmöglich darum kümmern und Sie per Mail benachrichtigen!
-Währenddessen können Sie <a href="https://www.google.de">hier</a> durch bereits erstellte Plakate stöbern.
+<portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
+
+<div class="PlakatOhR_FinalFeedback">
+<%
+String finalMessage = portletPreferences.getValue(OhrConfigConstants.USER_FEEDBACK_HTML, StringPool.TRUE);
+
+response.getWriter().println(finalMessage);
+
+%>
+</div>
+
+<aui:form>
+   	 <aui:button type="cancel" value="Ein weiteres Plakat entwerfen" onClick="<%= initializePlakatohr %>" />
+</aui:form>
