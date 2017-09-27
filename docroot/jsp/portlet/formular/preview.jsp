@@ -4,8 +4,6 @@
 <portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
 
 <%
-//PortletSession s = renderRequest.getPortletSession();
-//DLFileEntry jpgFileEntry = (DLFileEntry) s.getAttribute("picture");
 OhrMediaHelper media = new OhrMediaHelper();
 ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 

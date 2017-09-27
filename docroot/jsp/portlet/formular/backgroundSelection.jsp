@@ -59,7 +59,6 @@ div.PlakatOhR_BackgroundSelect div.field-wrapper {
 
 	Map<DLFileEntry, DLFileEntry> jpegsUndSVGs = media.getBackgroundPreviewsAndTemplates(sourceFolderId,
 			themeDisplay);
-
 %>
 
 

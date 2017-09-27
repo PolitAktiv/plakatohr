@@ -30,7 +30,7 @@ String backgroundID = renderRequest.getParameter("backgroundID");
 	<aui:input name="email" label="E-Mail" placeholder="E-Mail" required="<%= true %>" type="text" >
 		<aui:validator name="email" />
 	</aui:input>
-	<aui:input name="oppinion" label="Meinung" placeholder="Meinung" required="<%= true %>" type="textarea" >
+	<aui:input name="opinion" label="Meinung" placeholder="Meinung" required="<%= true %>" type="textarea" >
 		<aui:validator name="maxLength">100</aui:validator>
 	</aui:input>
 	<aui:input name="picture" label="Bild" required="<%= true %>" type="file" >
