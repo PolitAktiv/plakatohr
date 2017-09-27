@@ -22,5 +22,4 @@
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 
-<liferay-theme:defineObjects />
 <portlet:defineObjects />

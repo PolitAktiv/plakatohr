@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletSession;
 
 import org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants;
 import org.politaktiv.svgmanipulator.SvgConverter;
@@ -187,6 +188,16 @@ public class PlakatohrPortlet extends MVCPortlet {
 			String jpgFilename = filename + ".jpg";
 			id = String.valueOf(media.storeFile(targetDirectoryID, "image/jpeg", jpgFilename, is, request));
 			System.out.println("Files created in the output directory");	
+			
+			// session Testerei
+			PortletSession s = request.getPortletSession();
+			//s.setAttribute("testTextText", "Dies ist voll der Test-Text",PortletSession.APPLICATION_SCOPE);
+			//s.setAttribute("testTextText", "Dies ist voll der Test-Text");
+			converter.generateOutput(os, SvgConverter.JPG);
+			byte[] daten = os.toByteArray();
+			s.setAttribute("daten", daten);
+			
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -243,6 +254,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		//PortletSession s = request.getPortletSession();
 		//s.setAttribute("testTextText", "Dies ist voll der Test-Text",PortletSession.APPLICATION_SCOPE);
 		//s.setAttribute("testTextText", "Dies ist voll der Test-Text");
+		
 				
 		response.setRenderParameter("backgroundID", backgroundID);
 		response.setRenderParameter("jspPage", USER_DATA_FORMULAR_JSP);
@@ -266,10 +278,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String plakatTitle = plakat.getTitle();
 		
 		String content = "Anfrage zur Veröffentlichung eines Plakats mit der ID " + plakatID + " und Titel " + plakatTitle + "</br> Nutzer E-Mail Adresse: " + email;
-		String subject = "Plakatohr Anfrage zur Freischaltung";
-		String sender = "";
-		String recipent = "";
-		mail.sendMail(content, subject, sender, recipent);
+		mail.sendMail(content, request, email);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}
 	

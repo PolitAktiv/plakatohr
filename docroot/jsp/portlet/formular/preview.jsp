@@ -2,6 +2,7 @@
 
 <portlet:actionURL name="publish" var="publish" />
 <portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
+<portlet:actionURL name="backgroundSelection" var="backgroundSelection" />
 
 <%
 OhrMediaHelper media = new OhrMediaHelper();
@@ -26,9 +27,13 @@ DLFileEntry jpg = DLFileEntryLocalServiceUtil.getDLFileEntry(jpgID);
 	</aui:input>
 	<aui:input name="email" value="<%= email %>" type="hidden">
 	</aui:input>
+	
+	<p>Plakat herunterladen: <a href=""><i class="icon-download-alt">&nbsp;</i>JPEG-Datei</a>
+	<a href=""><i class="icon-download-alt">&nbsp;</i>PDF-Datei</a></p>
     
     <aui:button-row>
-   	 <aui:button type="cancel" value="Neues Plakat erstellen" onClick="<%= initializePlakatohr %>" />
+    <aui:button type="cancel" value="Zurück: Daten ändern" onClick="<%= backgroundSelection %>" />
+   	 <aui:button type="cancel" value="Plakat verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
     	<aui:button type="submit" value="Veröffentlichen" />
     </aui:button-row>
 </aui:form>

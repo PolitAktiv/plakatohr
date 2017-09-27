@@ -1,16 +1,21 @@
-<%@ include file="/jsp/portlet/import.jsp" %>
-
+<%@page import="javax.portlet.PortletRequest"%>
+<%@page language="java" contentType="image/jpeg"
+    %>
+<%@page import="java.io.OutputStream"%>
 <%@page import="javax.portlet.PortletSession"%>
-<%@ page language="java" contentType="text/plain; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@page trimDirectiveWhitespaces="true" %>
 <%
 
-PortletSession pS = renderRequest.getPortletSession();
+PortletRequest pR = (PortletRequest) request.getAttribute("javax.portlet.request");
 
+PortletSession pS = pR.getPortletSession();
 
+byte[] daten = (byte[])pS.getAttribute("daten");
 
+OutputStream o = response.getOutputStream();
+o.write(daten, 0, daten.length);
+o.flush();
+o.close();// *important* to ensure no more jsp output
 
-
+return; 
 %>
-<%=pS.getAttribute("testTextText") %>
-
