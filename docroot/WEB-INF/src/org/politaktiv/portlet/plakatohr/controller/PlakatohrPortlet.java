@@ -277,7 +277,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		DLFileEntry plakat = DLFileEntryLocalServiceUtil.getDLFileEntry(Long.parseLong(plakatID));
 		String plakatTitle = plakat.getTitle();
 		
-		String content = "Anfrage zur Veröffentlichung eines Plakats mit der ID " + plakatID + " und Titel " + plakatTitle + "</br> Nutzer E-Mail Adresse: " + email;
+		String content = "Anfrage zur Veröffentlichung eines Plakats mit der ID " + plakatID + ", Titel " + plakatTitle + " und Nutzer E-Mail Adresse: " + email;
 		mail.sendMail(content, request, email);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}

@@ -9,16 +9,17 @@
 <h2>Schritt 2: Bitte geben Sie die notwendigen Daten für den Inhalt Ihres Plakats an</h2>
 
 <%
-String backgroundID = renderRequest.getParameter("backgroundID");
+OhrMediaHelper media = new OhrMediaHelper();
+ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+
+String backgroundIDString = renderRequest.getParameter("backgroundID");
+long backgroundID = Long.parseLong(backgroundIDString);
+DLFileEntry background = DLFileEntryLocalServiceUtil.getDLFileEntry(backgroundID);
 %>
 
-
-
-
-<a href="<%= providePreviewImage %>">Klicklick!</a>
-
-
-
+<div>
+	<img width="400" src="<%=media.getDlFileUrl(themeDisplay, background)%>"/>
+</div>
 
 <aui:form action="<%= userDataSubmit %>" method="post" name="fm" enctype="multipart/form-data">
 	<aui:input name="firstname" label="Vorname" placeholder="Vorname" required="<%= true %>" type="text" >
