@@ -22,4 +22,14 @@
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 
+<portlet:resourceURL var="pdfDownloadUrl">
+	<portlet:param name="type" value="application/pdf" />
+	<portlet:param name="fileName" value="plakat.pdf" />
+</portlet:resourceURL>
+<portlet:resourceURL var="jpgDownloadUrl">
+	<portlet:param name="type" value="application/pdf" />
+	<portlet:param name="fileName" value="plakat.jpg" />
+</portlet:resourceURL>
+
+
 <portlet:defineObjects />

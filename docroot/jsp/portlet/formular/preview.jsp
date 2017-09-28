@@ -12,10 +12,12 @@ Long targetDirectoryID = GetterUtil.getLong(
 		portletPreferences.getValue(OhrConfigConstants.TARGET_FOLDER_ID, StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
-String jpgIDString = renderRequest.getParameter("picture");
+//String jpgIDString = renderRequest.getParameter("picture");
 String email = renderRequest.getParameter("email");
-long jpgID = Long.parseLong(jpgIDString);
-DLFileEntry jpg = DLFileEntryLocalServiceUtil.getDLFileEntry(jpgID);
+String lastname = renderRequest.getParameter("lastname");
+String firstname = renderRequest.getParameter("firstname");
+//long jpgID = Long.parseLong(jpgIDString);
+//DLFileEntry jpg = DLFileEntryLocalServiceUtil.getDLFileEntry(jpgID);
 %>
 
 <style>
@@ -51,21 +53,21 @@ div.PlakatOhR_DownloadLinks {
 <div class="PlakatOhR_FinalPreview">
 
 <div class="PlaktOhR_Img">
-<img src="<%=media.getDlFileUrl(themeDisplay, jpg)%>"/>
+<img src="<%= jpgDownloadUrl %>"/>
 </div>
 
 <div class="PlakatOhR_DownloadLinks">	
-	Plakat herunterladen: <a href=""><i class="icon-download-alt">&nbsp;</i>JPG-Datei</a>
-	<a href=""><i class="icon-download-alt">&nbsp;</i>PDF-Datei</a>
+	Plakat herunterladen: <a href="<%= jpgDownloadUrl %>"><i class="icon-download-alt">&nbsp;</i>JPG-Datei</a>
+	<a href="<%= pdfDownloadUrl %>"><i class="icon-download-alt">&nbsp;</i>PDF-Datei</a>
 </div>
 
 </div>
 
 <aui:form action="<%= publish %>" method="post" name="fm" enctype="multipart/form-data">
-	<aui:input name="plakatID" value="<%= jpgIDString %>" type="hidden">
-	</aui:input>
-	<aui:input name="email" value="<%= email %>" type="hidden">
-	</aui:input>
+	<aui:input name="email" value="<%= email %>" type="hidden" />
+	<aui:input name="lastname" value="<%= lastname %>" type="hidden" />
+	<aui:input name="firstname" value="<%= firstname %>" type="hidden" />
+
 
     
     <aui:button-row>

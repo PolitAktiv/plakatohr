@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,8 +16,12 @@ import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
 import javax.portlet.PortletSession;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 
 import org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants;
 import org.politaktiv.svgmanipulator.SvgConverter;
@@ -34,7 +39,6 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
-import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
@@ -48,8 +52,10 @@ public class PlakatohrPortlet extends MVCPortlet {
 	private static final String BACKGROUND_SELECTION_JSP = JSP_PATH + "formular/backgroundSelection.jsp";
 	private static final String USER_DATA_FORMULAR_JSP = JSP_PATH + "formular/userDataFormular.jsp";
 	private static final String PREVIEW_JSP = JSP_PATH + "formular/preview.jsp";
-	private static final String DATA_PROVIDER_JSP = JSP_PATH + "/dataProvider.jsp";
 	private static final String SUCCESS_JSP = JSP_PATH + "formular/success.jsp";
+	
+	private static final String SESSION_ATTR_NAME_JPEG ="OhrDataJpeg";
+	private static final String SESSION_ATTR_NAME_PDF ="OhrDataPdf";
 
 	/**
 	 * Constructor for the portlet. Do not use it yourself, it will be called by Liferay automatically!
@@ -109,12 +115,13 @@ public class PlakatohrPortlet extends MVCPortlet {
 				}
 			}
 			if (result != null) {
-				String id = startManipulation(firstname, lastname, opinion, inStream, result, request);
+				startManipulation(firstname, lastname, opinion, inStream, result, request);
 				
-				response.setRenderParameter("picture", id);
+				//response.setRenderParameter("picture", id);
 				response.setRenderParameter("email", email);
 				response.setRenderParameter("jspPage", PREVIEW_JSP);
 			} else {
+				inStream.close();
 				throw new RuntimeException("Illegal background ID: " + backgroundID);
 			}
 
@@ -140,15 +147,6 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String id = null;
 
 		try {
-			OhrMediaHelper media = new OhrMediaHelper();
-			PortletPreferences portletPreferences = request.getPreferences();
-
-			Long targetDirectoryID = GetterUtil.getLong(
-					portletPreferences.getValue(OhrConfigConstants.TARGET_FOLDER_ID, StringPool.TRUE),
-					DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-			System.out.println("Target: " + targetDirectoryID);
-			System.out.println("Target Path: " + DLFolderLocalServiceUtil.getFolder(targetDirectoryID).getPath());
 
 			InputStream svgInputStream = svgFile.getContentStream();
 
@@ -183,19 +181,20 @@ public class PlakatohrPortlet extends MVCPortlet {
 			// converter.generateOutput(new File(outputDirectoryPath +
 			// "/test.svg"), SvgConverter.SVG);
 			
-			ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+			/*ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 			String filename = getUniqueID(lastname + "-" + firstname);
 			String jpgFilename = filename + ".jpg";
 			id = String.valueOf(media.storeFile(targetDirectoryID, "image/jpeg", jpgFilename, is, request));
-			System.out.println("Files created in the output directory");	
+			System.out.println("Files created in the output directory");*/	
 			
 			// session Testerei
 			PortletSession s = request.getPortletSession();
-			//s.setAttribute("testTextText", "Dies ist voll der Test-Text",PortletSession.APPLICATION_SCOPE);
-			//s.setAttribute("testTextText", "Dies ist voll der Test-Text");
 			converter.generateOutput(os, SvgConverter.JPG);
 			byte[] daten = os.toByteArray();
-			s.setAttribute("daten", daten);
+			s.setAttribute(SESSION_ATTR_NAME_JPEG, daten);
+			converter.generateOutput(os, SvgConverter.PDF);
+			daten = os.toByteArray();
+			s.setAttribute(SESSION_ATTR_NAME_PDF, daten);
 			
 			
 
@@ -268,28 +267,94 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * @throws NumberFormatException
 	 * @throws PortalException
 	 * @throws SystemException
+	 * @throws IOException 
 	 */
-	public void publish(ActionRequest request, ActionResponse response) throws NumberFormatException, PortalException, SystemException {
+	public void publish(ActionRequest request, ActionResponse response) throws PortalException, SystemException, IOException  {
 		OhrMailHelper mail = new OhrMailHelper();
 		UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(request);
 		String email = uploadRequest.getParameter("email");
-		String plakatID = uploadRequest.getParameter("plakatID");
-		DLFileEntry plakat = DLFileEntryLocalServiceUtil.getDLFileEntry(Long.parseLong(plakatID));
-		String plakatTitle = plakat.getTitle();
+		String lastname = uploadRequest.getParameter("lastname");
+		String firstname = uploadRequest.getParameter("firstname");
 		
-		String content = "Anfrage zur Veröffentlichung eines Plakats mit der ID " + plakatID + ", Titel " + plakatTitle + " und Nutzer E-Mail Adresse: " + email;
+		OhrMediaHelper media = new OhrMediaHelper();
+		
+		
+		PortletPreferences portletPreferences = request.getPreferences();
+		
+		Long targetDirectoryID = GetterUtil.getLong(
+				portletPreferences.getValue(OhrConfigConstants.TARGET_FOLDER_ID, StringPool.TRUE),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		System.out.println("Target: " + targetDirectoryID);
+		System.out.println("Target Path: " + DLFolderLocalServiceUtil.getFolder(targetDirectoryID).getPath());
+		
+		
+		String baseName = getUniqueID(lastname + "-" + firstname);
+		String filenameJpg = baseName + ".jpg";
+		String filenamePdf = baseName + ".pdf";
+
+		/*ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		String filename = getUniqueID(lastname + "-" + firstname);
+		String jpgFilename = filename + ".jpg";
+		id = String.valueOf(media.storeFile(targetDirectoryID, "image/jpeg", jpgFilename, is, request));
+		System.out.println("Files created in the output directory");*/
+		byte[] jpegData = getDataFromSession(request, SESSION_ATTR_NAME_JPEG);
+		byte[] pdfData = getDataFromSession(request, SESSION_ATTR_NAME_PDF);
+		
+		
+		media.storeFile(targetDirectoryID, "image/jpeg", filenameJpg,
+				new ByteArrayInputStream(jpegData),
+				request);
+		media.storeFile(targetDirectoryID, "application/pdf", filenamePdf,
+				new ByteArrayInputStream(pdfData),
+				request);
+		
+		System.out.println("Files created in the output directory");			
+		
+		
+		String content = "Anfrage zur Veröffentlichung eines Plakats[...] und Nutzer E-Mail Adresse: " + email;
 		mail.sendMail(content, request, email);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}
 	
-	public void providePreviewImage(ActionRequest request, ActionResponse response) {
-		response.setRenderParameter("type", "jpg");
-		response.setRenderParameter("jspPage", DATA_PROVIDER_JSP);
+	private byte[] getDataFromSession(PortletRequest request, String attKey) throws IOException {
+		PortletSession pS = request.getPortletSession();
+		Object dataObj = pS.getAttribute(attKey);
+		if (dataObj == null ) {
+			throw new IOException("Session does not contain data for key: " + attKey);
+		}
+		byte[] daten = (byte[]) dataObj;
+		
+		return daten;
 	}
 	
-	public void providePdfImage(ActionRequest request, ActionResponse response) {
-		response.setRenderParameter("type", "pdf");
-		response.setRenderParameter("jspPage", DATA_PROVIDER_JSP);
+	private void sendDataFromSession(ResourceRequest request, ResourceResponse response, String attKey, String mimeType) throws IOException {
+		byte[] daten= getDataFromSession(request, attKey);
+		
+		response.setContentType(mimeType);
+		OutputStream out = response.getPortletOutputStream();
+		out.write(daten, 0, daten.length);
+		out.flush();		
+	}
+	
+	
+	
+	@Override
+	public void serveResource(ResourceRequest request, ResourceResponse response)
+			throws IOException, PortletException {
+		
+		String fileName = ParamUtil.getString(request, "fileName");
+		
+		if (fileName.equals("plakat.pdf")) {
+			sendDataFromSession(request, response, SESSION_ATTR_NAME_PDF, "application/pdf");	
+		} else if (fileName.equals("plakat.jpg")) {
+			sendDataFromSession(request, response, SESSION_ATTR_NAME_JPEG, "image/jpeg");
+		} else {
+			throw new IOException("I do not know how to handle the requested file name: " + fileName);
+		}
+		
+		
+		
 	}
 	
 
