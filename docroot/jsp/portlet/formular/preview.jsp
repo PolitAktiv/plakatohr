@@ -2,7 +2,7 @@
 
 <portlet:actionURL name="publish" var="publish" />
 <portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
-<portlet:actionURL name="backgroundSelection" var="backgroundSelection" />
+<portlet:actionURL name="returnToBackgroundSelection" var="returnToBackgroundSelection" />
 
 <%
 OhrMediaHelper media = new OhrMediaHelper();
@@ -16,6 +16,8 @@ Long targetDirectoryID = GetterUtil.getLong(
 String email = renderRequest.getParameter("email");
 String lastname = renderRequest.getParameter("lastname");
 String firstname = renderRequest.getParameter("firstname");
+String opinion = renderRequest.getParameter("opinion");
+String backgroundID = renderRequest.getParameter("backgroundID");
 //long jpgID = Long.parseLong(jpgIDString);
 //DLFileEntry jpg = DLFileEntryLocalServiceUtil.getDLFileEntry(jpgID);
 %>
@@ -67,11 +69,11 @@ div.PlakatOhR_DownloadLinks {
 	<aui:input name="email" value="<%= email %>" type="hidden" />
 	<aui:input name="lastname" value="<%= lastname %>" type="hidden" />
 	<aui:input name="firstname" value="<%= firstname %>" type="hidden" />
-
-
+	<aui:input name="opinion" value="<%= opinion %>" type="hidden" />
+	<aui:input name="backgroundID" value="<%= backgroundID %>" type="hidden" />
     
     <aui:button-row>
-    <aui:button type="cancel" value="Zurück: Daten ändern" onClick="<%= backgroundSelection %>" />
+    <aui:button type="cancel" value="Zurück: Daten ändern" onClick="<%= returnToBackgroundSelection %>" />
    	 <aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
     	<aui:button type="submit" value="Veröffentlichen" />
     </aui:button-row>

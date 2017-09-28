@@ -89,7 +89,8 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String lastname = ParamUtil.getString(uploadPortletRequest, "lastname");
 		String email = ParamUtil.getString(uploadPortletRequest, "email");
 		String opinion = ParamUtil.getString(uploadPortletRequest, "opinion");
-		long backgroundID = Long.parseLong(ParamUtil.getString(uploadPortletRequest, "backgroundID"));
+		String backgroundIDString = ParamUtil.getString(uploadPortletRequest, "backgroundID");
+		long backgroundID = Long.parseLong(backgroundIDString);
 		File file = uploadPortletRequest.getFile("picture");
 
 		try {
@@ -118,7 +119,11 @@ public class PlakatohrPortlet extends MVCPortlet {
 				startManipulation(firstname, lastname, opinion, inStream, result, request);
 				
 				//response.setRenderParameter("picture", id);
+				response.setRenderParameter("firstname", firstname);
+				response.setRenderParameter("lastname", lastname);
 				response.setRenderParameter("email", email);
+				response.setRenderParameter("opinion", opinion);
+				response.setRenderParameter("background", backgroundIDString);
 				response.setRenderParameter("jspPage", PREVIEW_JSP);
 			} else {
 				inStream.close();
@@ -253,9 +258,30 @@ public class PlakatohrPortlet extends MVCPortlet {
 		//PortletSession s = request.getPortletSession();
 		//s.setAttribute("testTextText", "Dies ist voll der Test-Text",PortletSession.APPLICATION_SCOPE);
 		//s.setAttribute("testTextText", "Dies ist voll der Test-Text");
-		
 				
 		response.setRenderParameter("backgroundID", backgroundID);
+		response.setRenderParameter("jspPage", USER_DATA_FORMULAR_JSP);
+	}
+	
+	public void returnToBackgroundSelection(ActionRequest request, ActionResponse response) {
+		UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(request);
+		String backgroundID = ParamUtil.getString(uploadRequest, "backgroundID");
+		String firstname = ParamUtil.getString(uploadRequest, "firstname");
+		String lastname = ParamUtil.getString(uploadRequest, "lastname");
+		String email = ParamUtil.getString(uploadRequest, "email");
+		String opinion = ParamUtil.getString(uploadRequest, "opinion");
+
+		System.out.println("===> Background ID: " + backgroundID);
+		
+		//PortletSession s = request.getPortletSession();
+		//s.setAttribute("testTextText", "Dies ist voll der Test-Text",PortletSession.APPLICATION_SCOPE);
+		//s.setAttribute("testTextText", "Dies ist voll der Test-Text");
+		
+		response.setRenderParameter("backgroundID", backgroundID);
+		response.setRenderParameter("firstname", firstname);
+		response.setRenderParameter("lastname", lastname);
+		response.setRenderParameter("email", email);
+		response.setRenderParameter("opinion", opinion);
 		response.setRenderParameter("jspPage", USER_DATA_FORMULAR_JSP);
 	}
 	
