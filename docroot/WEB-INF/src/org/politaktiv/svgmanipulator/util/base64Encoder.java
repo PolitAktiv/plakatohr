@@ -73,9 +73,9 @@ public class base64Encoder {
 	
 	private static String simpleFileMagic(byte[] buf) {
 		if ( buf.length > 10) {
-			if ( buf[6] == 'J' && buf[7] == 'F' && buf[8] == 'I' && buf[9] == 'F' ) {
+			if ( buf[0] == (byte)0xFF   &&  buf[1] == (byte)0xD8 && buf[2] == (byte)0xFF ) {
 				return "image/jpeg";
-			}
+			}	
 			if ( buf[1] == 'P' && buf[2] == 'N' && buf[3] == 'G' ) {
 				return "image/png";
 			}
