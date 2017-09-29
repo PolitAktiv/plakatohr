@@ -59,8 +59,9 @@ div.PlakatOhR_DownloadLinks {
 </div>
 
 <div class="PlakatOhR_DownloadLinks">	
-	Plakat herunterladen: <a href="<%= jpgDownloadUrl %>"><i class="icon-download-alt">&nbsp;</i>JPG-Datei</a>
-	<a href="<%= pdfDownloadUrl %>"><i class="icon-download-alt">&nbsp;</i>PDF-Datei</a>
+	Plakat herunterladen: 
+	<a href="<%= jpgDownloadUrl %>"  target="_blank"><i class="icon-download-alt">&nbsp;</i>JPG-Datei</a>
+	<a href="<%= pdfDownloadUrl %>"  target="_blank"><i class="icon-download-alt">&nbsp;</i>PDF-Datei</a>
 </div>
 
 </div>
