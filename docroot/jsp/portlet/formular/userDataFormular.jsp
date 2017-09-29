@@ -30,10 +30,10 @@ DLFileEntry background = DLFileEntryLocalServiceUtil.getDLFileEntry(backgroundID
 		<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
 	</aui:input>
 	<aui:input name="firstname" label="Vorname" placeholder="Vorname"  required="<%= true %>" type="text" >
-    	 <aui:validator name="alpha" />
+    	 <aui:validator name="maxLength">35</aui:validator>
     </aui:input>
     <aui:input name="lastname" label="Nachname" placeholder="Nachname"  required="<%= true %>" type="text" >
-    	 <aui:validator name="alpha" />
+    	 <aui:validator name="maxLength">35</aui:validator>
     </aui:input>
 	<aui:input name="email" label="E-Mail" placeholder="E-Mail"  required="<%= true %>" type="text" >
 		<aui:validator name="email" />

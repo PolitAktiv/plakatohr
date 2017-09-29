@@ -338,7 +338,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		System.out.println("Files created in the output directory");			
 		
 		
-		String content = "Anfrage zur Veröffentlichung eines Plakats[...] und Nutzer E-Mail Adresse: " + email;
+		String content = "Anfrage zur Veröffentlichung eines Plakats mit Namen " + baseName + " von " + firstname + " " + lastname + " und Nutzer E-Mail Adresse: " + email;
 		mail.sendMail(content, request, email);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}
