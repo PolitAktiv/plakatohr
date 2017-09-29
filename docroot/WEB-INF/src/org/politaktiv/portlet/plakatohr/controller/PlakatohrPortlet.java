@@ -26,10 +26,14 @@ import javax.portlet.ResourceResponse;
 import org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants;
 import org.politaktiv.svgmanipulator.SvgConverter;
 import org.politaktiv.svgmanipulator.SvgManipulator;
+import org.politaktiv.svgmanipulator.util.MimeTypeException;
 import org.politaktiv.svgmanipulator.util.base64Encoder;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -56,12 +60,14 @@ public class PlakatohrPortlet extends MVCPortlet {
 	
 	private static final String SESSION_ATTR_NAME_JPEG ="OhrDataJpeg";
 	private static final String SESSION_ATTR_NAME_PDF ="OhrDataPdf";
+	
+	private static Log _log;
 
 	/**
 	 * Constructor for the portlet. Do not use it yourself, it will be called by Liferay automatically!
 	 */
 	public PlakatohrPortlet() {
-
+		_log = LogFactoryUtil.getLog(PlakatohrPortlet.class);
 	}
 
 	/**
@@ -82,7 +88,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * @param request
 	 * @param reponse
 	 */
-	public void userDataSubmit(ActionRequest request, ActionResponse response) throws RuntimeException {
+	public void userDataSubmit(ActionRequest request, ActionResponse response) throws IOException {
 
 		UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(request);
 		String firstname = ParamUtil.getString(uploadPortletRequest, "firstname");
@@ -90,15 +96,26 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String email = ParamUtil.getString(uploadPortletRequest, "email");
 		String opinion = ParamUtil.getString(uploadPortletRequest, "opinion");
 		String backgroundIDString = ParamUtil.getString(uploadPortletRequest, "backgroundID");
-		long backgroundID = Long.parseLong(backgroundIDString);
+		long backgroundID = -1;
+		try {
+			backgroundID = Long.parseLong(backgroundIDString);
+		}	
+		catch ( NumberFormatException e) {
+			_log.error("Malformated background ID parameter");
+			//_log.error(e);
+			//return;
+			throw(e);
+		}
+		
 		File file = uploadPortletRequest.getFile("picture");
 
 		try {
 			InputStream inStream = new FileInputStream(file);
 
-			System.out.println("====> " + firstname + " " + lastname + ", " + email + ", " + opinion);
-			System.out.println("Starting manipulation");
-
+			_log.debug("User data: " +  firstname + " " + lastname + ", " + email + ", " + opinion);
+			_log.debug("Background ID from UI: " + backgroundID);
+			
+			
 			OhrMediaHelper media = new OhrMediaHelper();
 			PortletPreferences portletPreferences = request.getPreferences();
 			Long sourceDirectoryID = GetterUtil.getLong(
@@ -108,7 +125,6 @@ public class PlakatohrPortlet extends MVCPortlet {
 			Map<DLFileEntry, DLFileEntry> previewTemplateMap = media.getBackgroundPreviewsAndTemplates(
 					sourceDirectoryID, (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY));
 
-			System.out.println("Final background ID: " + backgroundID);
 			DLFileEntry result = null;
 			for (DLFileEntry jpg : previewTemplateMap.keySet()) {
 				if (jpg.getFileEntryId() == backgroundID) {
@@ -130,9 +146,12 @@ public class PlakatohrPortlet extends MVCPortlet {
 				throw new RuntimeException("Illegal background ID: " + backgroundID);
 			}
 
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+		} catch (IOException e) {
+			_log.error("Cannot load background image.");
+			throw(e);
+		} catch (MimeTypeException e) {
+			SessionErrors.add(request, "Benutzer-Bild kann nicht geladen werden: Inkompatibles Dateiformat.");
+			_log.warn(e);
 		}
 
 	}
@@ -145,9 +164,11 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * @param oppinion
 	 * @param imagePath
 	 * @param svgPath
+	 * @throws IOException 
+	 * @throws MimeTypeException 
 	 */
 	private String startManipulation(String firstname, String lastname, String opinion, InputStream inStream,
-			DLFileEntry svgFile, ActionRequest request) {
+			DLFileEntry svgFile, ActionRequest request) throws IOException, MimeTypeException {
 		
 		String id = null;
 
@@ -155,14 +176,14 @@ public class PlakatohrPortlet extends MVCPortlet {
 
 			InputStream svgInputStream = svgFile.getContentStream();
 
-			System.out.println("Source File:" + svgFile.getTitle());
+			_log.debug("Source File:" + svgFile.getTitle());
 
 			String imgBase64 = base64Encoder.getBase64svg(inStream);
 			SvgManipulator manipulator = new SvgManipulator(svgInputStream);
 
 			Set<String> fieldNames = manipulator.getAllFieldNames();
 			for (String fN : fieldNames) {
-				System.err.println(fN + " - " + manipulator.getSizeOfFlowPara(fN));
+				_log.debug(fN + " - " + manipulator.getSizeOfFlowPara(fN));
 			}
 
 			manipulator.replaceTextAll("MEINUNG", opinion);
@@ -177,22 +198,6 @@ public class PlakatohrPortlet extends MVCPortlet {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			SvgConverter converter = new SvgConverter(newSvgData);
 			converter.generateOutput(os, SvgConverter.JPG);
-			// converter.generateOutput(new File(outputDirectoryPath +
-			// "/test.jpg"), SvgConverter.JPG);
-			// converter.generateOutput(new File(outputDirectoryPath +
-			// "/test2.pdf"), SvgConverter.PDF);
-			// converter.generateOutput(new File("/tmp/test.png"),
-			// SvgConverter.PNG);
-			// converter.generateOutput(new File(outputDirectoryPath +
-			// "/test.svg"), SvgConverter.SVG);
-			
-			/*ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-			String filename = getUniqueID(lastname + "-" + firstname);
-			String jpgFilename = filename + ".jpg";
-			id = String.valueOf(media.storeFile(targetDirectoryID, "image/jpeg", jpgFilename, is, request));
-			System.out.println("Files created in the output directory");*/	
-			
-			// session Testerei
 			PortletSession s = request.getPortletSession();
 			converter.generateOutput(os, SvgConverter.JPG);
 			byte[] daten = os.toByteArray();
@@ -204,13 +209,14 @@ public class PlakatohrPortlet extends MVCPortlet {
 			
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw(e);
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new IOException(e);
 		} catch (SystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new IOException(e);
+		} catch (MimeTypeException e) {
+			_log.warn("Cannot determine MIME type for user-uploaded image.");
+			throw(e);
 		}
 		
 		return id;
@@ -253,7 +259,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(request);
 		String backgroundID = uploadRequest.getParameter("background");
 
-		System.out.println("===> Background ID: " + backgroundID);
+		_log.debug("Background selected, ID: " + backgroundID);
 		
 		//PortletSession s = request.getPortletSession();
 		//s.setAttribute("testTextText", "Dies ist voll der Test-Text",PortletSession.APPLICATION_SCOPE);
@@ -271,7 +277,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String email = ParamUtil.getString(uploadRequest, "email");
 		String opinion = ParamUtil.getString(uploadRequest, "opinion");
 
-		System.out.println("===> Background ID: " + backgroundID);
+		_log.debug("Background set, ID: " + backgroundID);
 		
 		//PortletSession s = request.getPortletSession();
 		//s.setAttribute("testTextText", "Dies ist voll der Test-Text",PortletSession.APPLICATION_SCOPE);
@@ -311,31 +317,38 @@ public class PlakatohrPortlet extends MVCPortlet {
 				portletPreferences.getValue(OhrConfigConstants.TARGET_FOLDER_ID, StringPool.TRUE),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
-		System.out.println("Target: " + targetDirectoryID);
-		System.out.println("Target Path: " + DLFolderLocalServiceUtil.getFolder(targetDirectoryID).getPath());
+		_log.debug("Target: " + targetDirectoryID);
+		_log.debug("Target Path: " + DLFolderLocalServiceUtil.getFolder(targetDirectoryID).getPath());
 		
 		
 		String baseName = getUniqueID(lastname + "-" + firstname);
 		String filenameJpg = baseName + ".jpg";
 		String filenamePdf = baseName + ".pdf";
 
-		/*ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-		String filename = getUniqueID(lastname + "-" + firstname);
-		String jpgFilename = filename + ".jpg";
-		id = String.valueOf(media.storeFile(targetDirectoryID, "image/jpeg", jpgFilename, is, request));
-		System.out.println("Files created in the output directory");*/
-		byte[] jpegData = getDataFromSession(request, SESSION_ATTR_NAME_JPEG);
-		byte[] pdfData = getDataFromSession(request, SESSION_ATTR_NAME_PDF);
+		byte[] jpegData;
+		try {
+			jpegData = getDataFromSession(request, SESSION_ATTR_NAME_JPEG);
+		} catch (IOException e) {
+			throw(new IOException("Cannot load JPEG data from portlet session.", e));
+		}
+		byte[] pdfData;
+		try {
+			pdfData= getDataFromSession(request, SESSION_ATTR_NAME_PDF);
+		} catch (IOException e) {
+			throw(new IOException("Cannot load PDF data from portlet session.", e));
+		}
+
 		
-		
+		_log.debug("Storing " +filenameJpg + " ...");
 		media.storeFile(targetDirectoryID, "image/jpeg", filenameJpg,
 				new ByteArrayInputStream(jpegData),
 				request);
+		_log.debug("Storing " +filenamePdf + " ...");
 		media.storeFile(targetDirectoryID, "application/pdf", filenamePdf,
 				new ByteArrayInputStream(pdfData),
 				request);
 		
-		System.out.println("Files created in the output directory");			
+		_log.debug("Files created in the output directory.");			
 		
 		
 		String content = "Anfrage zur Veröffentlichung eines Plakats mit Namen " + baseName + " von " + firstname + " " + lastname + " und Nutzer E-Mail Adresse: " + email;

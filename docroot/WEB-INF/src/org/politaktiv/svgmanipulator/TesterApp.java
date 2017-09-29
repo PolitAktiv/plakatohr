@@ -5,12 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import org.politaktiv.svgmanipulator.util.MimeTypeException;
 import org.politaktiv.svgmanipulator.util.base64Encoder;
 
 
 public class TesterApp {
 
-	public static void main(String[] args) throws IOException  {
+	public static void main(String[] args) throws IOException, MimeTypeException  {
 
 		File fXmlFile = new File(args[0]);
 		File jpgFile = new File(args[1]);

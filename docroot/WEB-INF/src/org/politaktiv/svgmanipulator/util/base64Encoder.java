@@ -47,11 +47,11 @@ public class base64Encoder {
 	 * @return the output as xlink:href compatible base64
 	 * @throws IOException in case of any IO error or when the file type cannot be determined.
 	 */
-	public static String getBase64svg(InputStream istream) throws IOException {
+	public static String getBase64svg(InputStream istream) throws MimeTypeException, IOException {
 		byte[] buf = read(istream);
 		String mimeType = simpleFileMagic(buf);
 		if (mimeType == null) {
-			throw new IOException("Cannot determine MIME type for image data");
+			throw new MimeTypeException("Cannot determine MIME type for image data");
 		}
 		String svgPrefix = "data:" + mimeType + ";base64,";
 		return (svgPrefix + bytesToBase64(buf));
@@ -64,8 +64,9 @@ public class base64Encoder {
 	 * @param f the input file
 	 * @return the output as xlink:href compatible base64
 	 * @throws IOException in case of any IO error or when the file type cannot be determined.
+	 * @throws MimeTypeException 
 	 */
-	public static String getBase64svg(File f) throws IOException {
+	public static String getBase64svg(File f) throws IOException, MimeTypeException {
 		return(getBase64svg(new FileInputStream(f)));
 	}
 	
