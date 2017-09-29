@@ -12,6 +12,11 @@
 OhrMediaHelper media = new OhrMediaHelper();
 ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
+int opinionMaxLen = GetterUtil.getInteger(
+		portletPreferences.getValue(OhrConfigConstants.OPINION_MAX_LENGTH, ""),
+		100);
+
+
 String backgroundIDString = renderRequest.getParameter("backgroundID");
 String firstname = renderRequest.getParameter("firstname");
 String lastname = renderRequest.getParameter("lastname");
@@ -39,7 +44,7 @@ DLFileEntry background = DLFileEntryLocalServiceUtil.getDLFileEntry(backgroundID
 		<aui:validator name="email" />
 	</aui:input>
 	<aui:input name="opinion" label="Meinung" placeholder="Meinung"  required="<%= true %>" type="textarea" >
-		<aui:validator name="maxLength">140</aui:validator>
+		<aui:validator name="maxLength"><%= opinionMaxLen %></aui:validator>
 	</aui:input>
 	<aui:input name="backgroundID" value="<%=backgroundIDString%>" type="hidden">
 	</aui:input>

@@ -50,6 +50,8 @@
 	final String eMailIntroText = "Wenn ein neues Plakat in der Medien-Bibliothek abgelegt wird, kann automatisch eine E-Mail verschickt werden."
 			+ " Füllen Sie hierzu die folgenden Fehlder aus:";
 	
+	final String opinionMaxLenLabel = "Maximal Länge für das Meinungsfeld (in Zeichen):";
+	
 	
 	final String userFeedbackLabel = "Rückmeldung an Benutzer nach dem Abspeichern:";
 	final String userFeedbackHelp = "Nach dem Abspeichern eines Plakats in den Ziel-Ordner wird dem Benutzer diese Meldung angezeigt."
@@ -94,6 +96,10 @@
 	// get preference values for feedback message
 	String userFeedbackMsg =  GetterUtil
 			.getString(portletPreferences.getValue(OhrConfigConstants.USER_FEEDBACK_HTML, ""), "");
+			
+	// get maximum length of opinion
+	int opinionMaxLen = GetterUtil.getInteger(
+			portletPreferences.getValue(OhrConfigConstants.OPINION_MAX_LENGTH, ""), 100);
 	
 	String portletId = PortletKeys.DOCUMENT_LIBRARY;
 			
@@ -155,6 +161,10 @@
 					value="remove" />
 			</div>
 		</aui:field-wrapper>
+		
+				<aui:input type="number"
+			name="<%=OhrConfigConstants.OPINION_MAX_LENGTH%>"
+			label="<%=opinionMaxLenLabel%>" value="<%=opinionMaxLen%>" />
 
 
 		<aui:field-wrapper label="<%= userFeedbackLabel %>" helpMessage="<%= userFeedbackHelp %>">
