@@ -79,6 +79,5 @@ div.PlakatOhR_BackgroundSelect div.field-wrapper {
 <%}%>
 </aui:field-wrapper>		
 </div>		
-	
 	<aui:button type="submit" value="Nächster Schritt: Inhalt des Plakats" />
 </aui:form>

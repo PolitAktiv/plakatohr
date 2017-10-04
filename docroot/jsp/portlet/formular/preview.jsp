@@ -1,8 +1,9 @@
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@ include file="/jsp/portlet/import.jsp"%>
 
 <portlet:actionURL name="publish" var="publish" />
 <portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
-<portlet:actionURL name="returnToBackgroundSelection" var="returnToBackgroundSelection" />
+<portlet:actionURL name="returnToUserDataFormular" var="returnToUserDataFormular" />
 
 <%
 OhrMediaHelper media = new OhrMediaHelper();
@@ -20,6 +21,7 @@ String opinion = renderRequest.getParameter("opinion");
 String backgroundID = renderRequest.getParameter("backgroundID");
 //long jpgID = Long.parseLong(jpgIDString);
 //DLFileEntry jpg = DLFileEntryLocalServiceUtil.getDLFileEntry(jpgID);
+String backURL = ParamUtil.getString(request, "backURL");
 %>
 
 <style>
@@ -66,7 +68,7 @@ div.PlakatOhR_DownloadLinks {
 
 </div>
 
-<aui:form action="<%= publish %>" method="post" name="fm" enctype="multipart/form-data">
+<aui:form action="<%= publish %>" method="post" name="fm">
 	<aui:input name="email" value="<%= email %>" type="hidden" />
 	<aui:input name="lastname" value="<%= lastname %>" type="hidden" />
 	<aui:input name="firstname" value="<%= firstname %>" type="hidden" />
@@ -74,7 +76,7 @@ div.PlakatOhR_DownloadLinks {
 	<aui:input name="backgroundID" value="<%= backgroundID %>" type="hidden" />
     
     <aui:button-row>
-    <aui:button type="cancel" value="Zurück: Daten ändern" onClick="<%= returnToBackgroundSelection %>" />
+    <aui:button type="cancel" value="Zurück: Daten ändern" onClick="history.go(-1)" />
    	 <aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
     	<aui:button type="submit" value="Veröffentlichen" />
     </aui:button-row>

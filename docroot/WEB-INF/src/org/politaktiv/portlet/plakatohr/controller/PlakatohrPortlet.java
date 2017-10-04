@@ -269,13 +269,12 @@ public class PlakatohrPortlet extends MVCPortlet {
 		response.setRenderParameter("jspPage", USER_DATA_FORMULAR_JSP);
 	}
 	
-	public void returnToBackgroundSelection(ActionRequest request, ActionResponse response) {
-		UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(request);
-		String backgroundID = ParamUtil.getString(uploadRequest, "backgroundID");
-		String firstname = ParamUtil.getString(uploadRequest, "firstname");
-		String lastname = ParamUtil.getString(uploadRequest, "lastname");
-		String email = ParamUtil.getString(uploadRequest, "email");
-		String opinion = ParamUtil.getString(uploadRequest, "opinion");
+	public void returnToUserDataFormular(ActionRequest request, ActionResponse response) {
+		String backgroundID = ParamUtil.getString(request, "backgroundID");
+		String firstname = ParamUtil.getString(request, "firstname");
+		String lastname = ParamUtil.getString(request, "lastname");
+		String email = ParamUtil.getString(request, "email");
+		String opinion = ParamUtil.getString(request, "opinion");
 
 		_log.debug("Background set, ID: " + backgroundID);
 		
