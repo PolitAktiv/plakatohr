@@ -39,6 +39,9 @@ div.PlakatOhR_FlexFiller {
  padding-top:0px;
  padding-bottom:0px;
  height:0px;
+ display:flex;
+  width:50%;
+ 
 }
 div.PlakatOhR_ImgSelect {
  width:50%;
@@ -46,9 +49,6 @@ div.PlakatOhR_ImgSelect {
    min-width:200px;
   flex-grow: 1;
 
-}
-div.PlakatOhR_ImgSelect PlakatOhR_FlexFiller {
- display:flex;
 }
 
 
