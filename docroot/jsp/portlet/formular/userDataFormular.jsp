@@ -39,12 +39,27 @@ div.PlakatOhR_BackgroundPreview_outer {
 
 #<portlet:namespace />spinner {
     display:none;
+    
+     top:50%; position:absolute;  width:100%;; z-index:100;
+     
+     
+       background-color: white;
+  height:100%;
+  opacity:.8;
+  top:0px !important;
+
+  margin:0px !important;
+  
+     
 }
 
+.OhrPreviewOutmost {
+	position: relative;
+}
 
 </style>
 
-
+<div class="OhrPreviewOutmost">
 
 <h2>Schritt 2: Bitte geben Sie die notwendigen Daten für den Inhalt
 	Ihres Plakats an</h2>
@@ -131,5 +146,5 @@ function OhrShowSpinner() {
 	}
 */
 </script>
-
+</div>
 
