@@ -7,15 +7,6 @@
 	windowState="<%=LiferayWindowState.EXCLUSIVE.toString()%>"
 	var="providePreviewImage" />
 
-<script type="text/javascript">
-	document.getElementById("pic").onchange = function() {
-        document.getElementById("fn").focus();
-	}
-
-    function autofocus() {
-        document.getElementById("fn").focus();
-    }
-</script>
 
 <style>
 
@@ -44,6 +35,10 @@ div.PlakatOhR_BackgroundPreview_outer {
 	width:100%;
 	overflow:hidden;
 
+}
+
+#<portlet:namespace />spinner {
+    display:none;
 }
 
 
@@ -75,6 +70,19 @@ div.PlakatOhR_BackgroundPreview_outer {
 <portlet:param name="backURL" value="<%= themeDisplay.getURLCurrent() %>"></portlet:param>
 </portlet:renderURL>
 
+
+<script type="text/javascript">
+
+function OhrShowSpinner() {
+	document.getElementById("<portlet:namespace />spinner").style.display="block";
+	
+}
+
+
+</script>
+
+
+
 <div  class="PlakatOhR_BackgroundPreview_outer">
 <div class="PlakatOhR_BackgroundPreview">
 		<img src="<%=media.getDlFileUrl(themeDisplay, background)%>" />
@@ -82,9 +90,9 @@ div.PlakatOhR_BackgroundPreview_outer {
 </div>
 
 <aui:form action="<%=userDataSubmit%>" method="post" id="fm" name="fm"
-	enctype="multipart/form-data">
+	enctype="multipart/form-data" onsubmit="OhrShowSpinner();">
 	<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
-		type="file" onChange="autofocus()">
+		type="file" >
 		<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
 	</aui:input>
 	<aui:input id="fn" name="firstname" label="Vorname" placeholder="Vorname"
@@ -106,10 +114,22 @@ div.PlakatOhR_BackgroundPreview_outer {
 	<aui:input name="backgroundID" value="<%=backgroundIDString%>"
 		type="hidden">
 	</aui:input>
+	
+<div class="loading-animation"  id="<portlet:namespace />spinner"></div>
+	
 
 	<aui:button-row>
 		<aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen"
 			onClick="history.go(-1)" />
-		<aui:button type="submit" value="Nächster Schritt: Vorschau" />
+		<aui:button type="submit" value="Nächster Schritt: Vorschau"  />
 	</aui:button-row>
 </aui:form>
+
+<script type="text/javascript">
+/*	document.getElementById("<portlet:namespace />pic").onchange = function() {
+        document.getElementById("<portlet:namespace />fn").focus();
+	}
+*/
+</script>
+
+
