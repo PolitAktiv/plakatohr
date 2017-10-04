@@ -17,6 +17,39 @@
     }
 </script>
 
+<style>
+
+div.PlakatOhR_BackgroundPreview img {
+    border-top: 2px solid #dedede;
+  border-left: 2px solid #dedede;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  border-radius:2px;
+  margin-bottom:4px;
+  max-height:280px;
+  width:auto;
+}
+
+div.PlakatOhR_BackgroundPreview {
+   background-color: #f4f4f4;
+  border: 1px solid #cccccc;
+  
+  padding:10px !important;;
+  margin:10px;
+  overflow:hidden;
+  float:left;
+}
+
+div.PlakatOhR_BackgroundPreview_outer {
+	width:100%;
+	overflow:hidden;
+
+}
+
+
+</style>
+
+
 
 <h2>Schritt 2: Bitte geben Sie die notwendigen Daten für den Inhalt
 	Ihres Plakats an</h2>
@@ -42,9 +75,10 @@
 <portlet:param name="backURL" value="<%= themeDisplay.getURLCurrent() %>"></portlet:param>
 </portlet:renderURL>
 
-<div>
-	<img width="400"
-		src="<%=media.getDlFileUrl(themeDisplay, background)%>" />
+<div  class="PlakatOhR_BackgroundPreview_outer">
+<div class="PlakatOhR_BackgroundPreview">
+		<img src="<%=media.getDlFileUrl(themeDisplay, background)%>" />
+</div>
 </div>
 
 <aui:form action="<%=userDataSubmit%>" method="post" id="fm" name="fm"
