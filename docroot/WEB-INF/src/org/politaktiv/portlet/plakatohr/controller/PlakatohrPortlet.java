@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -306,6 +307,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String email = uploadRequest.getParameter("email");
 		String lastname = uploadRequest.getParameter("lastname");
 		String firstname = uploadRequest.getParameter("firstname");
+		String opinion = uploadRequest.getParameter("opinion");
 		
 		OhrMediaHelper media = new OhrMediaHelper();
 		
@@ -347,11 +349,15 @@ public class PlakatohrPortlet extends MVCPortlet {
 				new ByteArrayInputStream(pdfData),
 				request);
 		
-		_log.debug("Files created in the output directory.");			
+		_log.debug("Files created in the output directory.");		
 		
-		
-		String content = "Anfrage zur Veröffentlichung eines Plakats mit Namen " + baseName + " von " + firstname + " " + lastname + " und Nutzer E-Mail Adresse: " + email;
-		mail.sendMail(content, request, email);
+		HashMap<String,String> mailFields = new HashMap<String, String>();
+		mailFields.put("Vorname", firstname);
+		mailFields.put("Nachname", lastname);
+		mailFields.put("E-Mail", email);
+		mailFields.put("Meinung", opinion.replaceAll("\\n", " ").replaceAll("\\r", " "));
+		mailFields.put("Plakat-Datei", baseName);
+		mail.sendMail(mailFields, request, email);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}
 	
