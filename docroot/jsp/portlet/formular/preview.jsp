@@ -97,10 +97,9 @@ div.PlakatOhR_DownloadLinks {
     <aui:button type="cancel" value="Zurück: Daten ändern" onClick="history.go(-1)" />
    	<aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
    	<%
-   	//if (themeDisplay.isSignedIn()) {
-   		
-   		
-   	if ( media.userHasWritePermission(themeDisplay, targetDir)  ) {	
+   	//TODO: use permissions once they do work
+  //if ( media.userHasWritePermission(themeDisplay, targetDir)  ) {
+   	if (themeDisplay.isSignedIn()) {
    		%><aui:button type="submit" value="Veröffentlichen" /><%
    	}
    	%>

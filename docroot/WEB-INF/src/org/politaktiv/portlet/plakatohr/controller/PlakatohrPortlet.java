@@ -230,6 +230,15 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * @return
 	 */
 	private String getUniqueID(String name) {
+		
+		String nameEscaped = name.replaceAll("ä", "ae");
+		nameEscaped = nameEscaped.replaceAll("Ä", "Ae");
+		nameEscaped = nameEscaped.replaceAll("ü", "ue");
+		nameEscaped = nameEscaped.replaceAll("Ü", "Ue");
+		nameEscaped = nameEscaped.replaceAll("Ö", "Oe");
+		nameEscaped = nameEscaped.replaceAll("ö", "oe");
+		nameEscaped = nameEscaped.replaceAll("ß", "ss");
+		nameEscaped = nameEscaped.replaceAll("[^A-Za-z]", "_");
 
 		// Use time in millis and a random number to massively reduce the chance of collision
 		Calendar cal = Calendar.getInstance();
@@ -247,7 +256,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 
 		String md5 = String.format("%032x", new BigInteger(1, md.digest(md4input.getBytes())));
 
-		return name + "-" + md5;
+		return nameEscaped + "-" + md5;
 
 	}
 
