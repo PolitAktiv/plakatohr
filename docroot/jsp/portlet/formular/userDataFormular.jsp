@@ -38,7 +38,7 @@ div.PlakatOhR_BackgroundPreview_outer {
 }
 
 #<portlet:namespace />spinner {
-    display:none;
+    display:block;
     
      top:50%; position:absolute;  width:100%;; z-index:100;
      
@@ -87,13 +87,12 @@ div.PlakatOhR_BackgroundPreview_outer {
 
 
 <script type="text/javascript">
-
+/*
 function OhrShowSpinner() {
 	document.getElementById("<portlet:namespace />spinner").style.display="block";
 	
 }
-
-
+*/
 </script>
 
 
@@ -104,7 +103,7 @@ function OhrShowSpinner() {
 </div>
 </div>
 
-<aui:form action="<%=userDataSubmit%>" method="post" id="fm" name="fm"
+<aui:form action="<%=userDataSubmit%>" method="post" id="form" name="form"
 	enctype="multipart/form-data" onsubmit="OhrShowSpinner();">
 	<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
 		type="file" >
@@ -130,7 +129,7 @@ function OhrShowSpinner() {
 		type="hidden">
 	</aui:input>
 	
-<div class="loading-animation"  id="<portlet:namespace />spinner"></div>
+<div id="<portlet:namespace />spinnerContainer"></div>
 	
 
 	<aui:button-row>
@@ -145,6 +144,12 @@ function OhrShowSpinner() {
         document.getElementById("<portlet:namespace />fn").focus();
 	}
 */
+
+$('form').on('submit', function(e) {
+    e.preventDefault();
+    $("#<portlet:namespace />spinnerContainer").append('<div class="loading-animation" id="<portlet:namespace />spinner"></div>');
+    this.submit();
+});
 </script>
 </div>
 

@@ -1,3 +1,5 @@
+<%@page import="com.liferay.portal.theme.PortletDisplay"%>
+<%@page import="com.liferay.portal.security.permission.PermissionChecker"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@ include file="/jsp/portlet/import.jsp"%>
 
@@ -22,6 +24,20 @@ String backgroundID = renderRequest.getParameter("backgroundID");
 //long jpgID = Long.parseLong(jpgIDString);
 //DLFileEntry jpg = DLFileEntryLocalServiceUtil.getDLFileEntry(jpgID);
 String backURL = ParamUtil.getString(request, "backURL");
+
+//ServiceContext serviceContext = ServiceContextFactory.getInstance(actionRequest);
+//PermissionChecker permissionChecker = themeDisplay.getPermissionChecker();
+//PortletDisplay portletDisplay= themeDisplay.getPortletDisplay();
+//String portletId= portletDisplay.getId();
+String publishButton = "";
+if (themeDisplay.isSignedIn()) {
+	publishButton = "<aui:button type=\"submit\" value=\"Veröffentlichen\" />";
+}
+/*
+if (permissionChecker.hasPermission(serviceContext.getScopeGroupId(), portletId, primaryKey, "ADD_DOCUMENT")) {
+	publishButton = "<aui:button type='submit' value='Veröffentlichen' />";
+}
+*/
 %>
 
 <style>
@@ -77,7 +93,7 @@ div.PlakatOhR_DownloadLinks {
     
     <aui:button-row>
     <aui:button type="cancel" value="Zurück: Daten ändern" onClick="history.go(-1)" />
-   	 <aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
-    	<aui:button type="submit" value="Veröffentlichen" />
+   	<aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
+   	<%=publishButton%>
     </aui:button-row>
 </aui:form>
