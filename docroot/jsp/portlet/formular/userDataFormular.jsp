@@ -22,7 +22,7 @@ div.PlakatOhR_BackgroundPreview img {
 }
 
 div.PlakatOhR_BackgroundPreview {
-   background-color: #f4f4f4;
+   background-color:   #f4f4f4;
   border: 1px solid #cccccc;
   
   padding:10px !important;;
@@ -37,13 +37,13 @@ div.PlakatOhR_BackgroundPreview_outer {
 
 }
 
-#<portlet:namespace />spinner {
+#<portlet:namespace />spinnerOuter {
     display:block;
     
      top:50%; position:absolute;  width:100%;; z-index:100;
      
      
-       background-color: white;
+       background-color: #f4f4f4;
   height:100%;
   opacity:.8;
   top:0px !important;
@@ -51,6 +51,10 @@ div.PlakatOhR_BackgroundPreview_outer {
   margin:0px !important;
   
      
+}
+
+#<portlet:namespace />spinner {
+  margin-top:80%;
 }
 
 .OhrPreviewOutmost {
@@ -147,7 +151,7 @@ function OhrShowSpinner() {
 
 $('form').on('submit', function(e) {
     e.preventDefault();
-    $("#<portlet:namespace />spinnerContainer").append('<div class="loading-animation" id="<portlet:namespace />spinner"></div>');
+    $("#<portlet:namespace />spinnerContainer").append('<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
     this.submit();
 });
 </script>
