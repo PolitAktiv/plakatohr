@@ -15,7 +15,6 @@ import javax.portlet.PortletRequest;
 
 import org.apache.commons.io.IOUtils;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -203,10 +202,12 @@ public class OhrMediaHelper {
 		// see https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portlet/documentlibrary/service/permission/DLFolderPermission.java
 		String portletId = PortletProviderUtil.getPortletId(
 				Folder.class.getName(), PortletProvider.Action.EDIT);
-		*/
+		 */
+		
+		
 		Boolean check =  StagingPermissionUtil.hasPermission(
 					permissionChecker, folder.getGroupId(), folder.getClass().getName(),
-					folder.getFolderId(), portletId,  "ADD_DOCUMENT");
+					folder.getFolderId(), portletId,  ActionKeys.ADD_DOCUMENT);
 		
 		if (check == null) {
 			try {
