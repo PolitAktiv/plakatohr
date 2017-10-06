@@ -15,12 +15,16 @@ import javax.portlet.PortletRequest;
 
 import org.apache.commons.io.IOUtils;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.staging.permission.StagingPermissionUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.permission.ActionKeys;
+import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -183,6 +187,38 @@ public class OhrMediaHelper {
 		}
 		
 		return(result);
+		
+		
+	}
+	
+	// FIXME: this is broken sh**
+	public boolean userHasWritePermission(ThemeDisplay themeDisplay, DLFolder folder) {
+		
+		PermissionChecker permissionChecker = themeDisplay.getPermissionChecker();
+		
+		// probably wrong:
+		String portletId = themeDisplay.getPortletDisplay().getId();
+		
+		/*
+		// see https://github.com/liferay/liferay-portal/blob/master/portal-impl/src/com/liferay/portlet/documentlibrary/service/permission/DLFolderPermission.java
+		String portletId = PortletProviderUtil.getPortletId(
+				Folder.class.getName(), PortletProvider.Action.EDIT);
+		*/
+		Boolean check =  StagingPermissionUtil.hasPermission(
+					permissionChecker, folder.getGroupId(), folder.getClass().getName(),
+					folder.getFolderId(), portletId,  "ADD_DOCUMENT");
+		
+		if (check == null) {
+			try {
+				_log.debug("StagingPermissionUtil returned null for " + folder.getPath());
+			} catch (Exception e) {
+				_log.debug("StagingPermissionUtil returned null for folder ID" + folder.getFolderId());
+				
+			}
+			return false;
+		}
+		
+		return check;
 		
 		
 	}

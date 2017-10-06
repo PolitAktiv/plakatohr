@@ -15,6 +15,8 @@ Long targetDirectoryID = GetterUtil.getLong(
 		portletPreferences.getValue(OhrConfigConstants.TARGET_FOLDER_ID, StringPool.TRUE),
 		DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
+DLFolder targetDir = media.getFolder(targetDirectoryID);
+
 //String jpgIDString = renderRequest.getParameter("picture");
 String email = renderRequest.getParameter("email");
 String lastname = renderRequest.getParameter("lastname");
@@ -29,10 +31,10 @@ String backURL = ParamUtil.getString(request, "backURL");
 //PermissionChecker permissionChecker = themeDisplay.getPermissionChecker();
 //PortletDisplay portletDisplay= themeDisplay.getPortletDisplay();
 //String portletId= portletDisplay.getId();
-String publishButton = "";
+/*String publishButton = "";
 if (themeDisplay.isSignedIn()) {
 	publishButton = "<aui:button type=\"submit\" value=\"Veröffentlichen\" />";
-}
+}*/
 /*
 if (permissionChecker.hasPermission(serviceContext.getScopeGroupId(), portletId, primaryKey, "ADD_DOCUMENT")) {
 	publishButton = "<aui:button type='submit' value='Veröffentlichen' />";
@@ -94,6 +96,13 @@ div.PlakatOhR_DownloadLinks {
     <aui:button-row>
     <aui:button type="cancel" value="Zurück: Daten ändern" onClick="history.go(-1)" />
    	<aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
-   	<%=publishButton%>
+   	<%
+   	//if (themeDisplay.isSignedIn()) {
+   		
+   		
+   	if ( media.userHasWritePermission(themeDisplay, targetDir)  ) {	
+   		%><aui:button type="submit" value="Veröffentlichen" /><%
+   	}
+   	%>
     </aui:button-row>
 </aui:form>
