@@ -14,6 +14,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.fop.svg.FOPSAXSVGDocumentFactory;
 import org.apache.fop.svg.PDFTranscoder;
 
 /**
@@ -42,7 +43,7 @@ public class SvgConverter {
 
 	/**
 	 * Generate output to a file from the SVG data stored in this converter. Depending on the format, uses a rasterizer
-	 * or PDF converter (or passthru in case of {@link #SVG})
+	 * or PDF converter (or passthru in case of {@link #SVG}). 
 	 * @param outputFile this is where the output goes to.
 	 * @param format the file format.
 	 * @throws IOException in any case of evil wrong-going of things.
@@ -55,7 +56,7 @@ public class SvgConverter {
 	
 	/**
 	 * Generate output to a stream from the SVG data stored in this converter. Depending on the format, uses a rasterizer
-	 * or PDF converter (or passthru in case of {@link #SVG})
+	 * or PDF converter (or passthru in case of {@link #SVG}). Attention: This does not close the output stream!
 	 * @param ostream this is where the output goes to.
 	 * @param format the file format.
 	 * @throws IOException in any case of evil wrong-going of things.
@@ -80,7 +81,11 @@ public class SvgConverter {
     	} else if ( format == PNG) {
     		t = new PNGTranscoder();
     	} else if (format== PDF) {
-    		t = new PDFTranscoder();
+    		PDFTranscoder pt = new PDFTranscoder();
+    		//pt.
+    		
+    		t = (SVGAbstractTranscoder) pt;
+    		
     	} else {
     		throw new RuntimeException("Impossible state reached: undefined file format requested.");
     	}

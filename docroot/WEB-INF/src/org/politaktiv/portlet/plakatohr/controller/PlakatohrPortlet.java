@@ -196,15 +196,21 @@ public class PlakatohrPortlet extends MVCPortlet {
 			manipulator.convertCssInkscapeToBatik();
 
 			String newSvgData = manipulator.getSvgAsXml();
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			SvgConverter converter = new SvgConverter(newSvgData);
-			converter.generateOutput(os, SvgConverter.JPG);
+			
+			
 			PortletSession s = request.getPortletSession();
-			converter.generateOutput(os, SvgConverter.JPG);
-			byte[] daten = os.toByteArray();
+			
+			ByteArrayOutputStream osJpg = new ByteArrayOutputStream();
+			converter.generateOutput(osJpg, SvgConverter.JPG);
+			osJpg.close();
+			byte[] daten = osJpg.toByteArray();
 			s.setAttribute(SESSION_ATTR_NAME_JPEG, daten);
-			converter.generateOutput(os, SvgConverter.PDF);
-			daten = os.toByteArray();
+
+			ByteArrayOutputStream osPdf = new ByteArrayOutputStream();
+			converter.generateOutput(osPdf, SvgConverter.PDF);
+			daten = osPdf.toByteArray();
+			osPdf.close();
 			s.setAttribute(SESSION_ATTR_NAME_PDF, daten);
 			
 			
