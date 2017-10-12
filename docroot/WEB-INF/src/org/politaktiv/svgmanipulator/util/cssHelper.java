@@ -24,8 +24,10 @@ public class cssHelper {
 		List<String> elements = Arrays.asList(css.split("\\s*;\\s*"));
 		for ( String e : elements) {
 			String[] keyValue = e.split("\\s*:\\s*");
-			//System.err.println(e);
-			result.put(keyValue[0].trim(), keyValue[1].trim());
+			// skip split errors
+			if (keyValue.length >= 2) {
+				result.put(keyValue[0].trim(), keyValue[1].trim());
+			}	
 		}
 		
 		return result;

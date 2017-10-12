@@ -21,6 +21,10 @@
    inkscape:export-ydpi="30.200001">
   <defs
      id="defs4">
+    <color-profile
+       name="Compatible-with-Adobe-RGB--1998-"
+       xlink:href="/usr/share/color/icc/colord/AdobeRGB1998.icc"
+       id="color-profile3017" />
     <filter
        id="filter3112"
        inkscape:label="Filter1">
@@ -37,7 +41,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="1145.3194"
+     inkscape:cx="1162.4623"
      inkscape:cy="983.76443"
      inkscape:document-units="cm"
      inkscape:current-layer="layer1"
@@ -76,7 +80,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
