@@ -4,16 +4,13 @@
 
 
 <style>
-
 div.PlakatOhR_BackgroundSelect label {
- display:flex;
- vertical-align: middle; 
- flex-grow: 1;
  background-color: #f4f4f4;
  border: 1px solid #cccccc;
  padding:10px !important;
- 
  margin:10px;
+  overflow:hidden;
+  
 }
 div.PlakatOhR_BackgroundSelect label img {
  border-top: 2px solid #dedede;
@@ -22,11 +19,13 @@ div.PlakatOhR_BackgroundSelect label img {
  border-bottom: 2px solid white;
  border-radius:2px;
  margin-bottom:4px;
+  width:80%;
+
 }
 div.PlakatOhR_BackgroundSelect input {
  margin :5px !important;
  margin-right:15px !important;
- ;
+
 }
 div.PlakatOhR_BackgroundSelect div.field-wrapper {
  display:flex;
@@ -40,15 +39,13 @@ div.PlakatOhR_FlexFiller {
  padding-bottom:0px;
  height:0px;
  display:flex;
-  width:50%;
- 
+ width:50%;
 }
 div.PlakatOhR_ImgSelect {
  width:50%;
  overflow:hidden;
-   min-width:200px;
-  flex-grow: 1;
-
+ min-width:200px;
+ flex-grow: 1;
 }
 
 
