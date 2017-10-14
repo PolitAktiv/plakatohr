@@ -4,6 +4,7 @@
 <%@ include file="/jsp/portlet/import.jsp"%>
 
 <portlet:actionURL name="publish" var="publish" />
+<portlet:actionURL name="publishAsGuest" var="publishAsGuest" />
 <portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
 <portlet:actionURL name="returnToUserDataFormular" var="returnToUserDataFormular" />
 
@@ -86,22 +87,35 @@ div.PlakatOhR_DownloadLinks {
 
 </div>
 
-<aui:form action="<%= publish %>" method="post" name="fm">
-	<aui:input name="email" value="<%= email %>" type="hidden" />
-	<aui:input name="lastname" value="<%= lastname %>" type="hidden" />
-	<aui:input name="firstname" value="<%= firstname %>" type="hidden" />
-	<aui:input name="opinion" value="<%= opinion %>" type="hidden" />
-	<aui:input name="backgroundID" value="<%= backgroundID %>" type="hidden" />
+<% if (themeDisplay.isSignedIn()) { %>
+
+	<aui:form action="<%= publish %>" method="post" name="fm">
+		<aui:input name="email" value="<%= email %>" type="hidden" />
+		<aui:input name="lastname" value="<%= lastname %>" type="hidden" />
+		<aui:input name="firstname" value="<%= firstname %>" type="hidden" />
+		<aui:input name="opinion" value="<%= opinion %>" type="hidden" />
+		<aui:input name="backgroundID" value="<%= backgroundID %>" type="hidden" />
     
-    <aui:button-row>
-    <aui:button type="cancel" value="Zurück: Daten ändern" onClick="history.go(-1)" />
-   	<aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
-   	<%
-   	//TODO: use permissions once they do work
-  //if ( media.userHasWritePermission(themeDisplay, targetDir)  ) {
-   	if (themeDisplay.isSignedIn()) {
-   		%><aui:button type="submit" value="Veröffentlichen" /><%
-   	}
-   	%>
-    </aui:button-row>
-</aui:form>
+    	<aui:button-row>
+    		<aui:button type="cancel" value="Zurück: Daten ändern" onClick="history.go(-1)" />
+   			<aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
+   			<aui:button type="submit" value="Veröffentlichen" />
+   		</aui:button-row>
+	</aui:form>
+
+<%  } else { %>
+
+	<aui:form action="<%= publishAsGuest %>" method="post" name="fm">
+		<aui:input name="email" value="<%= email %>" type="hidden" />
+		<aui:input name="lastname" value="<%= lastname %>" type="hidden" />
+		<aui:input name="firstname" value="<%= firstname %>" type="hidden" />
+		<aui:input name="opinion" value="<%= opinion %>" type="hidden" />
+		<aui:input name="backgroundID" value="<%= backgroundID %>" type="hidden" />
+    
+    	<aui:button-row>
+    		<aui:button type="cancel" value="Zurück: Daten ändern" onClick="history.go(-1)" />
+   			<aui:button type="cancel" value="Verwerfen und neu anfangen" onClick="<%= initializePlakatohr %>" />
+   			<aui:button type="submit" value="Veröffentlichen" />
+   		</aui:button-row>
+	</aui:form>
+<% } %>

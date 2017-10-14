@@ -10,10 +10,13 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Date;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -24,6 +27,7 @@ import javax.portlet.PortletSession;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants;
 import org.politaktiv.svgmanipulator.SvgConverter;
 import org.politaktiv.svgmanipulator.SvgManipulator;
@@ -58,6 +62,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 	private static final String USER_DATA_FORMULAR_JSP = JSP_PATH + "formular/userDataFormular.jsp";
 	private static final String PREVIEW_JSP = JSP_PATH + "formular/preview.jsp";
 	private static final String SUCCESS_JSP = JSP_PATH + "formular/success.jsp";
+	private static final String GUEST_USER_DIR = "/home/ohr/";
 	
 	private static final String SESSION_ATTR_NAME_JPEG ="OhrDataJpeg";
 	private static final String SESSION_ATTR_NAME_PDF ="OhrDataPdf";
@@ -372,6 +377,69 @@ public class PlakatohrPortlet extends MVCPortlet {
 		mailFields.put("E-Mail", email);
 		mailFields.put("Meinung", opinion.replaceAll("\\n", " ").replaceAll("\\r", " "));
 		mailFields.put("Plakat-Datei", baseName);
+		mail.sendMail(mailFields, request, email);
+		response.setRenderParameter("jspPage", SUCCESS_JSP);
+	}
+	
+	/**
+	 * Called when the user accepts to publish the created Plakat.
+	 * Only will get triggered for users who are not logged in
+	 * It will send a mail to a moderator/admin and move the user to the success jsp.
+	 * @param request
+	 * @param response
+	 * @throws NumberFormatException
+	 * @throws PortalException
+	 * @throws SystemException
+	 * @throws IOException 
+	 */
+	public void publishAsGuest(ActionRequest request, ActionResponse response) throws PortalException, SystemException, IOException  {
+		OhrMailHelper mail = new OhrMailHelper();
+		UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(request);
+		String email = uploadRequest.getParameter("email");
+		String lastname = uploadRequest.getParameter("lastname");
+		String firstname = uploadRequest.getParameter("firstname");
+		String opinion = uploadRequest.getParameter("opinion");
+
+		_log.debug("Target Path: " + GUEST_USER_DIR);	
+		
+		String baseName = getUniqueID(lastname + "-" + firstname);
+		String filenameJpg = baseName + ".jpg";
+		String filenamePdf = baseName + ".pdf";
+		
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+        String currentDate = sdf.format(date);
+
+		File currentGuestDir = new File(GUEST_USER_DIR + currentDate);
+		if(!currentGuestDir.exists()) {
+			currentGuestDir.mkdir();
+		}
+		byte[] jpegData;
+		try {
+			jpegData = getDataFromSession(request, SESSION_ATTR_NAME_JPEG);
+			_log.debug("Storing " + filenameJpg + " ...");
+			FileUtils.writeByteArrayToFile(new File(GUEST_USER_DIR + currentDate + "/" + filenameJpg), jpegData);
+		} catch (IOException e) {
+			throw(new IOException("Cannot load JPEG data from portlet session.", e));
+		}
+		byte[] pdfData;
+		try {
+			pdfData= getDataFromSession(request, SESSION_ATTR_NAME_PDF);
+			_log.debug("Storing " + filenamePdf + " ...");
+			FileUtils.writeByteArrayToFile(new File(GUEST_USER_DIR + currentDate + "/" + filenamePdf), pdfData);
+		} catch (IOException e) {
+			throw(new IOException("Cannot load PDF data from portlet session.", e));
+		}
+		
+		_log.debug("Files created in the output directory.");		
+		
+		HashMap<String,String> mailFields = new HashMap<String, String>();
+		mailFields.put("Vorname", firstname);
+		mailFields.put("Nachname", lastname);
+		mailFields.put("E-Mail", email);
+		mailFields.put("Meinung", opinion.replaceAll("\\n", " ").replaceAll("\\r", " "));
+		mailFields.put("Plakat-Datei", baseName);
+		mailFields.put("Ordner", GUEST_USER_DIR + currentDate);
 		mail.sendMail(mailFields, request, email);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}

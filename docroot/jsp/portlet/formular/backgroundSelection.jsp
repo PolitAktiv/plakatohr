@@ -90,7 +90,7 @@ div.PlakatOhR_ImgSelect {
 		%>
 	
 		<aui:input inlineLabel="right" name="background" 
-			type="radio" value="<%=entry.getFileEntryId()%>" label="<%= imgTag %>" />
+			type="radio" value="<%=entry.getFileEntryId()%>" label="<%= imgTag %>" required="<%=true%>" />
 	</div>
 	
 <%}%>	
