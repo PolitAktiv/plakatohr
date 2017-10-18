@@ -90,16 +90,6 @@ div.PlakatOhR_BackgroundPreview_outer {
 </portlet:renderURL>
 
 
-<script type="text/javascript">
-/*
-function OhrShowSpinner() {
-	document.getElementById("<portlet:namespace />spinner").style.display="block";
-	
-}
-*/
-</script>
-
-
 
 <div  class="PlakatOhR_BackgroundPreview_outer">
 <div class="PlakatOhR_BackgroundPreview">
@@ -108,7 +98,7 @@ function OhrShowSpinner() {
 </div>
 
 <aui:form action="<%=userDataSubmit%>" method="post" id="form" name="form"
-	enctype="multipart/form-data" onsubmit="OhrShowSpinner();">
+	enctype="multipart/form-data" >
 	<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
 		type="file" >
 		<aui:validator name="acceptFiles">'jpg,png'</aui:validator>

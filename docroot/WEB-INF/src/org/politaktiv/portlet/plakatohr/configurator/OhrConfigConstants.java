@@ -17,6 +17,8 @@ public class OhrConfigConstants {
 	public static String USER_FEEDBACK_HTML="userFeedbackHtml";
 	public static String OPINION_MAX_LENGTH="opinionMaxLength";
 	
+	public static String FILESYSTEM_TARGET_FOLDER = "filesystemTargetFolder";
+	
 	
 	/**
 	 * @return a list of all the field values managed by this configuration constant class. 
