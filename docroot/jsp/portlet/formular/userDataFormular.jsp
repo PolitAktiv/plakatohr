@@ -1,3 +1,5 @@
+<%@page import="java.util.LinkedList"%>
+<%@page import="java.util.List"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@ include file="/jsp/portlet/import.jsp"%>
 
@@ -22,8 +24,9 @@ div.PlakatOhR_BackgroundPreview img {
 }
 
 div.PlakatOhR_BackgroundPreview {
-   background-color:   #f4f4f4;
+  background-color:   #f4f4f4;
   border: 1px solid #cccccc;
+  max-width: auto;
   
   padding:10px !important;;
   margin:10px;
@@ -31,10 +34,28 @@ div.PlakatOhR_BackgroundPreview {
   float:left;
 }
 
-div.PlakatOhR_BackgroundPreview_outer {
-	width:100%;
-	overflow:hidden;
+div.FlexboxContainer {
+	-webkit-flex-wrap:     wrap;
+	flex-wrap:             wrap;
+	flex-direction:	   		row;
+	justify-content: flex-start;
+	align-items:     flex-start;
+	aligh-content:   flex-start;
+}
 
+div.RightColumn {
+	position:relative;
+	width:49%;
+}
+
+div.DoubleColumn {
+	position:relative;
+    width:49%;
+}
+
+div.PlakatOhR_BackgroundPreview_outer {
+	position:static;
+	width:49%;
 }
 
 #<portlet:namespace />spinnerOuter {
@@ -82,6 +103,8 @@ div.PlakatOhR_BackgroundPreview_outer {
 	String opinion = renderRequest.getParameter("opinion");
 	long backgroundID = Long.parseLong(backgroundIDString);
 	DLFileEntry background = DLFileEntryLocalServiceUtil.getDLFileEntry(backgroundID);
+	
+	List<String> textOptions = new LinkedList<String>();
 %>
 
 <portlet:renderURL var="varURL"> 
@@ -89,49 +112,68 @@ div.PlakatOhR_BackgroundPreview_outer {
 <portlet:param name="backURL" value="<%= themeDisplay.getURLCurrent() %>"></portlet:param>
 </portlet:renderURL>
 
-
-
-<div  class="PlakatOhR_BackgroundPreview_outer">
-<div class="PlakatOhR_BackgroundPreview">
-		<img src="<%=media.getDlFileUrl(themeDisplay, background)%>" />
-</div>
-</div>
-
 <aui:form action="<%=userDataSubmit%>" method="post" id="form" name="form"
 	enctype="multipart/form-data" >
-	<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
-		type="file" >
-		<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
-	</aui:input>
-	<aui:input id="fn" name="firstname" label="Vorname" placeholder="Vorname"
-		required="<%=true%>" type="text">
-		<aui:validator name="maxLength">35</aui:validator>
-	</aui:input>
-	<aui:input name="lastname" label="Nachname" placeholder="Nachname"
-		required="<%=true%>" type="text">
-		<aui:validator name="maxLength">35</aui:validator>
-	</aui:input>
-	<aui:input name="email" label="E-Mail" placeholder="E-Mail"
-		required="<%=true%>" type="text">
-		<aui:validator name="email" />
-	</aui:input>
-	<aui:input name="opinion" label="Meinung" placeholder="Meinung"
-		required="<%=true%>" type="textarea">
-		<aui:validator name="maxLength"><%=opinionMaxLen%></aui:validator>
-	</aui:input>
-	<aui:input name="backgroundID" value="<%=backgroundIDString%>"
-		type="hidden">
-	</aui:input>
 	
-<div id="<portlet:namespace />spinnerContainer"></div>
+	<div class="FlexboxContainer">
 	
+	<div class="PlakatOhR_BackgroundPreview_outer">
+		<div class="PlakatOhR_BackgroundPreview">
+			<img src="<%=media.getDlFileUrl(themeDisplay, background)%>" />
+		</div>
+	</div>
 
+	<div class="RightColumn">
+		<aui:input id="fn" name="firstname" label="Vorname" placeholder="Vorname"
+			required="<%=true%>" type="text">
+			<aui:validator name="maxLength">35</aui:validator>
+		</aui:input>
+		<aui:input name="lastname" label="Nachname" placeholder="Nachname"
+			required="<%=true%>" type="text">
+			<aui:validator name="maxLength">35</aui:validator>
+		</aui:input>
+		<aui:input name="email" label="E-Mail" placeholder="E-Mail"
+			required="<%=true%>" type="text">
+			<aui:validator name="email" />
+		</aui:input>
+	</div>
+	
+	<div class="DoubleColumn">
+		<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
+			type="file" >
+			<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
+		</aui:input>
+		<% if(textOptions != null && !textOptions.isEmpty()) {  %>
+		<aui:select label="Text Anfang" name="select-example" required="<%=true%>">
+			<% for (String option : textOptions) {
+			%><aui:option value="<%=option%>"><%=option%></aui:option><%
+			}%>
+    		<aui:option value="Freitext">Freitext</aui:option>
+		</aui:select>
+		<%}%>
+		<aui:input name="opinion" label="Meinung" placeholder="Meinung"
+			required="<%=true%>" type="textarea">
+			<aui:validator name="maxLength"><%=opinionMaxLen%></aui:validator>
+		</aui:input>
+		<aui:input name="backgroundID" value="<%=backgroundIDString%>"
+			type="hidden">
+		</aui:input>
+	</div>
+
+	
+	<div id="<portlet:namespace />spinnerContainer"></div>
+	
+	<div class="DoubleColumn">
 	<aui:button-row>
 		<aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen"
 			onClick="history.go(-1)" />
 		<aui:button type="submit" value="Nächster Schritt: Vorschau"  />
 	</aui:button-row>
+	</div>
+	</div>
+	
 </aui:form>
+
 
 <script type="text/javascript">
 /*	document.getElementById("<portlet:namespace />pic").onchange = function() {

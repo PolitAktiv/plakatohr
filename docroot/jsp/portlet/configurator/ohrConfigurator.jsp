@@ -37,6 +37,10 @@
 
 
 <%
+	final String projectNameLabel = "Name des Projekts:";
+	final String projectNameHelp = "Jedes Projekt benötigt einen eigenen Namen, um dafür einen Ordner für die Gäste auf der "
+			+ "Owncloud bereitzustellen";
+	
 	final String sourceFolderLabel = "Vorlagen-Ordner:";
 	final String sourceFolderHelp = "In diesem Ordner liegen die Vorlagen (Hintergründe) "
 			+ "für die Kampagne dieses PlakatOhR-Portlets sowohl als JPG-Dateien "
@@ -65,6 +69,10 @@
 
 <%
 	OhrMediaHelper media = new OhrMediaHelper();
+
+	//get name of project which will be used as the target folder on the file system for guests
+	String projectName = GetterUtil
+			.getString(portletPreferences.getValue(OhrConfigConstants.FILESYSTEM_TARGET_FOLDER, ""), "");
 
 	// get source folder ID, or use default
 	long sourceFolderId = GetterUtil.getLong(
@@ -118,6 +126,10 @@
 		value="<%=Constants.UPDATE%>" />
 
 	<aui:layout>
+		<aui:input type="text"
+			name="<%=OhrConfigConstants.FILESYSTEM_TARGET_FOLDER%>"
+			label="<%=projectNameLabel%>" value="<%=projectName%>" helpMessage="<%=projectNameHelp%>" />
+	
 		<aui:input name="<%=OhrConfigConstants.SOURCE_FOLDER_ID%>"
 			type="hidden" value="<%=sourceFolderId%>" />
 		<aui:field-wrapper label="<%=sourceFolderLabel%>"
