@@ -16,8 +16,7 @@ public class OhrConfigConstants {
 	public static String E_MAIL_SUBJECT="eMailSubject";
 	public static String USER_FEEDBACK_HTML="userFeedbackHtml";
 	public static String OPINION_MAX_LENGTH="opinionMaxLength";
-	
-	public static String FILESYSTEM_TARGET_FOLDER = "filesystemTargetFolder";
+	public static String TEXT_BEGINNINGS="textBeginnings";
 	
 	
 	/**

@@ -37,10 +37,10 @@
 
 
 <%
-	final String projectNameLabel = "Name des Projekts:";
-	final String projectNameHelp = "Jedes Projekt benötigt einen eigenen Namen, um dafür einen Ordner für die Gäste auf der "
-			+ "Owncloud bereitzustellen";
-	
+	final String textBeginningsLabel = "Alternative Textanfänge:";
+	final String textBeginningsHelp = "Hier können alternative Textanfänge für das Meinungsfeld eingegeben werden. "
+			+ "Diese müssen durch einen Zeilenumbruch voneinander getrennt werden.";
+
 	final String sourceFolderLabel = "Vorlagen-Ordner:";
 	final String sourceFolderHelp = "In diesem Ordner liegen die Vorlagen (Hintergründe) "
 			+ "für die Kampagne dieses PlakatOhR-Portlets sowohl als JPG-Dateien "
@@ -53,15 +53,13 @@
 	final String eMailSubjectLabel = "E-Mail-Betreff:";
 	final String eMailIntroText = "Wenn ein neues Plakat in der Medien-Bibliothek abgelegt wird, kann automatisch eine E-Mail verschickt werden."
 			+ " Füllen Sie hierzu die folgenden Fehlder aus:";
-	
+
 	final String opinionMaxLenLabel = "Maximal Länge für das Meinungsfeld (in Zeichen):";
-	
-	
+
 	final String userFeedbackLabel = "Rückmeldung an Benutzer nach dem Abspeichern:";
 	final String userFeedbackHelp = "Nach dem Abspeichern eines Plakats in den Ziel-Ordner wird dem Benutzer diese Meldung angezeigt."
 			+ " Sie könnte zum Beispiel darauf hinweisen, dass das Plakat erst freigeschaltet werden muss. Oder sie könnte einen Link "
 			+ " zu den bereits veröffentlichten Plakaten enthalten.";
-	
 %>
 
 
@@ -71,8 +69,8 @@
 	OhrMediaHelper media = new OhrMediaHelper();
 
 	//get name of project which will be used as the target folder on the file system for guests
-	String projectName = GetterUtil
-			.getString(portletPreferences.getValue(OhrConfigConstants.FILESYSTEM_TARGET_FOLDER, ""), "");
+	String textBeginnings = GetterUtil
+			.getString(portletPreferences.getValue(OhrConfigConstants.TEXT_BEGINNINGS, ""), "");
 
 	// get source folder ID, or use default
 	long sourceFolderId = GetterUtil.getLong(
@@ -100,17 +98,15 @@
 	String eMailSubject = GetterUtil
 			.getString(portletPreferences.getValue(OhrConfigConstants.E_MAIL_SUBJECT, ""), "");
 
-	
 	// get preference values for feedback message
-	String userFeedbackMsg =  GetterUtil
+	String userFeedbackMsg = GetterUtil
 			.getString(portletPreferences.getValue(OhrConfigConstants.USER_FEEDBACK_HTML, ""), "");
-			
+
 	// get maximum length of opinion
-	int opinionMaxLen = GetterUtil.getInteger(
-			portletPreferences.getValue(OhrConfigConstants.OPINION_MAX_LENGTH, ""), 100);
-	
+	int opinionMaxLen = GetterUtil
+			.getInteger(portletPreferences.getValue(OhrConfigConstants.OPINION_MAX_LENGTH, ""), 100);
+
 	String portletId = PortletKeys.DOCUMENT_LIBRARY;
-			
 %>
 
 
@@ -126,10 +122,6 @@
 		value="<%=Constants.UPDATE%>" />
 
 	<aui:layout>
-		<aui:input type="text"
-			name="<%=OhrConfigConstants.FILESYSTEM_TARGET_FOLDER%>"
-			label="<%=projectNameLabel%>" value="<%=projectName%>" helpMessage="<%=projectNameHelp%>" />
-	
 		<aui:input name="<%=OhrConfigConstants.SOURCE_FOLDER_ID%>"
 			type="hidden" value="<%=sourceFolderId%>" />
 		<aui:field-wrapper label="<%=sourceFolderLabel%>"
@@ -173,14 +165,20 @@
 					value="remove" />
 			</div>
 		</aui:field-wrapper>
-		
-				<aui:input type="number"
+
+		<aui:input type="textarea"
+			name="<%=OhrConfigConstants.TEXT_BEGINNINGS%>"
+			label="<%=textBeginningsLabel%>" value="<%=textBeginnings%>"
+			helpMessage="<%=textBeginningsHelp%>" width="400"/>
+
+		<aui:input type="number"
 			name="<%=OhrConfigConstants.OPINION_MAX_LENGTH%>"
 			label="<%=opinionMaxLenLabel%>" value="<%=opinionMaxLen%>" />
 
-
-		<aui:field-wrapper label="<%= userFeedbackLabel %>" helpMessage="<%= userFeedbackHelp %>">
-			<liferay-ui:input-editor name="<%= OhrConfigConstants.USER_FEEDBACK_HTML %>"
+		<aui:field-wrapper label="<%=userFeedbackLabel%>"
+			helpMessage="<%=userFeedbackHelp%>">
+			<liferay-ui:input-editor
+				name="<%=OhrConfigConstants.USER_FEEDBACK_HTML%>"
 				toolbarSet="liferay-article" initMethod="initEditor" width="200" />
 			<script type="text/javascript">
         function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(userFeedbackMsg)%>"; }
@@ -194,8 +192,7 @@
 			name="<%=OhrConfigConstants.E_MAIL_RECIPIENT%>"
 			label="<%=eMailRecipientLabel%>" value="<%=eMailRecipient%>" />
 
-		<aui:input type="text"
-			name="<%=OhrConfigConstants.E_MAIL_SUBJECT%>"
+		<aui:input type="text" name="<%=OhrConfigConstants.E_MAIL_SUBJECT%>"
 			label="<%=eMailSubjectLabel%>" value="<%=eMailSubject%>" />
 
 
@@ -266,3 +263,5 @@
             });
     
 </aui:script>
+	
+

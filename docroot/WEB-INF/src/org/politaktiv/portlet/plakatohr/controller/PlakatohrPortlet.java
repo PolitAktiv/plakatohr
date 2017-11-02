@@ -10,13 +10,10 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Date;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -101,7 +98,11 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String firstname = ParamUtil.getString(uploadPortletRequest, "firstname");
 		String lastname = ParamUtil.getString(uploadPortletRequest, "lastname");
 		String email = ParamUtil.getString(uploadPortletRequest, "email");
-		String opinion = ParamUtil.getString(uploadPortletRequest, "opinion");
+		String textBeginning = "";
+		if (!ParamUtil.getString(uploadPortletRequest, "textBeginning").equals("Freitext")) {
+			textBeginning = ParamUtil.getString(uploadPortletRequest, "textBeginning") + " ";	
+		}						
+		String opinion = textBeginning + ParamUtil.getString(uploadPortletRequest, "opinion");
 		String backgroundIDString = ParamUtil.getString(uploadPortletRequest, "backgroundID");
 		long backgroundID = -1;
 		try {
@@ -402,17 +403,16 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String firstname = uploadRequest.getParameter("firstname");
 		String opinion = uploadRequest.getParameter("opinion");
 		
-		PortletPreferences portletPreferences = request.getPreferences();
-		String projectName = GetterUtil
-				.getString(portletPreferences.getValue(OhrConfigConstants.FILESYSTEM_TARGET_FOLDER, ""), "");
+		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+		String siteName = themeDisplay.getScopeGroup().getName();
 
-		_log.debug("Target Path: " + GUEST_USER_DIR + "/" + projectName);	
+		_log.debug("Target Path: " + GUEST_USER_DIR + "/" + siteName);	
 		
 		String baseName = getUniqueID(lastname + "-" + firstname);
 		String filenameJpg = baseName + ".jpg";
 		String filenamePdf = baseName + ".pdf";
 
-		File currentGuestDir = new File(GUEST_USER_DIR + "/" + projectName);
+		File currentGuestDir = new File(GUEST_USER_DIR + "/" + siteName);
 		if(!currentGuestDir.exists()) {
 			currentGuestDir.mkdir();
 		}
@@ -420,7 +420,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		try {
 			jpegData = getDataFromSession(request, SESSION_ATTR_NAME_JPEG);
 			_log.debug("Storing " + filenameJpg + " ...");
-			FileUtils.writeByteArrayToFile(new File(GUEST_USER_DIR + "/" + projectName + "/" + filenameJpg), jpegData);
+			FileUtils.writeByteArrayToFile(new File(GUEST_USER_DIR + "/" + siteName + "/" + filenameJpg), jpegData);
 		} catch (IOException e) {
 			throw(new IOException("Cannot load JPEG data from portlet session.", e));
 		}
@@ -428,7 +428,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		try {
 			pdfData= getDataFromSession(request, SESSION_ATTR_NAME_PDF);
 			_log.debug("Storing " + filenamePdf + " ...");
-			FileUtils.writeByteArrayToFile(new File(GUEST_USER_DIR + "/" + projectName + "/" + filenamePdf), pdfData);
+			FileUtils.writeByteArrayToFile(new File(GUEST_USER_DIR + "/" + siteName + "/" + filenamePdf), pdfData);
 		} catch (IOException e) {
 			throw(new IOException("Cannot load PDF data from portlet session.", e));
 		}
@@ -441,7 +441,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		mailFields.put("E-Mail", email);
 		mailFields.put("Meinung", opinion.replaceAll("\\n", " ").replaceAll("\\r", " "));
 		mailFields.put("Plakat-Datei", baseName);
-		mailFields.put("Ordner", GUEST_USER_DIR + "/" + projectName);
+		mailFields.put("Ordner", GUEST_USER_DIR + "/" + siteName);
 		mail.sendMail(mailFields, request, email);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}
