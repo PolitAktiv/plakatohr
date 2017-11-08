@@ -1,6 +1,8 @@
 package org.politaktiv.portlet.plakatohr.controller;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.AddressException;
@@ -50,10 +52,11 @@ public class OhrMailHelper {
 	 * @param subject the subject of the message.
 	 * @param from from address.
 	 * @param to recipient address.
+	 * @param files a list of file attachments. null or empty list for no attachments
 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public boolean sendMail(String body, String subject, String from, String to) {
-		return sendMail(body, subject, from, to, null);
+	public boolean sendMail(String body, String subject, String from, String to, List<File> files) {
+		return sendMail(body, subject, from, to, null, files);
 	}
 	
 	/**
@@ -65,9 +68,10 @@ public class OhrMailHelper {
 	 * @param from from address.
 	 * @param to recipient address.
 	 * @param replyTo a reply-to address.
+	 * @param files a list of file attachments. null or empty list for no attachments
 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public boolean sendMail(String body, String subject, String from, String to, String replyTo) {
+	public boolean sendMail(String body, String subject, String from, String to, String replyTo, List<File> files) {
 		MailMessage mail = new MailMessage();
 		
 		// check/set recipient, give up on error
@@ -111,6 +115,12 @@ public class OhrMailHelper {
 		// now finally the contents/body of the mail
 		mail.setBody(body);
 			
+		//add all file attachments if there are any
+		if (files != null && !files.isEmpty()) {
+			for (File file : files) {
+				mail.addFileAttachment(file, file.getName());
+			}
+		}
 		
 		// all set, now go and schedule the mail for sending!
 		// ... some debugging stuff
@@ -129,6 +139,7 @@ public class OhrMailHelper {
 		return true;
 	}
 	
+	
 	/**
 	 * Sends an e-mail with a message created from form fields. 
 	 * All other relevant data (sender, recipient, subject etc.) are obtained from
@@ -136,10 +147,11 @@ public class OhrMailHelper {
 	 * @param fields the fields to create the message body from.
 	 * @param prefs portlet preferences for recipient and subject.
 	 * @param themeDisplay used to obtain system preferences for sender address.
+	 * @param files a list of file attachments. null or empty list for no attachments
 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay) {
-		return sendMail(fields, prefs, themeDisplay, null);
+	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay, List<File> files) {
+		return sendMail(fields, prefs, themeDisplay, null, files);
 	}
 	
 	/**
@@ -147,13 +159,13 @@ public class OhrMailHelper {
 	 * All other relevant data (sender, recipient, subject etc.) are obtained from
 	 * preferences and system configuration. The mail-message is sent asynchronously in the background.
 	 * @param fields the fields to create the message body from.
-
 	 * @param request used to obtain system preferences for sender address.
+	 * @param files a list of file attachments. null or empty list for no attachments
 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
 	
-	public boolean sendMail(Map<String, String> fields, PortletRequest request) {
-		return sendMail(fields, request, null);
+	public boolean sendMail(Map<String, String> fields, PortletRequest request, List<File> files) {
+		return sendMail(fields, request, null, files);
 	}
 
 	
@@ -164,10 +176,11 @@ public class OhrMailHelper {
 	 * @param body the body of the e-mail message.
 	 * @param prefs portlet preferences for recipient and subject.
 	 * @param themeDisplay used to obtain system preferences for sender address.
+	 * @param files a list of file attachments. null or empty list for no attachments
 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public boolean sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay) {
-		return sendMail(body, prefs, themeDisplay, null);
+	public boolean sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay, List<File> files) {
+		return sendMail(body, prefs, themeDisplay, null, files);
 	}
 
 	/**
@@ -176,11 +189,12 @@ public class OhrMailHelper {
 	 * preferences and system configuration. The mail-message is sent asynchronously in the background.
 	 * @param body the body of the e-mail message.
 	 * @param request used to obtain system preferences for sender address.
+	 * @param files a list of file attachments. null or empty list for no attachments
 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
 	
-	public boolean sendMail(String body, PortletRequest request) {
-		return sendMail(body, request, null);
+	public boolean sendMail(String body, PortletRequest request, List<File> files) {
+		return sendMail(body, request, null, files);
 	}
 	
 	
@@ -192,10 +206,11 @@ public class OhrMailHelper {
 	 * @param prefs portlet preferences for recipient and subject.
 	 * @param themeDisplay used to obtain system preferences for sender address.
 	 * @param replyTo a reply to address to set for this message.
+	 * @param files a list of file attachments. null or empty list for no attachments
  	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo) {
-		return sendMail(formatFieldsToMailBody(fields), prefs, themeDisplay, replyTo);
+	public boolean sendMail(Map<String, String> fields, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo, List<File> files) {
+		return sendMail(formatFieldsToMailBody(fields), prefs, themeDisplay, replyTo, files);
 	}
 
 	/**
@@ -205,10 +220,11 @@ public class OhrMailHelper {
 	 * @param fields the fields to create the message body from.
 	 * @param request used to obtain system preferences for sender address.
 	 * @param replyTo a reply to address to set for this message.
+	 * @param files a list of file attachments. null or empty list for no attachments
  	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	boolean sendMail(Map<String, String> fields, PortletRequest request, String replyTo) {
-		return sendMail(formatFieldsToMailBody(fields), request, replyTo);
+	boolean sendMail(Map<String, String> fields, PortletRequest request, String replyTo, List<File> files) {
+		return sendMail(formatFieldsToMailBody(fields), request, replyTo, files);
 	}
 
 	/**
@@ -219,9 +235,10 @@ public class OhrMailHelper {
 	 * @param prefs portlet preferences for recipient and subject.
 	 * @param themeDisplay used to obtain system preferences for sender address.
 	 * @param replyTo a reply to address to set for this message.
+	 * @param files a list of file attachments. null or empty list for no attachments
 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public boolean sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo) {
+	public boolean sendMail(String body, PortletPreferences prefs, ThemeDisplay themeDisplay, String replyTo, List<File> files) {
 		
 		// collect preferences
 		String subjectPref = GetterUtil.getString(
@@ -241,7 +258,7 @@ public class OhrMailHelper {
 			return false;
 		}
 
-		return sendMail(body, subjectPref, fromAddress, toPref, replyTo);
+		return sendMail(body, subjectPref, fromAddress, toPref, replyTo, files);
 
 		
 		
@@ -254,10 +271,11 @@ public class OhrMailHelper {
 	 * @param body the body of the e-mail message.
 	 * @param request used to obtain system preferences for sender address.
 	 * @param replyTo a reply to address to set for this message.
+	 * @param files a list of file attachments. null or empty list for no attachments
 	 * @return false on any kind of error. Returning true can still mean what the asynchronous sending may fail in the backend.
 	 */
-	public boolean sendMail(String body, PortletRequest request, String replyTo) {
-		return sendMail(body, request.getPreferences(), getThemeDisplay(request), replyTo);
+	public boolean sendMail(String body, PortletRequest request, String replyTo, List<File> files) {
+		return sendMail(body, request.getPreferences(), getThemeDisplay(request), replyTo, files);
 		
 	}
 	

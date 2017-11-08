@@ -12,6 +12,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -380,7 +382,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		mailFields.put("E-Mail", email);
 		mailFields.put("Meinung", opinion.replaceAll("\\n", " ").replaceAll("\\r", " "));
 		mailFields.put("Plakat-Datei", baseName);
-		mail.sendMail(mailFields, request, email);
+		mail.sendMail(mailFields, request, email, null);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}
 	
@@ -411,6 +413,8 @@ public class PlakatohrPortlet extends MVCPortlet {
 		String baseName = getUniqueID(lastname + "-" + firstname);
 		String filenameJpg = baseName + ".jpg";
 		String filenamePdf = baseName + ".pdf";
+		
+		List<File> fileAttachments = new LinkedList<File>();
 
 		File currentGuestDir = new File(GUEST_USER_DIR + "/" + siteName);
 		if(!currentGuestDir.exists()) {
@@ -420,7 +424,9 @@ public class PlakatohrPortlet extends MVCPortlet {
 		try {
 			jpegData = getDataFromSession(request, SESSION_ATTR_NAME_JPEG);
 			_log.debug("Storing " + filenameJpg + " ...");
-			FileUtils.writeByteArrayToFile(new File(GUEST_USER_DIR + "/" + siteName + "/" + filenameJpg), jpegData);
+			File file = new File(GUEST_USER_DIR + "/" + siteName + "/" + filenameJpg);
+			FileUtils.writeByteArrayToFile(file, jpegData);
+			fileAttachments.add(file);
 		} catch (IOException e) {
 			throw(new IOException("Cannot load JPEG data from portlet session.", e));
 		}
@@ -428,7 +434,9 @@ public class PlakatohrPortlet extends MVCPortlet {
 		try {
 			pdfData= getDataFromSession(request, SESSION_ATTR_NAME_PDF);
 			_log.debug("Storing " + filenamePdf + " ...");
-			FileUtils.writeByteArrayToFile(new File(GUEST_USER_DIR + "/" + siteName + "/" + filenamePdf), pdfData);
+			File file = new File(GUEST_USER_DIR + "/" + siteName + "/" + filenamePdf);
+			FileUtils.writeByteArrayToFile(file, pdfData);
+			fileAttachments.add(file);
 		} catch (IOException e) {
 			throw(new IOException("Cannot load PDF data from portlet session.", e));
 		}
@@ -441,8 +449,9 @@ public class PlakatohrPortlet extends MVCPortlet {
 		mailFields.put("E-Mail", email);
 		mailFields.put("Meinung", opinion.replaceAll("\\n", " ").replaceAll("\\r", " "));
 		mailFields.put("Plakat-Datei", baseName);
+		mailFields.put("Gast", "true");
 		mailFields.put("Ordner", GUEST_USER_DIR + "/" + siteName);
-		mail.sendMail(mailFields, request, email);
+		mail.sendMail(mailFields, request, email, fileAttachments);
 		response.setRenderParameter("jspPage", SUCCESS_JSP);
 	}
 	
