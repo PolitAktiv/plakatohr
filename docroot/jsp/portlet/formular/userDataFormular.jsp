@@ -135,6 +135,12 @@ portlet:namespace />spinner {
 		</div>
 
 		<div>
+			<div>
+				<% 
+				String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, StringPool.TRUE);
+				response.getWriter().println(finalMessage);
+				%>
+			</div>
 			<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
 				type="file">
 				<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
