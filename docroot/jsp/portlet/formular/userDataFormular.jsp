@@ -183,17 +183,25 @@ portlet:namespace />spinner {
 		 document.getElementById("<portlet:namespace />fn").focus();
 		 }
 		 */
+		 
+		 
 
-		$('form')
-				.on(
+		 
+		 AUI().use('aui-form-validator', function(A) {
+			    //var defaultFormValidator = A.config.FormValidator;
+			 
+		 
+		//$('form')
+				A.on(
 						'submit',
 						function(e) {
 							e.preventDefault();
 							$("#<portlet:namespace />spinnerContainer")
 									.append(
 											'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
-							this.submit();
+							//this.submit();
 						});
+		 });
 	</script>
 </div>
 
