@@ -1,3 +1,4 @@
+<%@page import="org.politaktiv.svgmanipulator.SvgManipulator"%>
 <%@ include file="/jsp/portlet/import.jsp"%>
 
 <portlet:actionURL name="backgroundSelection" var="backgroundSelection" />
@@ -81,16 +82,28 @@ div.PlakatOhR_ImgSelect {
 <aui:field-wrapper name="backgroundwrapper" label="" >
 		
 		
-	<%	for (DLFileEntry entry : jpegsUndSVGs.keySet()) {%>
+	<%	for (DLFileEntry entry : jpegsUndSVGs.keySet()) {
+	
+		SvgManipulator manipulator = new SvgManipulator(jpegsUndSVGs.get(entry).getContentStream());
+		String title = manipulator.getSvgTitle();
+	
+	
+	%>
+	
+
 	
 	<div class="PlakatOhR_ImgSelect">
 	
 		<%
+		if ( title != null && ! title.equals("") ) {
+			%><h4 class="ohrBgTitle"><%= title.trim() %></h4><%
+		}
+		
 		String imgTag = "<img src=\"" + media.getDlFileUrl(themeDisplay, entry) + "\" />";
 		%>
 	
 		<aui:input inlineLabel="right" name="background" 
-			type="radio" value="<%=entry.getFileEntryId()%>" label="<%= imgTag %>" required="<%=true%>" />
+			type="radio" value="<%=entry.getFileEntryId()%>" label="<%=  imgTag %>" required="<%=true%>" />
 	</div>
 	
 <%}%>	

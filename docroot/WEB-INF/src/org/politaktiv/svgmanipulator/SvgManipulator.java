@@ -234,7 +234,6 @@ public class SvgManipulator {
 	public int replaceTextinText(String text, String replacement) {
 		
 		int replaced = 0;
-		String replacementEscaped = EscapeUtil.escapeXml(replacement);
 		
 		IterableNodeList nodes;
 		
@@ -247,7 +246,7 @@ public class SvgManipulator {
 		
 		for (Node n :nodes) {
 			String t = n.getTextContent();
-			t = t.replace("$$" + text + "$$", replacementEscaped);
+			t = t.replace("$$" + text + "$$", replacement);
 			n.setTextContent(t);
 			replaced++;
 		}
@@ -269,7 +268,6 @@ public class SvgManipulator {
 	 */
 	public int replaceTextInFlowPara(String text, String replacement) {
 		int replaced = 0;
-		String replacementEscaped = EscapeUtil.escapeXml(replacement);
 		
 		IterableNodeList nodes;
 		
@@ -284,7 +282,7 @@ public class SvgManipulator {
 		// replace the text in the nodes found
 		for (Node n : nodes) {
 			String t = n.getTextContent();
-			t = t.replace("$$" + text + "$$", replacementEscaped);
+			t = t.replace("$$" + text + "$$", replacement);
 			n.setTextContent(t);
 			replaced++;
 		}		
@@ -354,6 +352,32 @@ public class SvgManipulator {
 		}
 		
 		return counter;
+		
+	}
+	
+	/**
+	 * Extracts the document title as stored in the title field of the SVG
+	 * @return the title or null if no title is found.
+	 */
+	public String getSvgTitle() {
+		
+		String result = null;
+		
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		IterableNodeList nodes;
+		
+		// find flowPara node using xPath
+			try {
+				nodes = new IterableNodeList((NodeList)xPath.evaluate("/svg/title",
+				        doc.getDocumentElement(), XPathConstants.NODESET));
+				
+				result = nodes.get(0).getTextContent();
+				
+			} catch (XPathExpressionException e) {
+			} catch (IndexOutOfBoundsException e) {
+			}
+		
+		return result;
 		
 	}
 	
@@ -537,7 +561,6 @@ public class SvgManipulator {
 				//System.err.println(transformAtt);
 			}
 			
-			// TODO: Escape here?
 			newImage.setAttribute("xlink:href", imageHref);
 			
 			// replace the flowRoot by the image

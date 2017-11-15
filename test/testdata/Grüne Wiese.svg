@@ -19,6 +19,8 @@
    inkscape:export-filename="/home/but/code/liferaysdk/portlets/PA-Plakatohr-portlet/test/testdata/Grüne Wiese.png"
    inkscape:export-xdpi="30.200001"
    inkscape:export-ydpi="30.200001">
+  <title
+     id="title3018">Grüne Wiese</title>
   <defs
      id="defs4">
     <color-profile
@@ -42,7 +44,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="362.4623"
+     inkscape:cx="-437.5377"
      inkscape:cy="983.76443"
      inkscape:document-units="cm"
      inkscape:current-layer="layer1"
@@ -81,7 +83,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title>Grüne Wiese</dc:title>
         <dc:description>MS Wiese 1.0</dc:description>
       </cc:Work>
     </rdf:RDF>
