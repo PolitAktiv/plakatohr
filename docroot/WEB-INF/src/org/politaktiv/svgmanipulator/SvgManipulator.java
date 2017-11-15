@@ -358,6 +358,32 @@ public class SvgManipulator {
 	}
 	
 	/**
+	 * Extracts the document title as stored in the title field of the SVG
+	 * @return the title or null if no title is found.
+	 */
+	public String getSvgTitle() {
+		
+		String result = null;
+		
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		IterableNodeList nodes;
+		
+		// find flowPara node using xPath
+			try {
+				nodes = new IterableNodeList((NodeList)xPath.evaluate("/svg/title",
+				        doc.getDocumentElement(), XPathConstants.NODESET));
+				
+				result = nodes.get(0).getTextContent();
+				
+			} catch (XPathExpressionException e) {
+			} catch (IndexOutOfBoundsException e) {
+			}
+		
+		return result;
+		
+	}
+	
+	/**
 	 * Convert Inkscape's flowRoot version into something that Batik can actually understand. Removes any CSS from
 	 * flow root.
 	 * Works only for a single shape of rect for now, not for other forms of floating elements.
