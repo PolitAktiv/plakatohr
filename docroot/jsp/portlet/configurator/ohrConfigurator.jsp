@@ -60,6 +60,9 @@
 	final String userFeedbackHelp = "Nach dem Abspeichern eines Plakats in den Ziel-Ordner wird dem Benutzer diese Meldung angezeigt."
 			+ " Sie könnte zum Beispiel darauf hinweisen, dass das Plakat erst freigeschaltet werden muss. Oder sie könnte einen Link "
 			+ " zu den bereits veröffentlichten Plakaten enthalten.";
+	
+	final String introductionLabel = "Einleitungstext an Benutzer beim Eingeben der Daten:";
+	final String introductionHelp = "Beim Eingeben der Daten im Formular wird dem Benutzer diese Meldung angezeigt.";
 %>
 
 
@@ -97,6 +100,10 @@
 			.getString(portletPreferences.getValue(OhrConfigConstants.E_MAIL_RECIPIENT, ""), "");
 	String eMailSubject = GetterUtil
 			.getString(portletPreferences.getValue(OhrConfigConstants.E_MAIL_SUBJECT, ""), "");
+			
+	// get preference values for introduction message
+	String introductionMsg = GetterUtil
+			.getString(portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, ""), "");
 
 	// get preference values for feedback message
 	String userFeedbackMsg = GetterUtil
@@ -174,6 +181,16 @@
 		<aui:input type="number"
 			name="<%=OhrConfigConstants.OPINION_MAX_LENGTH%>"
 			label="<%=opinionMaxLenLabel%>" value="<%=opinionMaxLen%>" />
+			
+		<aui:field-wrapper label="<%=introductionLabel%>"
+			helpMessage="<%=introductionHelp%>">
+			<liferay-ui:input-editor
+				name="<%=OhrConfigConstants.INTRODUCTION_TEXT_HTML%>"
+				toolbarSet="liferay-article" initMethod="initEditor" width="200" />
+			<script type="text/javascript">
+        function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(introductionMsg)%>"; }
+    </script>
+		</aui:field-wrapper>
 
 		<aui:field-wrapper label="<%=userFeedbackLabel%>"
 			helpMessage="<%=userFeedbackHelp%>">
