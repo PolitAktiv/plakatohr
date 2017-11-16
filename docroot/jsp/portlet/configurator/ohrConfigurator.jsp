@@ -186,9 +186,9 @@
 			helpMessage="<%=introductionHelp%>">
 			<liferay-ui:input-editor
 				name="<%=OhrConfigConstants.INTRODUCTION_TEXT_HTML%>"
-				toolbarSet="liferay-article" initMethod="initEditor" width="200" />
+				toolbarSet="liferay-article" initMethod="initEditorIntro" width="200" />
 			<script type="text/javascript">
-        function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(introductionMsg)%>"; }
+        function <portlet:namespace />initEditorIntro() { return "<%=UnicodeFormatter.toString(introductionMsg)%>"; }
     </script>
 		</aui:field-wrapper>
 
@@ -196,9 +196,9 @@
 			helpMessage="<%=userFeedbackHelp%>">
 			<liferay-ui:input-editor
 				name="<%=OhrConfigConstants.USER_FEEDBACK_HTML%>"
-				toolbarSet="liferay-article" initMethod="initEditor" width="200" />
+				toolbarSet="liferay-article" initMethod="initEditorFeedback" width="200" />
 			<script type="text/javascript">
-        function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(userFeedbackMsg)%>"; }
+        function <portlet:namespace />initEditorFeedback() { return "<%=UnicodeFormatter.toString(userFeedbackMsg)%>"; }
     </script>
 		</aui:field-wrapper>
 

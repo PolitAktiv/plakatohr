@@ -137,7 +137,7 @@ portlet:namespace />spinner {
 		<div>
 			<div>
 				<% 
-				String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, StringPool.TRUE).trim();
+				String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
 				if(finalMessage != null && finalMessage != "") {
 					response.getWriter().println(finalMessage);
 				}
