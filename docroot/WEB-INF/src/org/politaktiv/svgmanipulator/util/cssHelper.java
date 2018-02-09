@@ -60,6 +60,40 @@ public class cssHelper {
 	}
 	
 	/**
+	 * Takes a map of key-value pairs and re-combines them to a string usable for a style attribute.
+	 * This version can deal with a list of attribute names that should come first in the result - in the order of this list.
+	 * @param map map to use
+	 * @param orderedAttributes the list for the important attributes and their order
+	 * @return the single string style attribute.
+	 * 
+	 */
+	public static String CssToString(HashMap<String,String> map, List<String> orderedAttributes) {
+		
+		// clone input map
+		@SuppressWarnings("unchecked")
+		HashMap<String,String> m = (HashMap<String, String>) map.clone();
+		
+		String result =";";
+		
+		// loop over ordered attributes and pop them from the map copy to the results
+		for ( String att : orderedAttributes) {
+			if ( m.containsKey(att.trim()) ) {
+				result = result + ";" + att.trim() + ":" + m.get(att);
+				m.remove(att);
+			}
+			
+		}
+		// delegate the rest
+		result = result + ";" + CssToString(m);
+		
+		// we might have piled up semicolons in the beginning, get rid of them
+		result = result.replaceFirst(";+", "");
+		
+		return (result);
+	}
+	 
+	
+	/**
 	 * Takes values from key-value map <strong>a</strong> and overrides those in key-value map <strong>a</strong>.
 	 * Values not present in <strong>a</strong> will be inserted. 
 	 * @param a the original key-value-map

@@ -14,7 +14,6 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.apache.fop.svg.FOPSAXSVGDocumentFactory;
 import org.apache.fop.svg.PDFTranscoder;
 
 /**

@@ -101,7 +101,7 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot3035"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu;text-anchor:middle;text-align:center"
+       style=""
        transform="translate(1218.2703,-1284.2237)"><flowRegion
          id="flowRegion3037"><rect
            id="rect3039"
@@ -109,9 +109,19 @@
            height="1952.7916"
            x="58.57143"
            y="292.36218"
-           style="stroke:#ffffff;stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;text-anchor:middle;text-align:center" /></flowRegion><flowPara
+           style="" /></flowRegion><flowPara
          id="flowPara3041"
-         style="font-size:120px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#fff400;fill-opacity:1;stroke:#000000;stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Ubuntu Mono;-inkscape-font-specification:Ubuntu Mono;text-anchor:middle;text-align:center">„$$MEINUNG$$“</flowPara></flowRoot>    <flowRoot
+         style="font-size:120px;text-anchor:middle;text-align:center;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#fff400;fill-opacity:1;stroke:#000000;stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Ubuntu Mono;-inkscape-font-specification:Ubuntu Mono;">„$$MEINUNG$$“</flowPara></flowRoot> 
+
+<!--  -->
+
+
+<!-- font-size:120px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#fff400;fill-opacity:1;stroke:#000000;stroke-width:1.25000000000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Ubuntu Mono;-inkscape-font-specification:Ubuntu Mono;text-anchor:middle;text-align:center -->
+
+<!-- font-size:76px;text-align:center;text-anchor:middle -->
+
+   <flowRoot
+
        xml:space="preserve"
        id="flowRoot3064"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"><flowRegion

@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +39,15 @@ import org.w3c.dom.NodeList;
 public class SvgManipulator {
 	
 	private Document doc;
+	
+	private static List<String> repairAttributeOrder = Arrays.asList(
+			"text-anchor", 
+			"text-align",
+			"font-size",
+			"fill",
+			"fill-opacity"
+			);
+	
 	
 	/**
 	 * Create a new SvgManipulator from a given SVG File. This will parse the file right away.
@@ -315,6 +326,11 @@ public class SvgManipulator {
 					// replace evil stuff
 					style = style.replace("text-align:center", "text-align:middle");
 					
+					// sort CSS attribute/values in an order that works around the bugs in batik
+					HashMap<String, String> attVal = cssHelper.splitCss(style);
+					style = cssHelper.CssToString(attVal, repairAttributeOrder);
+					
+					
 					// store back
 					e.setAttribute("style", style);
 					counter++;
@@ -341,7 +357,7 @@ public class SvgManipulator {
 					parentCSS = cssHelper.addAndOverride(parentCSS, thisCSS, "font-");
 
 					// store back into DOM
-					((Element)textNode).setAttribute("style", cssHelper.CssToString(parentCSS));
+					((Element)textNode).setAttribute("style", cssHelper.CssToString(parentCSS,repairAttributeOrder));
 					
 					counter++;
 				}
