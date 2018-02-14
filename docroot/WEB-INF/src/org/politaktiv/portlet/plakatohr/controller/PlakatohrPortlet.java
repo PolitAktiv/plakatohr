@@ -62,6 +62,8 @@ public class PlakatohrPortlet extends MVCPortlet {
 	private static final String IMAGE_CROPPER_JSP = JSP_PATH + "alloyUI/imageCropper.jsp";
 	private static final String PREVIEW_JSP = JSP_PATH + "formular/preview.jsp";
 	private static final String SUCCESS_JSP = JSP_PATH + "formular/success.jsp";
+	private static final String TERMS_CONDITIONS_JSP = JSP_PATH + "termscond.jsp";
+	
 	private static final String GUEST_USER_DIR = "/home/ohr/";
 	
 	private static final String SESSION_ATTR_NAME_JPEG ="OhrDataJpeg";
@@ -84,6 +86,16 @@ public class PlakatohrPortlet extends MVCPortlet {
 	public void initializePlakatohr(ActionRequest request, ActionResponse response) {
 		response.setRenderParameter("jspPage", BACKGROUND_SELECTION_JSP);
 	}
+	
+	/**
+	 * Redirect to terms and condictions JSP
+	 * @param request
+	 * @param response
+	 */
+	public void termsCondictionsDisplay(ActionRequest request, ActionResponse response) {
+		response.setRenderParameter("jspPage", TERMS_CONDITIONS_JSP);
+	}	
+	
 
 	/**
 	 * Collects the data from the form filled in by the user, creates a Plakat and moves to the next page. The form contains:
@@ -292,6 +304,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		//s.setAttribute("testTextText", "Dies ist voll der Test-Text");
 				
 		response.setRenderParameter("backgroundID", backgroundID);
+		response.setRenderParameter("termsConditionsJsp", TERMS_CONDITIONS_JSP);
 		response.setRenderParameter("jspPage", USER_DATA_FORMULAR_JSP);
 	}
 	
@@ -309,6 +322,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 		//s.setAttribute("testTextText", "Dies ist voll der Test-Text");
 		
 		response.setRenderParameter("backgroundID", backgroundID);
+		response.setRenderParameter("termsConditionsJsp", TERMS_CONDITIONS_JSP);
 		response.setRenderParameter("firstname", firstname);
 		response.setRenderParameter("lastname", lastname);
 		response.setRenderParameter("email", email);

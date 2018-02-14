@@ -1,3 +1,4 @@
+<%@page import="org.politaktiv.portlet.plakatohr.controller.PlakatohrPortlet"%>
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.util.List"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
@@ -5,9 +6,13 @@
 
 <portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
 <portlet:actionURL name="userDataSubmit" var="userDataSubmit" />
+
 <portlet:actionURL name="providePreviewImage"
 	windowState="<%=LiferayWindowState.EXCLUSIVE.toString()%>"
 	var="providePreviewImage" />
+	
+<portlet:actionURL name="termsCondictionsDisplay" var="termsCondictionsDisplay" />
+
 
 
 <style>
@@ -88,6 +93,7 @@ portlet:namespace />spinner {
 		String lastname = renderRequest.getParameter("lastname");
 		String email = renderRequest.getParameter("email");
 		String opinion = renderRequest.getParameter("opinion");
+		String termsConditionsJsp = renderRequest.getParameter("termsConditionsJsp");
 		long backgroundID = Long.parseLong(backgroundIDString);
 		DLFileEntry background = DLFileEntryLocalServiceUtil.getDLFileEntry(backgroundID);
 
@@ -100,6 +106,15 @@ portlet:namespace />spinner {
 			}
 		}
 	%>
+	
+	<script type="text/javascript">
+
+	function ohrDisplayTermsCond() {
+		var actionURL = '<%= renderRequest.getContextPath() %><%= termsConditionsJsp %>';
+		Liferay.Util.openWindow({id:'$<portlet:namespace />showTermsCond', title: 'Nutzungsbedingungen', uri:actionURL});
+	}
+</script>
+	
 
 	<portlet:renderURL var="varURL">
 		<portlet:param name="mvcPath" value="<second-JSP-URL>"></portlet:param>
@@ -171,6 +186,14 @@ portlet:namespace />spinner {
 				type="hidden">
 			</aui:input>
 		</div>
+		
+		<div>
+		Ich habe die <a href="JavaScript:ohrDisplayTermsCond();">Nutzungsbedingungen</a> gelesen und bin damit einverstanden.
+		
+		
+		
+		
+		</div>
 
 
 		<div id="<portlet:namespace />spinnerContainer"></div>
@@ -186,13 +209,9 @@ portlet:namespace />spinner {
 	</aui:form>
 
 
+
+
 	<script type="text/javascript">
-		/*	document.getElementById("<portlet:namespace />pic").onchange = function() {
-		 document.getElementById("<portlet:namespace />fn").focus();
-		 }
-		 */
-		 
-		 
 
 		 
 		 AUI().use('aui-form-validator', function(A) {
