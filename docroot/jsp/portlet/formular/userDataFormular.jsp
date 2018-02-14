@@ -1,4 +1,5 @@
-<%@page import="org.politaktiv.portlet.plakatohr.controller.PlakatohrPortlet"%>
+<%@page
+	import="org.politaktiv.portlet.plakatohr.controller.PlakatohrPortlet"%>
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.util.List"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
@@ -10,8 +11,9 @@
 <portlet:actionURL name="providePreviewImage"
 	windowState="<%=LiferayWindowState.EXCLUSIVE.toString()%>"
 	var="providePreviewImage" />
-	
-<portlet:actionURL name="termsCondictionsDisplay" var="termsCondictionsDisplay" />
+
+<portlet:actionURL name="termsCondictionsDisplay"
+	var="termsCondictionsDisplay" />
 
 
 
@@ -106,15 +108,20 @@ portlet:namespace />spinner {
 			}
 		}
 	%>
-	
+
 	<script type="text/javascript">
 
 	function ohrDisplayTermsCond() {
-		var actionURL = '<%= renderRequest.getContextPath() %><%= termsConditionsJsp %>';
-		Liferay.Util.openWindow({id:'$<portlet:namespace />showTermsCond', title: 'Nutzungsbedingungen', uri:actionURL});
-	}
-</script>
-	
+		var actionURL = '<%=renderRequest.getContextPath()%><%=termsConditionsJsp%>
+		';
+			Liferay.Util.openWindow({
+				id : '$<portlet:namespace />showTermsCond',
+				title : 'Nutzungsbedingungen',
+				uri : actionURL
+			});
+		}
+	</script>
+
 
 	<portlet:renderURL var="varURL">
 		<portlet:param name="mvcPath" value="<second-JSP-URL>"></portlet:param>
@@ -151,11 +158,11 @@ portlet:namespace />spinner {
 
 		<div>
 			<div>
-				<% 
-				String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
-				if(finalMessage != null && finalMessage != "") {
-					response.getWriter().println(finalMessage);
-				}
+				<%
+					String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
+						if (finalMessage != null && finalMessage != "") {
+							response.getWriter().println(finalMessage);
+						}
 				%>
 			</div>
 			<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
@@ -165,8 +172,8 @@ portlet:namespace />spinner {
 			<%
 				if (textOptions != null && !textOptions.isEmpty()) {
 			%>
-			<aui:select label="Text Anfang" name="textBeginning" style="width:400px;"
-				required="<%=true%>">
+			<aui:select label="Text Anfang" name="textBeginning"
+				style="width:400px;" required="<%=true%>">
 				<%
 					for (String option : textOptions) {
 				%><aui:option value="<%=option%>"><%=option%></aui:option>
@@ -179,20 +186,20 @@ portlet:namespace />spinner {
 				}
 			%>
 			<aui:input name="opinion" label="Meinung" placeholder="Meinung"
-				required="<%=true%>" type="textarea" style="width:500px; height:200px;">
+				required="<%=true%>" type="textarea"
+				style="width:500px; height:200px;">
 				<aui:validator name="maxLength"><%=opinionMaxLen%></aui:validator>
 			</aui:input>
 			<aui:input name="backgroundID" value="<%=backgroundIDString%>"
 				type="hidden">
 			</aui:input>
 		</div>
-		
+
 		<div>
-		Ich habe die <a href="JavaScript:ohrDisplayTermsCond();">Nutzungsbedingungen</a> gelesen und bin damit einverstanden.
-		
-		
-		
-		
+			<aui:input name="" cssClass="confirmdelete" id="confirmdeleteChkBox"
+				type="checkbox"></aui:input>
+			Ich habe die <a href="JavaScript:ohrDisplayTermsCond();">Nutzungsbedingungen</a>
+			gelesen und bin damit einverstanden.
 		</div>
 
 
@@ -202,7 +209,8 @@ portlet:namespace />spinner {
 			<aui:button-row>
 				<aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen"
 					onClick="history.go(-1)" />
-				<aui:button type="submit" value="Nächster Schritt: Vorschau" />
+				<<aui:button cssClass="confirmDeleteButton" disabled="true"
+					id="buttonSubmit" type="submit"></aui:button>
 			</aui:button-row>
 		</div>
 
@@ -212,23 +220,41 @@ portlet:namespace />spinner {
 
 
 	<script type="text/javascript">
+		AUI()
+				.use(
+						'aui-form-validator',
+						function(A) {
+							//var defaultFormValidator = A.config.FormValidator;
 
-		 
-		 AUI().use('aui-form-validator', function(A) {
-			    //var defaultFormValidator = A.config.FormValidator;
-			 
-		 
-		//$('form')
-				A.on(
-						'submit',
-						function(e) {
-							e.preventDefault();
-							$("#<portlet:namespace />spinnerContainer")
-									.append(
-											'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
-							//this.submit();
+							//$('form')
+							A
+									.on(
+											'submit',
+											function(e) {
+												e.preventDefault();
+												$("#<portlet:namespace />spinnerContainer").append(
+														'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
+												//this.submit();
+											});
 						});
-		 });
+
+		AUI().ready(function(A) {
+			var confirmbt = A.one(".confirm");
+			var abc = false;
+
+			A.one('.confirmdelete').on('change', function() {
+				abc = !abc;
+				if (abc) {
+					A.one("#buttonSubmit").set('disabled', false);
+					A.one("#buttonSubmit").removeClass('disabled');
+
+				} else {
+					A.one("#buttonSubmit").set('disabled', true);
+					A.one("#buttonSubmit").addClass('disabled');
+				}
+
+			});
+		});
 	</script>
 </div>
 
