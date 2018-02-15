@@ -73,6 +73,8 @@ div.PlakatOhR_ImgSelect {
 	
 	String instanceID = themeDisplay.getPortletDisplay().getInstanceId();
 	
+	Boolean preselected = true;
+	
 %>
 
 
@@ -102,11 +104,11 @@ div.PlakatOhR_ImgSelect {
 		String imgTag = "<img src=\"" + media.getDlFileUrl(themeDisplay, entry) + "\" />";
 		%>
 	
-		<aui:input inlineLabel="right" name="background" 
+		<aui:input inlineLabel="right" name="background" checked="<%= preselected %>"
 			type="radio" value="<%=entry.getFileEntryId()%>" label="<%=  imgTag %>" required="<%=true%>" />
 	</div>
 	
-<%}%>	
+<% preselected = false;} %>	
 	
 		<div class="PlakatOhR_FlexFiller"></div>
 	<div class="PlakatOhR_FlexFiller"></div>

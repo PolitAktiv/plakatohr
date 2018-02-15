@@ -76,6 +76,10 @@ portlet:namespace />spinner {
 .OhrPreviewOutmost {
 	position: relative;
 }
+
+.aui .control-group.error .checkbox {
+  color: #b50303;
+}
 </style>
 
 <div class="OhrPreviewOutmost">
@@ -112,8 +116,7 @@ portlet:namespace />spinner {
 	<script type="text/javascript">
 
 	function ohrDisplayTermsCond() {
-		var actionURL = '<%=renderRequest.getContextPath()%><%=termsConditionsJsp%>
-		';
+		var actionURL = '<%=renderRequest.getContextPath()%><%=termsConditionsJsp%>';
 			Liferay.Util.openWindow({
 				id : '$<portlet:namespace />showTermsCond',
 				title : 'Nutzungsbedingungen',
@@ -196,8 +199,8 @@ portlet:namespace />spinner {
 		</div>
 
 		<div>
-			<aui:input name="" cssClass="confirmdelete" id="confirmdeleteChkBox"
-				type="checkbox"></aui:input>
+			<aui:input name="" cssClass="acceptTerms" id="acceptTermsChkbox"
+				type="checkbox" required="<%=true%>"></aui:input>
 			Ich habe die <a href="JavaScript:ohrDisplayTermsCond();">Nutzungsbedingungen</a>
 			gelesen und bin damit einverstanden.
 		</div>
@@ -209,7 +212,7 @@ portlet:namespace />spinner {
 			<aui:button-row>
 				<aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen"
 					onClick="history.go(-1)" />
-				<<aui:button cssClass="confirmDeleteButton" disabled="true"
+				<<aui:button cssClass="acceptTermsButton" disabled="false"
 					id="buttonSubmit" type="submit"></aui:button>
 			</aui:button-row>
 		</div>
@@ -237,14 +240,14 @@ portlet:namespace />spinner {
 												//this.submit();
 											});
 						});
-
+		/*
 		AUI().ready(function(A) {
 			var confirmbt = A.one(".confirm");
-			var abc = false;
+			var visible = false;
 
-			A.one('.confirmdelete').on('change', function() {
-				abc = !abc;
-				if (abc) {
+			A.one('.acceptTerms').on('change', function() {
+				visible = !visible;
+				if (visible) {
 					A.one("#buttonSubmit").set('disabled', false);
 					A.one("#buttonSubmit").removeClass('disabled');
 
@@ -255,6 +258,7 @@ portlet:namespace />spinner {
 
 			});
 		});
+		*/
 	</script>
 </div>
 
