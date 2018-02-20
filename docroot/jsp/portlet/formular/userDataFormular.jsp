@@ -145,15 +145,15 @@ portlet:namespace />spinner {
 
 			<div class="RightColumn">
 				<aui:input id="fn" name="firstname" label="Vorname"
-					placeholder="Vorname" required="<%=true%>" type="text">
+					placeholder="Vorname" style="max-width:100%;" required="<%=true%>" type="text">
 					<aui:validator name="maxLength">35</aui:validator>
 				</aui:input>
 				<aui:input name="lastname" label="Nachname" placeholder="Nachname"
-					required="<%=true%>" type="text">
+					style="max-width:100%;" required="<%=true%>" type="text">
 					<aui:validator name="maxLength">35</aui:validator>
 				</aui:input>
 				<aui:input name="email" label="E-Mail" placeholder="E-Mail"
-					required="<%=true%>" type="text">
+					style="max-width:100%;" required="<%=true%>" type="text">
 					<aui:validator name="email" />
 				</aui:input>
 			</div>
@@ -176,7 +176,7 @@ portlet:namespace />spinner {
 				if (textOptions != null && !textOptions.isEmpty()) {
 			%>
 			<aui:select label="Text Anfang" name="textBeginning"
-				style="width:400px;" required="<%=true%>">
+				style="max-width:100%;" required="<%=true%>">
 				<%
 					for (String option : textOptions) {
 				%><aui:option value="<%=option%>"><%=option%></aui:option>
@@ -190,7 +190,7 @@ portlet:namespace />spinner {
 			%>
 			<aui:input name="opinion" label="Meinung" placeholder="Meinung"
 				required="<%=true%>" type="textarea"
-				style="width:500px; height:200px;">
+				style="width:100%; max-width:100%; height:200px;">
 				<aui:validator name="maxLength"><%=opinionMaxLen%></aui:validator>
 			</aui:input>
 			<aui:input name="backgroundID" value="<%=backgroundIDString%>"
