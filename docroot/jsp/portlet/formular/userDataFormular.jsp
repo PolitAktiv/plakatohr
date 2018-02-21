@@ -23,21 +23,20 @@ div.PlakatOhR_BackgroundPreview img {
 	border-left: 2px solid #dedede;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
-	border-radius: 2px;
-	margin-bottom: 4px;
+	border-radius: 1px;
+	margin-bottom: 0px;
 	max-height: 280px;
 	width: auto;
+	max-width: 99%;
 }
 
 div.PlakatOhR_BackgroundPreview {
 	background-color: #f4f4f4;
 	border: 1px solid #cccccc;
 	max-width: auto;
-	padding: 10px !important;;
-	margin: 10px;
+	margin: 4px;
 	overflow: hidden;
-	float: left;
-	padding: 10px !important
+	
 }
 
 div.formContainer {
@@ -78,7 +77,7 @@ portlet:namespace />spinner {
 }
 
 .aui .control-group.error .checkbox {
-  color: #b50303;
+	color: #b50303;
 }
 </style>
 
@@ -145,7 +144,8 @@ portlet:namespace />spinner {
 
 			<div class="RightColumn">
 				<aui:input id="fn" name="firstname" label="Vorname"
-					placeholder="Vorname" style="max-width:100%;" required="<%=true%>" type="text">
+					placeholder="Vorname" style="max-width:100%;" required="<%=true%>"
+					type="text">
 					<aui:validator name="maxLength">35</aui:validator>
 				</aui:input>
 				<aui:input name="lastname" label="Nachname" placeholder="Nachname"
@@ -200,9 +200,13 @@ portlet:namespace />spinner {
 
 		<div>
 			<aui:input name="" cssClass="acceptTerms" id="acceptTermsChkbox"
-				type="checkbox" required="<%=true%>"></aui:input>
-			Ich habe die <a href="JavaScript:ohrDisplayTermsCond();">Nutzungsbedingungen</a>
-			gelesen und bin damit einverstanden.
+				type="checkbox" required="<%=true%>">
+				<aui:validator name="required" errorMessage="<p style='color:red;'>Bitte akzeptiere Sie die Nutzungsbedingungen</br></p>" />
+			</aui:input>
+			<div>
+				Ich habe die <a href="JavaScript:ohrDisplayTermsCond();">Nutzungsbedingungen</a>
+				gelesen und bin damit einverstanden.
+			</div>
 		</div>
 
 
@@ -235,8 +239,10 @@ portlet:namespace />spinner {
 											'submit',
 											function(e) {
 												e.preventDefault();
-												$("#<portlet:namespace />spinnerContainer").append(
-														'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
+												$(
+														"#<portlet:namespace />spinnerContainer")
+														.append(
+																'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
 												//this.submit();
 											});
 						});
@@ -258,7 +264,7 @@ portlet:namespace />spinner {
 
 			});
 		});
-		*/
+		 */
 	</script>
 </div>
 
