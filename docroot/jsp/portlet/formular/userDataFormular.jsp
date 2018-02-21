@@ -92,7 +92,7 @@ portlet:namespace />spinner {
 
 <div class="OhrPreviewOutmost">
 
-	<h2>Schritt 2: Bitte geben Sie die notwendigen Daten fÃ¼r den
+	<h2>Schritt 2: Bitte geben Sie die notwendigen Daten für den
 		Inhalt Ihres Plakats an</h2>
 
 	<%
@@ -235,7 +235,7 @@ portlet:namespace />spinner {
 
 		<div>
 			<aui:button-row>
-				<aui:button type="cancel" value="ZurÃ¼ck: Hintergrundmotiv auswÃ¤hlen"
+				<aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen"
 					onClick="history.go(-1)" />
 				<aui:button cssClass="acceptTermsButton" disabled="false"
 					id="buttonSubmit" type="submit"></aui:button>
