@@ -26,8 +26,7 @@ div.PlakatOhR_BackgroundPreview img {
 	border-radius: 1px;
 	margin-bottom: 0px;
 	max-height: 280px;
-	width: auto;
-	max-width: 99%;
+	max-width: 98%;
 }
 
 div.PlakatOhR_BackgroundPreview {
@@ -36,7 +35,7 @@ div.PlakatOhR_BackgroundPreview {
 	max-width: auto;
 	margin: 4px;
 	overflow: hidden;
-	
+	float: left;
 }
 
 div.formContainer {
@@ -83,7 +82,7 @@ portlet:namespace />spinner {
 
 <div class="OhrPreviewOutmost">
 
-	<h2>Schritt 2: Bitte geben Sie die notwendigen Daten für den
+	<h2>Schritt 2: Bitte geben Sie die notwendigen Daten fÃ¼r den
 		Inhalt Ihres Plakats an</h2>
 
 	<%
@@ -214,7 +213,7 @@ portlet:namespace />spinner {
 
 		<div>
 			<aui:button-row>
-				<aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen"
+				<aui:button type="cancel" value="ZurÃ¼ck: Hintergrundmotiv auswÃ¤hlen"
 					onClick="history.go(-1)" />
 				<<aui:button cssClass="acceptTermsButton" disabled="false"
 					id="buttonSubmit" type="submit"></aui:button>
