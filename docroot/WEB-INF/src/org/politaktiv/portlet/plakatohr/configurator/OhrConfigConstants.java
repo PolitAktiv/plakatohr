@@ -18,6 +18,8 @@ public class OhrConfigConstants {
 	public static String INTRODUCTION_TEXT_HTML="introductionTextHtml";
 	public static String OPINION_MAX_LENGTH="opinionMaxLength";
 	public static String TEXT_BEGINNINGS="textBeginnings";
+	public static String TERMS_COND_ARTICLE_ID="termsCondArticleID";
+	
 	
 	
 	/**

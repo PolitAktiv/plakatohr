@@ -87,14 +87,10 @@ public class PlakatohrPortlet extends MVCPortlet {
 		response.setRenderParameter("jspPage", BACKGROUND_SELECTION_JSP);
 	}
 	
-	/**
-	 * Redirect to terms and condictions JSP
-	 * @param request
-	 * @param response
-	 */
-	public void termsCondictionsDisplay(ActionRequest request, ActionResponse response) {
-		response.setRenderParameter("jspPage", TERMS_CONDITIONS_JSP);
-	}	
+	
+	public static String getTermsCondJsp() {
+		return TERMS_CONDITIONS_JSP;
+	}
 	
 
 	/**

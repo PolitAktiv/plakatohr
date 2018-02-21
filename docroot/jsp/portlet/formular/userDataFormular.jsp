@@ -1,3 +1,6 @@
+<%@page import="com.liferay.portal.kernel.util.LocaleUtil"%>
+<%@page import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
+<%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
 <%@page
 	import="org.politaktiv.portlet.plakatohr.controller.PlakatohrPortlet"%>
 <%@page import="java.util.LinkedList"%>
@@ -14,6 +17,13 @@
 
 <portlet:actionURL name="termsCondictionsDisplay"
 	var="termsCondictionsDisplay" />
+
+<portlet:renderURL var="termsCondRenderURL"
+windowState="<%=LiferayWindowState.EXCLUSIVE.toString()%>">
+<portlet:param name="mvcPath" 
+value="<%= PlakatohrPortlet.getTermsCondJsp() %>"/>
+<portlet:param name="message" value="PlaktOhR Terms and Conditions"/> <!-- TODO param löschen, Überreste von Code-Kopie aus Internet -->
+</portlet:renderURL>
 
 
 
@@ -111,15 +121,27 @@ portlet:namespace />spinner {
 				textOptions.add(line.trim());
 			}
 		}
+		
+		// Terms & Conditions Display vorbereiten: Titel des WebContents holen
+		String termsCondArticleId = GetterUtil
+		.getString(portletPreferences.getValue(OhrConfigConstants.TERMS_COND_ARTICLE_ID, ""), "");		
+		
+		long groupId = themeDisplay.getScopeGroupId();
+        JournalArticle art = JournalArticleLocalServiceUtil.getArticle(groupId, termsCondArticleId);
+        String termsCondTitle = art.getTitle(themeDisplay.getLocale(),true);
+
+
+		
+		
 	%>
 
 	<script type="text/javascript">
 
 	function ohrDisplayTermsCond() {
-		var actionURL = '<%=renderRequest.getContextPath()%><%=termsConditionsJsp%>';
+		var actionURL = '<%=termsCondRenderURL%>';
 			Liferay.Util.openWindow({
 				id : '$<portlet:namespace />showTermsCond',
-				title : 'Nutzungsbedingungen',
+				title : '<%= termsCondTitle %>',
 				uri : actionURL
 			});
 		}
@@ -212,7 +234,7 @@ portlet:namespace />spinner {
 			<aui:button-row>
 				<aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen"
 					onClick="history.go(-1)" />
-				<<aui:button cssClass="acceptTermsButton" disabled="false"
+				<aui:button cssClass="acceptTermsButton" disabled="false"
 					id="buttonSubmit" type="submit"></aui:button>
 			</aui:button-row>
 		</div>

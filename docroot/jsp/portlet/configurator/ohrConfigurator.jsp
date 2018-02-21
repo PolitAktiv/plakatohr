@@ -1,4 +1,11 @@
 
+<%@page import="org.politaktiv.articleutil.articleTitleComparator"%>
+<%@page import="org.politaktiv.articleutil.articleJournalHelper"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.LinkedList"%>
+<%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
+<%@page import="java.util.List"%>
+<%@page import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.UnicodeFormatter"%>
 <%@page
 	import="org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants"%>
@@ -39,7 +46,8 @@
 <%
 	final String textBeginningsLabel = "Alternative Textanfänge:";
 	final String textBeginningsHelp = "Hier können alternative Textanfänge für das Meinungsfeld eingegeben werden. "
-			+ "Diese müssen durch einen Zeilenumbruch voneinander getrennt werden.";
+			+ "Diese müssen durch einen Zeilenumbruch voneinander getrennt werden. Wenn das Feld leer ist, wird " 
+			+ "die Auswahl der Textanfänge für den Benutzer abgeschaltet.";
 
 	final String sourceFolderLabel = "Vorlagen-Ordner:";
 	final String sourceFolderHelp = "In diesem Ordner liegen die Vorlagen (Hintergründe) "
@@ -52,7 +60,7 @@
 	final String eMailRecipientLabel = "E-Mail-Empfänger:";
 	final String eMailSubjectLabel = "E-Mail-Betreff:";
 	final String eMailIntroText = "Wenn ein neues Plakat in der Medien-Bibliothek abgelegt wird, kann automatisch eine E-Mail verschickt werden."
-			+ " Füllen Sie hierzu die folgenden Fehlder aus:";
+			+ " Füllen Sie hierzu die folgenden Felder aus:";
 
 	final String opinionMaxLenLabel = "Maximal Länge für das Meinungsfeld (in Zeichen):";
 
@@ -63,6 +71,11 @@
 	
 	final String introductionLabel = "Einleitungstext an Benutzer beim Eingeben der Daten:";
 	final String introductionHelp = "Beim Eingeben der Daten im Formular wird dem Benutzer diese Meldung angezeigt.";
+	
+	final String termsCondLabel ="WebContent für Link zu Nutzungsbedingungen/Datenschutzrichtlinien:";
+	final String termsCondLabelHelp ="Der Inhalt dieses WebContents wird angezeigt, wenn der Benutzer auf den Link zu den Nutzungsbedingungen klickt.";
+			
+	
 %>
 
 
@@ -112,8 +125,15 @@
 	// get maximum length of opinion
 	int opinionMaxLen = GetterUtil
 			.getInteger(portletPreferences.getValue(OhrConfigConstants.OPINION_MAX_LENGTH, ""), 100);
+	// get selected webcontent for terms and conditions
+	String termsCondArticleId = GetterUtil
+			.getString(portletPreferences.getValue(OhrConfigConstants.TERMS_COND_ARTICLE_ID, ""), "");	
 
+			
 	String portletId = PortletKeys.DOCUMENT_LIBRARY;
+	
+	
+	
 %>
 
 
@@ -202,6 +222,29 @@
     </script>
 		</aui:field-wrapper>
 
+	<aui:select label="<%= termsCondLabel %>" helpMessage="<%= termsCondLabelHelp %>" name="<%= OhrConfigConstants.TERMS_COND_ARTICLE_ID %>" multiple="false">
+        <%
+        //List<JournalArticle> articleList = JournalArticleLocalServiceUtil.getArticles();
+        // user helper to optain a sorted list of latest article within this context/scope/site:
+        	
+        
+        List<JournalArticle> articleList = articleJournalHelper.getLatestArticles(
+        		themeDisplay.getScopeGroupId(), 
+        		new articleTitleComparator(themeDisplay.getLocale()));
+ 
+        for (JournalArticle article : articleList) {
+            String title = article.getTitle(themeDisplay.getLocale(),true);
+            String idTitle = article.getArticleId();
+        %>
+            <aui:option value="<%= idTitle %>" selected="<%= idTitle.equals(termsCondArticleId) %>">
+                <liferay-ui:message key="<%= title %>" />
+            </aui:option>
+        <%
+        }
+        
+        %> 
+        
+</aui:select>
 
 		<p><%=eMailIntroText%></p>
 
@@ -214,6 +257,8 @@
 
 
 	</aui:layout>
+	
+	
 
 
 	<aui:button-row>
