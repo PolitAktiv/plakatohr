@@ -1,5 +1,6 @@
 <%@page import="com.liferay.portal.kernel.util.LocaleUtil"%>
-<%@page import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
+<%@page
+	import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
 <%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
 <%@page
 	import="org.politaktiv.portlet.plakatohr.controller.PlakatohrPortlet"%>
@@ -7,6 +8,8 @@
 <%@page import="java.util.List"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@ include file="/jsp/portlet/import.jsp"%>
+<%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet"%>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 
 <portlet:actionURL name="initializePlakatohr" var="initializePlakatohr" />
 <portlet:actionURL name="userDataSubmit" var="userDataSubmit" />
@@ -19,13 +22,73 @@
 	var="termsCondictionsDisplay" />
 
 <portlet:renderURL var="termsCondRenderURL"
-windowState="<%=LiferayWindowState.EXCLUSIVE.toString()%>">
-<portlet:param name="mvcPath" 
-value="<%= PlakatohrPortlet.getTermsCondJsp() %>"/>
-<portlet:param name="message" value="PlaktOhR Terms and Conditions"/> <!-- TODO param löschen, Überreste von Code-Kopie aus Internet -->
+	windowState="<%=LiferayWindowState.EXCLUSIVE.toString()%>">
+	<portlet:param name="mvcPath"
+		value="<%=PlakatohrPortlet.getTermsCondJsp()%>" />
+	<portlet:param name="message" value="PlaktOhR Terms and Conditions" />
+	<!-- TODO param löschen, Überreste von Code-Kopie aus Internet -->
 </portlet:renderURL>
 
+<style>
+.termscond-popup {
+	display: none;
+	background: white;
+	border-radius: 7px;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	overflow: scroll;
+	position: fixed;
+	right: 0;
+	top: 0;
+	max-width: 50%;
+	max-height: 80%;
+	z-index: 11;
+	padding: 0 14px;
+}
 
+.portlet .termscond-popup .button-holder {
+	margin: 0 auto;
+}
+
+.portlet .termscond-popup .button-holder .btn {
+	float: left;
+	padding: 5px 3px;
+	font-size: 16px;
+	color: #fff;
+}
+
+.portlet .termscond-popup .button-holder .btn.btn-cancel {
+	color: #000;
+	margin-right: 3px;
+}
+
+.overlay1 {
+	width: 100%;
+	background: #000;
+	opacity: 0.4;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: none;
+	z-index: 10;
+}
+
+.aui .termscond-popup .button-holder {
+	width: 129px;
+}
+
+.aui .termscond-popup .btn.deleteRecord {
+	float: left;
+}
+
+.aui .termscond-popup .btn {
+	color: #000000 !important;
+	font-size: 14px !important;
+	padding: 1px 9px !important;
+}
+</style>
 
 <style>
 div.PlakatOhR_BackgroundPreview img {
@@ -119,18 +182,14 @@ portlet:namespace />spinner {
 				textOptions.add(line.trim());
 			}
 		}
-		
+
 		// Terms & Conditions Display vorbereiten: Titel des WebContents holen
 		String termsCondArticleId = GetterUtil
-		.getString(portletPreferences.getValue(OhrConfigConstants.TERMS_COND_ARTICLE_ID, ""), "");		
-		
+				.getString(portletPreferences.getValue(OhrConfigConstants.TERMS_COND_ARTICLE_ID, ""), "");
+
 		long groupId = themeDisplay.getScopeGroupId();
-        JournalArticle art = JournalArticleLocalServiceUtil.getArticle(groupId, termsCondArticleId);
-        String termsCondTitle = art.getTitle(themeDisplay.getLocale(),true);
-
-
-		
-		
+		JournalArticle art = JournalArticleLocalServiceUtil.getArticle(groupId, termsCondArticleId);
+		String termsCondTitle = art.getTitle(themeDisplay.getLocale(), true);
 	%>
 
 	<script type="text/javascript">
@@ -139,7 +198,7 @@ portlet:namespace />spinner {
 		var actionURL = '<%=termsCondRenderURL%>';
 			Liferay.Util.openWindow({
 				id : '$<portlet:namespace />showTermsCond',
-				title : '<%= termsCondTitle %>',
+				title : '<%=termsCondTitle%>',
 				uri : actionURL
 			});
 		}
@@ -181,16 +240,18 @@ portlet:namespace />spinner {
 		</div>
 
 		<div>
-			
-				<%
-					String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
-						if (finalMessage != null && finalMessage != "") {
-							%><div><%
-								response.getWriter().println(finalMessage);
-							%></div><%
 
-						}
+			<%
+				String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
+					if (finalMessage != null && finalMessage != "") {
+			%><div>
+				<%
+					response.getWriter().println(finalMessage);
 				%>
+			</div>
+			<%
+				}
+			%>
 			<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
 				type="file">
 				<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
@@ -224,10 +285,11 @@ portlet:namespace />spinner {
 		<div>
 			<aui:input name="" cssClass="acceptTerms" id="acceptTermsChkbox"
 				type="checkbox" required="<%=true%>">
-				<aui:validator name="required" errorMessage="<p style='color:red;'>Bitte akzeptiere Sie die Nutzungsbedingungen</br></p>" />
+				<aui:validator name="required"
+					errorMessage="<p style='color:red;'>Bitte akzeptiere Sie die Nutzungsbedingungen</br></p>" />
 			</aui:input>
 			<div>
-				Ich habe die <a href="JavaScript:ohrDisplayTermsCond();">Nutzungsbedingungen</a>
+				Ich habe die <a onclick='showPopup();' href='javascript:void(0)'>Nutzungsbedingungen</a>
 				gelesen und bin damit einverstanden.
 			</div>
 		</div>
@@ -246,7 +308,33 @@ portlet:namespace />spinner {
 
 	</aui:form>
 
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 
+	<script type="text/javascript">
+		function showPopup() {
+			$(".termscond-popup").show();
+			$(".overlay1").show();
+		}
+		function closePopup() {
+			$(".termscond-popup").hide();
+			$('#message h2').html("");
+			$(".overlay1").hide();
+
+		}
+	</script>
+
+	<%
+		long groupID = themeDisplay.getScopeGroupId();
+	%>
+
+	<div class="termscond-popup">
+		<liferay-ui:journal-article showTitle="false" groupId="<%=groupID%>"
+			articleId="<%=termsCondArticleId%>" />
+		<aui:button-row>
+			<aui:button type="cancel" value="Schließen" onClick="closePopup();" />
+		</aui:button-row>
+	</div>
+	<div class="overlay1"></div>
 
 
 	<script type="text/javascript">

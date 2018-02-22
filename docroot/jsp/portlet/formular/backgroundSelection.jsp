@@ -42,13 +42,6 @@ div.PlakatOhR_FlexFiller {
  display:flex;
  width:50%;
 }
-div.PlakatOhR_ImgSelect {
- width:50%;
- overflow:hidden;
- min-width:200px;
- flex-grow: 1;
-}
-
 
 </style>
 
@@ -75,6 +68,25 @@ div.PlakatOhR_ImgSelect {
 	
 	Boolean preselected = true;
 	
+	if (jpegsUndSVGs.keySet().size() == 1) {
+		%><style>
+			div.PlakatOhR_ImgSelect {
+ 				width:100%;
+ 				overflow:hidden;
+ 				min-width:200px;
+ 				flex-grow: 1;
+			}
+		</style><%
+	} else {
+		%><style>
+			div.PlakatOhR_ImgSelect {
+				width:50%;
+				overflow:hidden;
+				min-width:200px;
+				flex-grow: 1;
+			}
+		</style><%
+	}
 %>
 
 
@@ -84,16 +96,15 @@ div.PlakatOhR_ImgSelect {
 <aui:field-wrapper name="backgroundwrapper" label="" >
 		
 		
-	<%	for (DLFileEntry entry : jpegsUndSVGs.keySet()) {
+	<%	
+	
+	for (DLFileEntry entry : jpegsUndSVGs.keySet()) {
 	
 		SvgManipulator manipulator = new SvgManipulator(jpegsUndSVGs.get(entry).getContentStream());
 		String title = manipulator.getSvgTitle();
-	
-	
+		
 	%>
-	
-
-	
+		
 	<div class="PlakatOhR_ImgSelect">
 	
 		<%
@@ -105,12 +116,12 @@ div.PlakatOhR_ImgSelect {
 		%>
 	
 		<aui:input inlineLabel="right" name="background" checked="<%= preselected %>"
-			type="radio" value="<%=entry.getFileEntryId()%>" label="<%=  imgTag %>" required="<%=true%>" />
+			type="radio" value="<%=entry.getFileEntryId()%>" label="<%= imgTag %>" required="<%=true%>" />
 	</div>
 	
 <% preselected = false;} %>	
 	
-		<div class="PlakatOhR_FlexFiller"></div>
+	<div class="PlakatOhR_FlexFiller"></div>
 	<div class="PlakatOhR_FlexFiller"></div>
 	<div class="PlakatOhR_FlexFiller"></div>
 		
