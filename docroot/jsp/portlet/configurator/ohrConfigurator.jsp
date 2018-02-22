@@ -224,10 +224,6 @@
 
 	<aui:select label="<%= termsCondLabel %>" helpMessage="<%= termsCondLabelHelp %>" name="<%= OhrConfigConstants.TERMS_COND_ARTICLE_ID %>" multiple="false">
         <%
-        //List<JournalArticle> articleList = JournalArticleLocalServiceUtil.getArticles();
-        // user helper to optain a sorted list of latest article within this context/scope/site:
-        	
-        
         List<JournalArticle> articleList = articleJournalHelper.getLatestArticles(
         		themeDisplay.getScopeGroupId(), 
         		new articleTitleComparator(themeDisplay.getLocale()));
