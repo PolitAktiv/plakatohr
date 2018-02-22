@@ -181,14 +181,16 @@ portlet:namespace />spinner {
 		</div>
 
 		<div>
-			<div>
+			
 				<%
 					String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
 						if (finalMessage != null && finalMessage != "") {
-							response.getWriter().println(finalMessage);
+							%><div><%
+								response.getWriter().println(finalMessage);
+							%></div><%
+
 						}
 				%>
-			</div>
 			<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
 				type="file">
 				<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
@@ -204,7 +206,7 @@ portlet:namespace />spinner {
 				<%
 					}
 				%>
-				<aui:option value="Freitext">Freitext</aui:option>
+				<aui:option value="Freitext">(Freitext)</aui:option>
 			</aui:select>
 			<%
 				}
