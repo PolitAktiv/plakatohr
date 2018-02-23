@@ -308,16 +308,15 @@ portlet:namespace />spinner {
 
 	</aui:form>
 
-	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-	<script type="text/javascript">
+	<script>
 		function showPopup() {
 			$(".termscond-popup").show();
 			$(".overlay1").show();
 		}
 		function closePopup() {
 			$(".termscond-popup").hide();
-			$('#message h2').html("");
 			$(".overlay1").hide();
 
 		}
