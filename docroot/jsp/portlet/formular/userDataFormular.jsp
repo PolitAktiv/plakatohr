@@ -211,7 +211,7 @@ portlet:namespace />spinner {
 			value="<%=themeDisplay.getURLCurrent()%>"></portlet:param>
 	</portlet:renderURL>
 
-	<aui:form action="<%=userDataSubmit%>" method="post" id="form"
+	<form action="<%=userDataSubmit%>" method="post" id="form"
 		name="form" enctype="multipart/form-data">
 
 		<div class="formContainer">
@@ -223,19 +223,19 @@ portlet:namespace />spinner {
 			</div>
 
 			<div class="RightColumn">
-				<aui:input id="fn" name="firstname" label="Vorname"
+				<input id="fn" name="firstname" label="Vorname"
 					placeholder="Vorname" style="max-width:100%;" required="<%=true%>"
 					type="text">
-					<aui:validator name="maxLength">35</aui:validator>
-				</aui:input>
-				<aui:input name="lastname" label="Nachname" placeholder="Nachname"
+					<%-- <aui:validator name="maxLength">35</aui:validator> --%>
+				
+				<input name="lastname" label="Nachname" placeholder="Nachname"
 					style="max-width:100%;" required="<%=true%>" type="text">
-					<aui:validator name="maxLength">35</aui:validator>
-				</aui:input>
-				<aui:input name="email" label="E-Mail" placeholder="E-Mail"
+					<%-- <aui:validator name="maxLength">35</aui:validator> --%>
+				
+				<input name="email" label="E-Mail" placeholder="E-Mail"
 					style="max-width:100%;" required="<%=true%>" type="text">
-					<aui:validator name="email" />
-				</aui:input>
+					<%-- <aui:validator name="email" /> --%>
+				
 			</div>
 		</div>
 
@@ -252,42 +252,42 @@ portlet:namespace />spinner {
 			<%
 				}
 			%>
-			<aui:input id="pic" name="picture" label="Bild" required="<%=true%>"
-				type="file">
-				<aui:validator name="acceptFiles">'jpg,png'</aui:validator>
-			</aui:input>
+			<input id="picture" name="picture" label="Bild (bitte nur Bilder des Typs jpg und png angeben)" type="file" required>
+				<%-- Falls der Validator rein soll <aui:validator name="acceptFiles">'jpg,png'</aui:validator> --%>
+			
 			<%
 				if (textOptions != null && !textOptions.isEmpty()) {
 			%>
-			<aui:select label="Text Anfang" name="textBeginning"
+			<select label="Text Anfang" name="textBeginning"
 				style="max-width:100%;" required="<%=true%>">
 				<%
 					for (String option : textOptions) {
-				%><aui:option value="<%=option%>"><%=option%></aui:option>
+				%><option value="<%=option%>"><%=option%></option>
 				<%
 					}
 				%>
-				<aui:option value="Freitext">(Freitext)</aui:option>
-			</aui:select>
+				<option value="Freitext">(Freitext)</option>
+			</select>
 			<%
 				}
 			%>
-			<aui:input name="opinion" label="Meinung" placeholder="Meinung"
+			<textarea name="opinion" placeholder="Meinung"
+				required="<%=true%>"
+				style="width:100%; max-width:100%; height:200px;"></textarea>
+			<%-- <input name="opinion" label="Meinung" placeholder="Meinung"
 				required="<%=true%>" type="textarea"
-				style="width:100%; max-width:100%; height:200px;">
-				<aui:validator name="maxLength"><%=opinionMaxLen%></aui:validator>
-			</aui:input>
-			<aui:input name="backgroundID" value="<%=backgroundIDString%>"
+				style="width:100%; max-width:100%; height:200px;"> --%>
+				<%-- <aui:validator name="maxLength"><%=opinionMaxLen%></aui:validator> --%>
+			<input name="backgroundID" value="<%=backgroundIDString%>"
 				type="hidden">
-			</aui:input>
 		</div>
 
 		<div>
-			<aui:input name="" cssClass="acceptTerms" id="acceptTermsChkbox"
+			<input name="" class="acceptTerms" id="acceptTermsChkbox"
 				type="checkbox" required="<%=true%>">
-				<aui:validator name="required"
+				<%-- <aui:validator name="required"
 					errorMessage="<p style='color:red;'>Bitte akzeptiere Sie die Nutzungsbedingungen</br></p>" />
-			</aui:input>
+					--%>
 			<div>
 				Ich habe die <a onclick='showPopup();' href='javascript:void(0)'>Nutzungsbedingungen</a>
 				gelesen und bin damit einverstanden.
@@ -298,15 +298,15 @@ portlet:namespace />spinner {
 		<div id="<portlet:namespace />spinnerContainer"></div>
 
 		<div>
-			<aui:button-row>
-				<aui:button type="cancel" value="Zurück: Hintergrundmotiv auswählen"
-					onClick="history.go(-1)" />
-				<aui:button cssClass="acceptTermsButton" disabled="false"
-					id="buttonSubmit" type="submit"></aui:button>
-			</aui:button-row>
+			<%-- <button-row> --%>
+				<button value="Zurück: Hintergrundmotiv auswählen"
+					onClick="history.go(-1)"></button>
+				<button class="acceptTermsButton"
+					id="buttonSubmit" name="buttonSubmit" type="submit" value="Weiter"></button>
+			<%-- </button-row> --%>
 		</div>
 
-	</aui:form>
+	</form>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -335,8 +335,27 @@ portlet:namespace />spinner {
 	</div>
 	<div class="overlay1"></div>
 
-
-	<script type="text/javascript">
+	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+	<script>
+	var form = $( "#<portlet:namespace />form" );
+	jQuery.validator.setDefaults({
+		  debug: true,
+		  success: "valid"
+		});
+	form.validate({
+		  rules: {
+		    field: {
+		      required: true,
+		      extension: "jpg|png"
+		    }
+		  }
+		});
+	
+	form.submit(function(e){
+                e.preventDefault();
+            });
+<%--
 		AUI()
 				.use(
 						'aui-form-validator',
@@ -353,7 +372,6 @@ portlet:namespace />spinner {
 														"#<portlet:namespace />spinnerContainer")
 														.append(
 																'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
-												//this.submit();
 											});
 						});
 		/*
@@ -375,6 +393,7 @@ portlet:namespace />spinner {
 			});
 		});
 		 */
+		 --%>
 	</script>
 </div>
 

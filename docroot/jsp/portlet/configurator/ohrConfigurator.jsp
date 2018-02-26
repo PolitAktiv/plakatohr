@@ -72,10 +72,9 @@
 	final String introductionLabel = "Einleitungstext an Benutzer beim Eingeben der Daten:";
 	final String introductionHelp = "Beim Eingeben der Daten im Formular wird dem Benutzer diese Meldung angezeigt.";
 	
-	final String termsCondLabel ="WebContent für Link zu Nutzungsbedingungen/Datenschutzrichtlinien:";
-	final String termsCondLabelHelp ="Der Inhalt dieses WebContents wird angezeigt, wenn der Benutzer auf den Link zu den Nutzungsbedingungen klickt.";
+	final String termsCondLabel = "WebContent für Link zu Nutzungsbedingungen/Datenschutzrichtlinien:";
+	final String termsCondLabelHelp = "Der Inhalt dieses WebContents wird angezeigt, wenn der Benutzer auf den Link zu den Nutzungsbedingungen klickt.";
 			
-	
 %>
 
 

@@ -59,10 +59,12 @@ public class PlakatohrPortlet extends MVCPortlet {
 	private static final String JSP_PATH = "/jsp/portlet/";
 	private static final String BACKGROUND_SELECTION_JSP = JSP_PATH + "formular/backgroundSelection.jsp";
 	private static final String USER_DATA_FORMULAR_JSP = JSP_PATH + "formular/userDataFormular.jsp";
-	private static final String IMAGE_CROPPER_JSP = JSP_PATH + "alloyUI/imageCropper.jsp";
+	//private static final String IMAGE_CROPPER_JSP = JSP_PATH + "alloyUI/imageCropper.jsp";
 	private static final String PREVIEW_JSP = JSP_PATH + "formular/preview.jsp";
 	private static final String SUCCESS_JSP = JSP_PATH + "formular/success.jsp";
 	private static final String TERMS_CONDITIONS_JSP = JSP_PATH + "termscond.jsp";
+	
+	//private static final String STANDARD_USER_PICTURE = "/images/standardUserPicture.png";
 	
 	private static final String GUEST_USER_DIR = "/home/ohr/";
 	
@@ -124,8 +126,15 @@ public class PlakatohrPortlet extends MVCPortlet {
 			//return;
 			throw(e);
 		}
+		PortletPreferences portletPreferences = request.getPreferences();
 		
 		File file = uploadPortletRequest.getFile("picture");
+		//File file = new File(STANDARD_USER_PICTURE);
+		/*File tempFile = uploadPortletRequest.getFile("picture");
+		if((tempFile != null) && ((getFileExtension(file) == "jpg")
+							   || (getFileExtension(file) == "png"))) {
+			file = tempFile;
+		} */
 
 		try {
 			InputStream inStream = new FileInputStream(file);
@@ -135,7 +144,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 			
 			
 			OhrMediaHelper media = new OhrMediaHelper();
-			PortletPreferences portletPreferences = request.getPreferences();
+			
 			Long sourceDirectoryID = GetterUtil.getLong(
 					portletPreferences.getValue(OhrConfigConstants.SOURCE_FOLDER_ID, StringPool.TRUE),
 					DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
@@ -501,9 +510,14 @@ public class PlakatohrPortlet extends MVCPortlet {
 			throw new IOException("I do not know how to handle the requested file name: " + fileName);
 		}
 		
-		
-		
 	}
+	
+	private static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+        return fileName.substring(fileName.lastIndexOf(".")+1);
+        else return "";
+    }
 	
 
 }

@@ -1,3 +1,5 @@
+<%-- DEPRECATED --%>
+
 <%@ include file="/jsp/portlet/import.jsp"%>
 
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
