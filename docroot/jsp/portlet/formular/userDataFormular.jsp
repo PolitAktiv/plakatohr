@@ -211,8 +211,8 @@ portlet:namespace />spinner {
 			value="<%=themeDisplay.getURLCurrent()%>"></portlet:param>
 	</portlet:renderURL>
 
-	<form action="<%=userDataSubmit%>" method="post" id="form"
-		name="form" enctype="multipart/form-data">
+	<form action="<%=userDataSubmit%>" method="post" id="form" name="form"
+		enctype="multipart/form-data">
 
 		<div class="formContainer">
 
@@ -223,19 +223,21 @@ portlet:namespace />spinner {
 			</div>
 
 			<div class="RightColumn">
-				<input id="fn" name="firstname" label="Vorname"
-					placeholder="Vorname" style="max-width:100%;" required="<%=true%>"
-					type="text">
-					<%-- <aui:validator name="maxLength">35</aui:validator> --%>
-				
-				<input name="lastname" label="Nachname" placeholder="Nachname"
-					style="max-width:100%;" required="<%=true%>" type="text">
-					<%-- <aui:validator name="maxLength">35</aui:validator> --%>
-				
-				<input name="email" label="E-Mail" placeholder="E-Mail"
-					style="max-width:100%;" required="<%=true%>" type="text">
-					<%-- <aui:validator name="email" /> --%>
-				
+				<label for="plakatohrFirstname">Vorname</label> <input
+					id="plakatohrFirstname" name="firstname" placeholder="Vorname"
+					style="max-width: 100%;" type="text" required>
+				<%-- <aui:validator name="maxLength">35</aui:validator> --%>
+
+				<label for="plakatohrLastname">Nachname</label> <input
+					id="plakatohrLastname" name="lastname" placeholder="Nachname"
+					style="max-width: 100%;" type="text" required>
+				<%-- <aui:validator name="maxLength">35</aui:validator> --%>
+
+				<label for="plakatohrEmail">E-Mail</label> <input
+					id="plakatohrEmail " name="email" placeholder="E-Mail"
+					style="max-width: 100%;" type="email" required>
+				<%-- <aui:validator name="email" /> --%>
+
 			</div>
 		</div>
 
@@ -243,7 +245,7 @@ portlet:namespace />spinner {
 
 			<%
 				String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
-					if (finalMessage != null && finalMessage != "") {
+				if (finalMessage != null && finalMessage != "") {
 			%><div>
 				<%
 					response.getWriter().println(finalMessage);
@@ -252,14 +254,18 @@ portlet:namespace />spinner {
 			<%
 				}
 			%>
-			<input id="picture" name="picture" label="Bild (bitte nur Bilder des Typs jpg und png angeben)" type="file" required>
-				<%-- Falls der Validator rein soll <aui:validator name="acceptFiles">'jpg,png'</aui:validator> --%>
-			
+			<label for="picture">Bild (bitte nur Bilder des Typs .jpg und
+				.png angeben)</label> 
+			<input id="picture" name="picture" type="file" required>
+			<%-- Falls der Validator rein soll <aui:validator name="acceptFiles">'jpg,png'</aui:validator> --%>
+
 			<%
 				if (textOptions != null && !textOptions.isEmpty()) {
 			%>
-			<select label="Text Anfang" name="textBeginning"
-				style="max-width:100%;" required="<%=true%>">
+			<label for="plakatohrTextbeginnings">Text Anfang</label> 
+			<select
+				id="plakatohrTextbeginnings" name="textBeginning"
+				style="max-width: 100%;" required>
 				<%
 					for (String option : textOptions) {
 				%><option value="<%=option%>"><%=option%></option>
@@ -271,21 +277,20 @@ portlet:namespace />spinner {
 			<%
 				}
 			%>
-			<textarea name="opinion" placeholder="Meinung"
-				required="<%=true%>"
-				style="width:100%; max-width:100%; height:200px;"></textarea>
+			<label for="plakatohrOpinion">Meinung</label>
+			<textarea id="plakatohrOpinion" name="opinion" placeholder="Meinung"
+				style="width: 100%; max-width: 100%; height: 200px;" required></textarea>
 			<%-- <input name="opinion" label="Meinung" placeholder="Meinung"
 				required="<%=true%>" type="textarea"
 				style="width:100%; max-width:100%; height:200px;"> --%>
-				<%-- <aui:validator name="maxLength"><%=opinionMaxLen%></aui:validator> --%>
+			<%-- <aui:validator name="maxLength"><%=opinionMaxLen%></aui:validator> --%>
 			<input name="backgroundID" value="<%=backgroundIDString%>"
 				type="hidden">
 		</div>
 
 		<div>
-			<input name="" class="acceptTerms" id="acceptTermsChkbox"
-				type="checkbox" required="<%=true%>">
-				<%-- <aui:validator name="required"
+			<input name="acceptTermsChkbox" class="acceptTerms" id="acceptTermsChkbox" type="checkbox" required>
+			<%-- <aui:validator name="required"
 					errorMessage="<p style='color:red;'>Bitte akzeptiere Sie die Nutzungsbedingungen</br></p>" />
 					--%>
 			<div>
@@ -299,16 +304,18 @@ portlet:namespace />spinner {
 
 		<div>
 			<%-- <button-row> --%>
-				<button value="Zurück: Hintergrundmotiv auswählen"
-					onClick="history.go(-1)"></button>
-				<button class="acceptTermsButton"
-					id="buttonSubmit" name="buttonSubmit" type="submit" value="Weiter"></button>
+			<button class="btn btn-cancel"
+				value="Zurück: Hintergrundmotiv auswählen" onClick="history.go(-1)">Zurück:
+				Hintergrundmotiv auswählen</button>
+			<button class="btn btn-primary acceptTermsButton" id="buttonSubmit"
+				name="buttonSubmit" type="submit" value="Weiter zur Vorschau">Weiter</button>
 			<%-- </button-row> --%>
 		</div>
 
 	</form>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 	<script>
 		function showPopup() {
@@ -335,26 +342,83 @@ portlet:namespace />spinner {
 	</div>
 	<div class="overlay1"></div>
 
-	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 	<script>
-	var form = $( "#<portlet:namespace />form" );
+	var form = $( "#form" );
 	jQuery.validator.setDefaults({
 		  debug: true,
 		  success: "valid"
 		});
 	form.validate({
 		  rules: {
-		    field: {
-		      required: true,
-		      extension: "jpg|png"
-		    }
+			firstname: {
+				required: true
+			},
+			
+			lastname: {
+				required: true
+			},
+			
+			email: {
+				required: true,
+				email: true
+			},
+			
+		    picture: {
+		      	required: true,
+		     	extension: "jpg|png"
+		    },
+		    
+		    opinion: {
+				required: true
+			},
+			
+			acceptTermsChkbox: {
+				required: true
+			}
+		  },
+		  
+		  messages: {
+			  firstname: {
+					required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
+				},
+				
+				lastname: {
+					required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
+				},
+				
+				email: {
+					required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>",
+					email: "<div style='color: #b50303;'>Bitte geben Sie eine gültige E-Mail Adresse an</div>"
+				},
+				
+			    picture: {
+			    	required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>",
+			    	extension: "<div style='color: #b50303;'>Es werden nur Bilder des Typs .jpg und .png unterstützt</div>"
+			    },
+			    
+			    opinion: {
+					required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
+				},
+				
+				acceptTermsChkbox: {
+					required: "<div style='color: #b50303;'>Bitte stimmen Sie den Nutzungsbedingungen zu</div>"
+				}
 		  }
 		});
 	
 	form.submit(function(e){
-                e.preventDefault();
-            });
+				if (form.valid()) {
+					e.preventDefault();
+	                $("#<portlet:namespace />spinnerContainer")
+						.append(
+							'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
+	                this.submit();
+				}        
+    });
 <%--
 		AUI()
 				.use(
