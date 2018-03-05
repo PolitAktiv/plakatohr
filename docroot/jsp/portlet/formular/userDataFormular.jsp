@@ -235,7 +235,7 @@ portlet:namespace />spinner {
 			<label for="plakatohrTextbeginnings">Textanfang</label> 
 			<select
 				id="plakatohrTextbeginnings" name="textBeginning"
-				style="width: auto; max-width: 100%;" required>
+				style="width: auto !important; max-width: 100%;" required>
 				<%
 					for (String option : textOptions) {
 				%><option value="<%=option%>"><%=option%></option>
