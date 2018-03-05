@@ -41,26 +41,10 @@
 	position: fixed;
 	right: 0;
 	top: 0;
-	max-width: 50%;
+	max-width: 75%;
 	max-height: 80%;
 	z-index: 11;
 	padding: 0 14px;
-}
-
-.portlet .termscond-popup .button-holder {
-	margin: 0 auto;
-}
-
-.portlet .termscond-popup .button-holder .btn {
-	float: left;
-	padding: 5px 3px;
-	font-size: 16px;
-	color: #fff;
-}
-
-.portlet .termscond-popup .button-holder .btn.btn-cancel {
-	color: #000;
-	margin-right: 3px;
 }
 
 .overlay1 {
@@ -73,20 +57,6 @@
 	left: 0;
 	display: none;
 	z-index: 10;
-}
-
-.aui .termscond-popup .button-holder {
-	width: 129px;
-}
-
-.aui .termscond-popup .btn.deleteRecord {
-	float: left;
-}
-
-.aui .termscond-popup .btn {
-	color: #000000 !important;
-	font-size: 14px !important;
-	padding: 1px 9px !important;
 }
 </style>
 
@@ -118,6 +88,7 @@ div.formContainer {
 div.RightColumn {
 	float: left;
 	max-width: 49%;
+	padding-right: 0px;
 }
 
 div.PlakatOhR_BackgroundPreview_outer {
@@ -125,8 +96,7 @@ div.PlakatOhR_BackgroundPreview_outer {
 	width: 49%;
 }
 
-#<
-portlet:namespace />spinnerOuter {
+#<portlet:namespace />spinnerOuter {
 	display: block;
 	top: 50%;
 	position: absolute;
@@ -241,7 +211,7 @@ portlet:namespace />spinner {
 			</div>
 		</div>
 
-		<div>
+		<div style="max-width: 100%; padding-right: 10px;">
 
 			<%
 				String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
@@ -262,10 +232,10 @@ portlet:namespace />spinner {
 			<%
 				if (textOptions != null && !textOptions.isEmpty()) {
 			%>
-			<label for="plakatohrTextbeginnings">Text Anfang</label> 
+			<label for="plakatohrTextbeginnings">Textanfang</label> 
 			<select
 				id="plakatohrTextbeginnings" name="textBeginning"
-				style="max-width: 100%;" required>
+				style="width: auto; max-width: 100%;" required>
 				<%
 					for (String option : textOptions) {
 				%><option value="<%=option%>"><%=option%></option>
@@ -293,10 +263,10 @@ portlet:namespace />spinner {
 			<%-- <aui:validator name="required"
 					errorMessage="<p style='color:red;'>Bitte akzeptiere Sie die Nutzungsbedingungen</br></p>" />
 					--%>
-			<div>
+			
 				Ich habe die <a onclick='showPopup();' href='javascript:void(0)'>Nutzungsbedingungen</a>
 				gelesen und bin damit einverstanden.
-			</div>
+			
 		</div>
 
 
@@ -334,11 +304,11 @@ portlet:namespace />spinner {
 	%>
 
 	<div class="termscond-popup">
-		<liferay-ui:journal-article showTitle="false" groupId="<%=groupID%>"
+		<liferay-ui:journal-article showTitle="true" groupId="<%=groupID%>"
 			articleId="<%=termsCondArticleId%>" />
-		<aui:button-row>
-			<aui:button type="cancel" value="Schlieﬂen" onClick="closePopup();" />
-		</aui:button-row>
+		<div align="center">
+			<button class="btn btn-primary" onClick="closePopup();">Schlieﬂen</button>
+		</div>
 	</div>
 	<div class="overlay1"></div>
 
