@@ -88,7 +88,7 @@ div.formContainer {
 div.RightColumn {
 	float: left;
 	max-width: 49%;
-	padding-right: 0px;
+	padding-right: 10px;
 }
 
 div.PlakatOhR_BackgroundPreview_outer {
@@ -109,13 +109,14 @@ div.PlakatOhR_BackgroundPreview_outer {
 	margin: 0px !important;
 }
 
-#<
-portlet:namespace />spinner {
+#<portlet:namespace />spinner {
 	margin-top: 80%;
 }
 
 .OhrPreviewOutmost {
 	position: relative;
+	max-width: 100%;
+	overflow: hidden;
 }
 
 .aui .control-group.error .checkbox {
@@ -211,7 +212,7 @@ portlet:namespace />spinner {
 			</div>
 		</div>
 
-		<div style="max-width: 100%; padding-right: 10px;">
+		<div style="max-width: 100%; padding-right: 20px;">
 
 			<%
 				String finalMessage = portletPreferences.getValue(OhrConfigConstants.INTRODUCTION_TEXT_HTML, "").trim();
