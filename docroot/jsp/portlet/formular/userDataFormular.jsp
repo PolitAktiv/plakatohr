@@ -298,43 +298,79 @@ portlet:namespace />spinner {
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 	<script>
-		//We have to check for the mime type of the file selected mby the user to make sure it's one of the valid ones
-		//Magic Numbers try to watch the header of the file so it is way harder to trick the validation
-		//This is necessary because of files with a wrong ending or none at all
-		var inp = document.getElementById("picture");
-		inp.onchange = function(e) {
-			var reader = new FileReader();
-			reader.onload = analyze;
-			reader.readAsArrayBuffer(e.target.files[0]);
-		};
+	//We have to check for the mime type of the file selected mby the user to make sure it's one of the valid ones
+	//Magic Numbers try to watch the header of the file so it is way harder to trick the validation
+	//This is necessary because of files with a wrong ending or none at all
+	// Return the first few bytes of the file as a hex string
+	function getBLOBFileHeader(url, blob, callback) {
+  		var fileReader = new FileReader();
+  		fileReader.onloadend = function(e) {
+    		var arr = (new Uint8Array(e.target.result)).subarray(0, 4);
+    		var header = "";
+    		for (var i = 0; i < arr.length; i++) {
+      			header += arr[i].toString(16);
+    		}
+    		callback(url, header);
+  		};
+ 		fileReader.readAsArrayBuffer(blob);
+	}
 
-		function analyze(e) {
-			var buffer = e.target.result, view = new DataView(buffer), blob, url;
+	function headerCallback(url, headerString) {
+  		if((printHeaderInfo(url, headerString) == "image/png") || 
+			  (printHeaderInfo(url, headerString) == "image/jpeg")) {
+		  	$(".mimeError").hide();
+	  		$("button[id='buttonSubmit']").prop("type", "submit");
+  		} else {
+	  		$(".mimeError").show();
+	  		$("button[id='buttonSubmit']").prop("type", "button");
+  		}
+	}
 
-			var jpg = 1229324289;
-			var png = 13;
-			var header = view.getUint32(8);
+	function remoteCallback(url, blob) {
+  		getBLOBFileHeader(url, blob, headerCallback);
+	}
 
-			//Instead of making this a validator just enable or disable the submit button
-			if ((header === jpg) || (header === png)) {
-				$(".mimeError").hide();
-				$("button[id='buttonSubmit']").prop("type", "submit");
-			} else {
-				$(".mimeError").show();
-				$("button[id='buttonSubmit']").prop("type", "button");
-			}
-		}
+	// Add more from http://en.wikipedia.org/wiki/List_of_file_signatures
+	function mimeType(headerString) {
+  		switch (headerString) {
+    		case "89504e47":
+      			type = "image/png";
+      			break;
+    		case "ffd8ffe0":
+    		case "ffd8ffe1":
+    		case "ffd8ffe2":
+    		case "ffd8ffdb":
+      			type = "image/jpeg";
+      			break;
+    		default:
+      			type = "unknown";
+      			break;
+  		}
+  		return type;
+	}
 
-		//functions to show or hide the terms and conditions
-		function showPopup() {
-			$(".termscond-popup").show();
-			$(".overlay1").show();
-		}
-		function closePopup() {
-			$(".termscond-popup").hide();
-			$(".overlay1").hide();
+	function printHeaderInfo(url, headerString) {
+  		return mimeType(headerString);
+	}
 
-		}
+	// Check for FileReader support
+	if (window.FileReader && window.Blob) {
+  		/* Handle local files */
+  		$("#picture").on('change', function(event) {
+    		var file = event.target.files[0];
+    		remoteCallback(escape(file.name), file);
+  		});
+	}
+
+	//functions to show or hide the terms and conditions
+	function showPopup() {
+		$(".termscond-popup").show();
+		$(".overlay1").show();
+	}
+	function closePopup() {
+		$(".termscond-popup").hide();
+		$(".overlay1").hide();
+	}
 	</script>
 
 	<%
