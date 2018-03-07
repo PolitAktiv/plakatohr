@@ -94,7 +94,6 @@ public class PlakatohrPortlet extends MVCPortlet {
 		return TERMS_CONDITIONS_JSP;
 	}
 	
-
 	/**
 	 * Collects the data from the form filled in by the user, creates a Plakat and moves to the next page. The form contains:
 	 * First name

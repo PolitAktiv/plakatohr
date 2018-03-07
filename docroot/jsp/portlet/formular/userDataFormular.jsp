@@ -96,7 +96,8 @@ div.PlakatOhR_BackgroundPreview_outer {
 	width: 49%;
 }
 
-#<portlet:namespace />spinnerOuter {
+#<
+portlet:namespace />spinnerOuter {
 	display: block;
 	top: 50%;
 	position: absolute;
@@ -109,7 +110,8 @@ div.PlakatOhR_BackgroundPreview_outer {
 	margin: 0px !important;
 }
 
-#<portlet:namespace />spinner {
+#<
+portlet:namespace />spinner {
 	margin-top: 80%;
 }
 
@@ -121,6 +123,11 @@ div.PlakatOhR_BackgroundPreview_outer {
 
 .aui .control-group.error .checkbox {
 	color: #b50303;
+}
+
+.mimeError {
+	color: #b50303;
+	display: none;
 }
 </style>
 
@@ -169,7 +176,8 @@ div.PlakatOhR_BackgroundPreview_outer {
 		var actionURL = '<%=termsCondRenderURL%>';
 			Liferay.Util.openWindow({
 				id : '$<portlet:namespace />showTermsCond',
-				title : '<%=termsCondTitle%>',
+				title : '<%=termsCondTitle%>
+		',
 				uri : actionURL
 			});
 		}
@@ -226,15 +234,15 @@ div.PlakatOhR_BackgroundPreview_outer {
 				}
 			%>
 			<label for="picture">Bild (bitte nur Bilder des Typs .jpg und
-				.png angeben)</label> 
-			<input id="picture" name="picture" type="file" required>
+				.png angeben)</label> <input id="picture" name="picture" type="file"
+				required>
 			<%-- Falls der Validator rein soll <aui:validator name="acceptFiles">'jpg,png'</aui:validator> --%>
-
+			<p class="mimeError">Es werden nur Bilder des Typs .jpg und .png
+				unterstützt</p>
 			<%
 				if (textOptions != null && !textOptions.isEmpty()) {
 			%>
-			<label for="plakatohrTextbeginnings">Textanfang</label> 
-			<select
+			<label for="plakatohrTextbeginnings">Textanfang</label> <select
 				id="plakatohrTextbeginnings" name="textBeginning"
 				style="width: auto !important; max-width: 100%;" required>
 				<%
@@ -260,14 +268,15 @@ div.PlakatOhR_BackgroundPreview_outer {
 		</div>
 
 		<div>
-			<input name="acceptTermsChkbox" class="acceptTerms" id="acceptTermsChkbox" type="checkbox" required>
+			<input name="acceptTermsChkbox" class="acceptTerms"
+				id="acceptTermsChkbox" type="checkbox" required>
 			<%-- <aui:validator name="required"
 					errorMessage="<p style='color:red;'>Bitte akzeptiere Sie die Nutzungsbedingungen</br></p>" />
 					--%>
-			
-				Ich habe die <a onclick='showPopup();' href='javascript:void(0)'>Nutzungsbedingungen</a>
-				gelesen und bin damit einverstanden.
-			
+
+			Ich habe die <a onclick='showPopup();' href='javascript:void(0)'>Nutzungsbedingungen</a>
+			gelesen und bin damit einverstanden.
+
 		</div>
 
 
@@ -289,6 +298,34 @@ div.PlakatOhR_BackgroundPreview_outer {
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 	<script>
+		//We have to check for the mime type of the file selected mby the user to make sure it's one of the valid ones
+		//Magic Numbers try to watch the header of the file so it is way harder to trick the validation
+		//This is necessary because of files with a wrong ending or none at all
+		var inp = document.getElementById("picture");
+		inp.onchange = function(e) {
+			var reader = new FileReader();
+			reader.onload = analyze;
+			reader.readAsArrayBuffer(e.target.files[0]);
+		};
+
+		function analyze(e) {
+			var buffer = e.target.result, view = new DataView(buffer), blob, url;
+
+			var jpg = 1229324289;
+			var png = 13;
+			var header = view.getUint32(8);
+
+			//Instead of making this a validator just enable or disable the submit button
+			if ((header === jpg) || (header === png)) {
+				$(".mimeError").hide();
+				$("button[id='buttonSubmit']").prop("type", "submit");
+			} else {
+				$(".mimeError").show();
+				$("button[id='buttonSubmit']").prop("type", "button");
+			}
+		}
+
+		//functions to show or hide the terms and conditions
 		function showPopup() {
 			$(".termscond-popup").show();
 			$(".overlay1").show();
@@ -318,79 +355,82 @@ div.PlakatOhR_BackgroundPreview_outer {
 	<script
 		src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 	<script>
-	var form = $( "#form" );
-	jQuery.validator.setDefaults({
-		  debug: true,
-		  success: "valid"
+		var form = $("#form");
+		jQuery.validator.setDefaults({
+			debug : true,
+			success : "valid"
 		});
-	form.validate({
-		  rules: {
-			firstname: {
-				required: true
-			},
-			
-			lastname: {
-				required: true
-			},
-			
-			email: {
-				required: true,
-				email: true
-			},
-			
-		    picture: {
-		      	required: true,
-		     	extension: "jpg|png"
-		    },
-		    
-		    opinion: {
-				required: true
-			},
-			
-			acceptTermsChkbox: {
-				required: true
-			}
-		  },
-		  
-		  messages: {
-			  firstname: {
-					required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
-				},
-				
-				lastname: {
-					required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
-				},
-				
-				email: {
-					required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>",
-					email: "<div style='color: #b50303;'>Bitte geben Sie eine gültige E-Mail Adresse an</div>"
-				},
-				
-			    picture: {
-			    	required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>",
-			    	extension: "<div style='color: #b50303;'>Es werden nur Bilder des Typs .jpg und .png unterstützt</div>"
-			    },
-			    
-			    opinion: {
-					required: "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
-				},
-				
-				acceptTermsChkbox: {
-					required: "<div style='color: #b50303;'>Bitte stimmen Sie den Nutzungsbedingungen zu</div>"
-				}
-		  }
-		});
-	
-	form.submit(function(e){
-				if (form.valid()) {
-					e.preventDefault();
-	                $("#<portlet:namespace />spinnerContainer")
-						.append(
-							'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
-	                this.submit();
-				}        
-    });
-<%--
+
+		form
+				.validate({
+					rules : {
+						firstname : {
+							required : true
+						},
+
+						lastname : {
+							required : true
+						},
+
+						email : {
+							required : true,
+							email : true
+						},
+
+						picture : {
+							required : true,
+						//accept: "image/jgp,image/jpeg,image/png"
+						},
+
+						opinion : {
+							required : true
+						},
+
+						acceptTermsChkbox : {
+							required : true
+						}
+					},
+
+					messages : {
+						firstname : {
+							required : "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
+						},
+
+						lastname : {
+							required : "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
+						},
+
+						email : {
+							required : "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>",
+							email : "<div style='color: #b50303;'>Bitte geben Sie eine gültige E-Mail Adresse an</div>"
+						},
+
+						picture : {
+							required : "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>",
+						//accept: "<div style='color: #b50303;'>Es werden nur Bilder des Typs .jpg und .png unterstützt</div>"
+						},
+
+						opinion : {
+							required : "<div style='color: #b50303;'>Dieses Feld ist erforderlich</div>"
+						},
+
+						acceptTermsChkbox : {
+							required : "<div style='color: #b50303;'>Bitte stimmen Sie den Nutzungsbedingungen zu</div>"
+						}
+					}
+				});
+
+		form
+				.submit(function(e) {
+					if (form.valid()) {
+						e.preventDefault();
+						$("#<portlet:namespace />spinnerContainer")
+								.append(
+										'<div id="<portlet:namespace />spinnerOuter"><div class="loading-animation" id="<portlet:namespace />spinner"></div></div>');
+						this.submit();
+					}
+				});
+	<%--
 		AUI()
 				.use(
 						'aui-form-validator',
@@ -429,6 +469,7 @@ div.PlakatOhR_BackgroundPreview_outer {
 		});
 		 */
 		 --%>
+		
 	</script>
 </div>
 
