@@ -294,8 +294,8 @@ portlet:namespace />spinner {
 
 	</form>
 
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<%-- <script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> --%>
 
 	<script>
 	//We have to check for the mime type of the file selected mby the user to make sure it's one of the valid ones
