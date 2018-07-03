@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import org.politaktiv.svgmanipulator.util.IllegalJpegOrientation;
+import org.politaktiv.svgmanipulator.util.ImageMetadataHelper;
 import org.politaktiv.svgmanipulator.util.MimeTypeException;
+import org.politaktiv.svgmanipulator.util.SvgTransformationHelper;
 import org.politaktiv.svgmanipulator.util.base64Encoder;
 
 
@@ -54,7 +57,7 @@ public class TesterApp {
 		converter.generateOutput(new File("/tmp/test.jpg"), SvgConverter.JPG);
 		converter.generateOutput(new File("/tmp/test.pdf"), SvgConverter.PDF);
 		//converter.generateOutput(new File("/tmp/test.png"), SvgConverter.PNG);
-		converter.generateOutput(new File("/tmp/test.svg"), SvgConverter.SVG);
+		converter.generateOutput(new File("/tmp/test.svg"), SvgConverter.SVG_PRETTY_XML);
 
 
 	}	

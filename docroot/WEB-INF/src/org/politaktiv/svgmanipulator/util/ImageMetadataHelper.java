@@ -1,4 +1,4 @@
-package org.politaktiv.svgmanipulator;
+package org.politaktiv.svgmanipulator.util;
 
 import java.io.File;
 import java.io.FileInputStream;

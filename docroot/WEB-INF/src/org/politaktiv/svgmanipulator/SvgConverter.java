@@ -1,6 +1,17 @@
 package org.politaktiv.svgmanipulator;
 
 import java.io.BufferedWriter;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
+
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,9 +39,34 @@ public class SvgConverter {
 	public static OutputFormat PNG = new OutputFormat();
 	public static OutputFormat PDF = new OutputFormat();
 	public static OutputFormat SVG = new OutputFormat();
+	public static OutputFormat SVG_PRETTY_XML = new OutputFormat();
 	
 	
 	private String xmlData;
+	
+	
+	private String prettyXml(String xml) throws IOException {
+	     try {
+	            final InputSource src = new InputSource(new StringReader(xml));
+	            final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src).getDocumentElement();
+	            final Boolean keepDeclaration = Boolean.valueOf(xml.startsWith("<?xml"));
+
+	        //May need this: System.setProperty(DOMImplementationRegistry.PROPERTY,"com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
+
+
+	            final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+	            final DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
+	            final LSSerializer writer = impl.createLSSerializer();
+
+	            writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE); // Set this to true if the output needs to be beautified.
+	            writer.getDomConfig().setParameter("xml-declaration", keepDeclaration); // Set this to true if the declaration is needed to be outputted.
+
+	            return writer.writeToString(document);
+	        } catch (Exception e) {
+	            throw new IOException(e);
+	        }
+	}
+	
 	
 	/**
 	 * Constructs a new converter containing XML/SVG data
@@ -62,14 +98,20 @@ public class SvgConverter {
 	 */
 	public void generateOutput(OutputStream ostream, OutputFormat format) throws IOException {
 		
-		// special case: just dump the SVG data
-		if (format == SVG) {
+		// special case 1: just dump the SVG data
+		// special case 2: create pretty XML from SVG data
+		if (format == SVG || format == SVG_PRETTY_XML) {
 			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(ostream));
-			w.write(xmlData);
+			if (format == SVG_PRETTY_XML ) {
+				w.write(prettyXml(xmlData));
+			} else { 
+				w.write(xmlData);
+			}
 			w.flush();
 			return;
 		}
 		
+
 		
     	SVGAbstractTranscoder t;
     	// initialize different output transcoders depending on the format

@@ -1,4 +1,6 @@
-package org.politaktiv.svgmanipulator;
+package org.politaktiv.svgmanipulator.util;
+
+import org.politaktiv.svgmanipulator.svgRectSize;
 
 /**
  * Helper class for computing transformations on SVG elements

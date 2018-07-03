@@ -1,4 +1,4 @@
-package org.politaktiv.svgmanipulator;
+package org.politaktiv.svgmanipulator.util;
 
 public class IllegalJpegOrientation extends Exception {
 

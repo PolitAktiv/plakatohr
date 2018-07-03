@@ -24,7 +24,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.politaktiv.svgmanipulator.util.EscapeUtil;
+import org.politaktiv.svgmanipulator.util.IllegalJpegOrientation;
 import org.politaktiv.svgmanipulator.util.IterableNodeList;
+import org.politaktiv.svgmanipulator.util.SvgTransformationHelper;
 import org.politaktiv.svgmanipulator.util.cssHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
