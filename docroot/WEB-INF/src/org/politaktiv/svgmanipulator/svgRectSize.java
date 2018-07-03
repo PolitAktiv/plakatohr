@@ -44,6 +44,39 @@ public class svgRectSize {
 		return height;
 	}
 	
+	public Double getHeightNum() {
+		try {
+			return Double.parseDouble(getHeight().replaceAll("\\D+$", ""));
+		} catch (NumberFormatException e) {
+			return null;
+		}			
+	}
+	
+	public Double getWidthNum() {
+		try {
+			return Double.parseDouble(getWidth().replaceAll("\\D+$", ""));
+		} catch (NumberFormatException e) {
+			return null;
+		}			
+	}	
+
+	public Double getXNum() {
+		try {
+			return Double.parseDouble(getX().replaceAll("\\D+$", ""));
+		} catch (NumberFormatException e) {
+			return null;
+		}			
+	}	
+
+	public Double getYNum() {
+		try {
+			return Double.parseDouble(getY().replaceAll("\\D+$", ""));
+		} catch (NumberFormatException e) {
+			return null;
+		}			
+	}	
+
+	
 	/**
 	 * Determines the aspect-ratio of this {@link svgRectSize}. May return null if this fails. 
 	 * Mixed units (e.g., cm and px) in the dimensions of the rect will cause weird effects.

@@ -506,8 +506,7 @@ public class SvgManipulator {
 		
 		return new svgRectSize(rect);
 	}
-	
-	
+
 	/**
 	 * Replace any flowPara SVG node that contains a certain string by an image.
 	 * Multiple occurrences of $$text$$ ($$ added automatically) will all be replaced by this image.
@@ -517,6 +516,25 @@ public class SvgManipulator {
 	 * @return The number of flowParas replaced by images
 	 */
 	public int replaceFlowParaByImage(String text, String imageHref) {
+		try {
+			return replaceFlowParaByImage(text, imageHref,1);
+		} catch (IllegalJpegOrientation e) {
+			// this will not happen since the supplied argument is always correct
+			return 0;
+		}
+	}
+	
+	/**
+	 * Replace any flowPara SVG node that contains a certain string by an image.
+	 * Multiple occurrences of $$text$$ ($$ added automatically) will all be replaced by this image.
+	 * Attention: Supports only first flowRegion, so a text flowing into multiple elements will not be supported
+	 * @param text the text contents of the flowPara that is to be replaced.
+	 * @param imageHref Link to the Image or base64 encoded data
+	 * @param jpegOrientation rotate and flip the image according to this JPEG/EXIF orientation value (range 1-8)
+	 * @return The number of flowParas replaced by images
+	 * @throws IllegalJpegOrientation if the jpegOrientation valu is invalid
+	 */
+	public int replaceFlowParaByImage(String text, String imageHref, int jpegOrientation) throws IllegalJpegOrientation {
 		
 		int replaced = 0;
 		
@@ -566,15 +584,22 @@ public class SvgManipulator {
 			
 			// copy information from <rect> into an <image>
 			Element newImage = doc.createElement("image");
-			newImage.setAttribute("x", rect.getAttribute("x"));
-			newImage.setAttribute("y", rect.getAttribute("y"));
-			newImage.setAttribute("height", rect.getAttribute("height"));
-			newImage.setAttribute("width", rect.getAttribute("width"));
+			svgRectSize rectSize = new svgRectSize(rect);
+			newImage.setAttribute("x", rectSize.getX());
+			newImage.setAttribute("y", rectSize.getY());
+			newImage.setAttribute("height", rectSize.getHeight());
+			newImage.setAttribute("width", rectSize.getWidth());
 			
-			// insert transform attribute if it was present
-			if (! "".equals(transformAtt)) {
-				newImage.setAttribute("transform", transformAtt);
-				//System.err.println(transformAtt);
+			// apply JPEG/EXIF rotation/flipping if necessary -> add to the transformation chain
+			String newTransformAtt = transformAtt;
+			newTransformAtt = newTransformAtt + " "+ SvgTransformationHelper.transformToJpegOrientation(jpegOrientation,
+						rectSize);
+			newTransformAtt = newTransformAtt.trim();
+			
+			// insert transform attribute if it actually contains stuff
+			if (! "".equals(newTransformAtt)) {
+				newImage.setAttribute("transform", newTransformAtt);
+				System.err.println(newTransformAtt);
 			}
 			
 			newImage.setAttribute("xlink:href", imageHref);
