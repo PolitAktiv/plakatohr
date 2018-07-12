@@ -30,6 +30,13 @@ public class svgRectSize {
 				rect.getAttribute("height"));
 	}
 	
+	public void swapWidhtHeight() {
+		String h= this.height;
+		String w= this.width;
+		this.width = h;
+		this.height = w;
+	}
+	
 	
 	public String getX() {
 		return x;

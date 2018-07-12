@@ -46,5 +46,17 @@ public class ImageMetadataHelper {
 		
 	}
 	
+	public static boolean needsWidhtHeightSwap(int jpegOrientation) {
+		
+		switch (jpegOrientation) {
+			case 6: return true;
+			case 8: return true;
+			case 5: return true;
+			case 7: return true;
+		}
+		return false;
+	}
+
+	
 
 }

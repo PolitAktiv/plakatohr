@@ -25,6 +25,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.politaktiv.svgmanipulator.util.EscapeUtil;
 import org.politaktiv.svgmanipulator.util.IllegalJpegOrientation;
+import org.politaktiv.svgmanipulator.util.ImageMetadataHelper;
 import org.politaktiv.svgmanipulator.util.IterableNodeList;
 import org.politaktiv.svgmanipulator.util.SvgTransformationHelper;
 import org.politaktiv.svgmanipulator.util.cssHelper;
@@ -526,6 +527,7 @@ public class SvgManipulator {
 		}
 	}
 	
+
 	/**
 	 * Replace any flowPara SVG node that contains a certain string by an image.
 	 * Multiple occurrences of $$text$$ ($$ added automatically) will all be replaced by this image.
@@ -584,13 +586,9 @@ public class SvgManipulator {
 			}
 			Element rect = (Element)rects.item(0);
 			
-			// copy information from <rect> into an <image>
+			// optain size information from <rect>
 			Element newImage = doc.createElement("image");
 			svgRectSize rectSize = new svgRectSize(rect);
-			newImage.setAttribute("x", rectSize.getX());
-			newImage.setAttribute("y", rectSize.getY());
-			newImage.setAttribute("height", rectSize.getHeight());
-			newImage.setAttribute("width", rectSize.getWidth());
 			
 			// apply JPEG/EXIF rotation/flipping if necessary -> add to the transformation chain
 			String newTransformAtt = transformAtt;
@@ -603,6 +601,17 @@ public class SvgManipulator {
 				newImage.setAttribute("transform", newTransformAtt);
 				System.err.println(newTransformAtt);
 			}
+			
+			// need to flip width and height?
+			if (ImageMetadataHelper.needsWidhtHeightSwap(jpegOrientation)) {
+				rectSize.swapWidhtHeight();
+			}
+			
+			// copy information from <rect> into an <image>
+			newImage.setAttribute("x", rectSize.getX());
+			newImage.setAttribute("y", rectSize.getY());
+			newImage.setAttribute("height", rectSize.getHeight());
+			newImage.setAttribute("width", rectSize.getWidth());
 			
 			newImage.setAttribute("xlink:href", imageHref);
 			
