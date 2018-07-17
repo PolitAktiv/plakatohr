@@ -26,7 +26,7 @@ import com.drew.metadata.exif.ExifIFD0Directory;
  */
 public class ImageRotator {
 	
-	public static BufferedImage correctOrientation(File inFile) throws ImageProcessingException, IOException, MetadataException, IllegalJpegOrientation {
+	public static BufferedImage correctOrientation(File inFile) throws ImageProcessingException, IOException, IllegalExifOrientation {
 		FileInputStream inS =new FileInputStream(inFile);
 		BufferedImage result= correctOrientation(inS);
 		inS.close();
@@ -35,16 +35,17 @@ public class ImageRotator {
 	
 	
 	/**
-	 * Checks the orientation of the image and corrects it if necessary.
-	 * <p>If the orientation of the image does not need to be corrected, no operation will be performed.</p>
-	 * @param inputStream
-	 * @return
+	 * Checks the orientation of the image and corrects it if necessary. If no EXIF metadata can be read
+	 * from the image for any reason, will return the image directly without transformation. Same holds if 
+	 * the metadata value states that no rotation/flipping needs to be done.
+	 * @param inputStream read the image data from this stream - the stream will not be closed
+	 * @return the (modified) resulting image
 	 * @throws ImageProcessingException
 	 * @throws IOException
 	 * @throws MetadataException
-	 * @throws IllegalJpegOrientation 
+	 * @throws IllegalExifOrientation
 	 */
-	public static BufferedImage correctOrientation(InputStream inputStream) throws ImageProcessingException, IOException, MetadataException, IllegalJpegOrientation {
+	public static BufferedImage correctOrientation(InputStream inputStream) throws  IOException, IllegalExifOrientation {
 		
 		// buffer the input stream into a byte array
 		byte[] dataBuffer = StreamSlurper.read(inputStream);
@@ -56,14 +57,23 @@ public class ImageRotator {
         }		
 		
         // are there metadate we can use?
-	    Metadata metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(dataBuffer));
+	    Metadata metadata = null;
+		try {
+			metadata = ImageMetadataReader.readMetadata(new ByteArrayInputStream(dataBuffer));
+		} catch (ImageProcessingException e) {
+			// do nothing... will result in metadata being null and thus failsavely by-passes the image to output
+		}
+			
 	    if(metadata != null && metadata.containsDirectoryOfType(ExifIFD0Directory.class)) {
 	            // Get the current orientation of the image
 	            Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-	            int orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
-
-
-
+	            int orientation;
+				try {
+					orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+				} catch (MetadataException e) {
+					// failsafe: if something goes wrong on the meta data, switch to orientation 1
+					orientation = 1;
+				}
 
 	            // Get the current width and height of the image
 	            int[] imageSize = {bimg.getWidth(), bimg.getHeight()};
@@ -108,7 +118,7 @@ public class ImageRotator {
 	                return transform(bimg, t,true);
 	            }
 	            // if this point is reached, the metadata orientation value was something else
-	            throw new IllegalJpegOrientation("Illegal JPEG/EXIF orientation value: " + orientation);
+	            throw new IllegalExifOrientation("Illegal JPEG/EXIF orientation value: " + orientation);
 	            
 	    } else {
 	    	// no usable metadata, return image directly

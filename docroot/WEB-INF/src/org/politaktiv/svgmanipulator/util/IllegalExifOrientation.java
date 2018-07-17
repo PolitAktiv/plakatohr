@@ -1,8 +1,8 @@
 package org.politaktiv.svgmanipulator.util;
 
-public class IllegalJpegOrientation extends Exception {
+public class IllegalExifOrientation extends Exception {
 
-	public IllegalJpegOrientation(String string) {
+	public IllegalExifOrientation(String string) {
 		super(string);
 	}
 

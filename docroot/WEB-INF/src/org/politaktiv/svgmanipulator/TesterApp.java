@@ -11,7 +11,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-import org.politaktiv.svgmanipulator.util.IllegalJpegOrientation;
+import org.politaktiv.svgmanipulator.util.IllegalExifOrientation;
 import org.politaktiv.svgmanipulator.util.ImageRotator;
 import org.politaktiv.svgmanipulator.util.MimeTypeException;
 import org.politaktiv.svgmanipulator.util.base64Encoder;
@@ -22,7 +22,7 @@ import com.drew.metadata.MetadataException;
 
 public class TesterApp {
 
-	public static void main(String[] args) throws IOException, MimeTypeException, IllegalJpegOrientation, ImageProcessingException, MetadataException  {
+	public static void main(String[] args) throws IOException, MimeTypeException, IllegalExifOrientation, ImageProcessingException, MetadataException  {
 
 		File fXmlFile = new File(args[0]);
 		File jpgFile = new File(args[1]);
