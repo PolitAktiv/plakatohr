@@ -57,7 +57,8 @@ public class TesterApp {
 		converter.generateOutput(new File("/tmp/test.jpg"), SvgConverter.JPG);
 		converter.generateOutput(new File("/tmp/test.pdf"), SvgConverter.PDF);
 		//converter.generateOutput(new File("/tmp/test.png"), SvgConverter.PNG);
-		converter.generateOutput(new File("/tmp/test.svg"), SvgConverter.SVG_PRETTY_XML);
+		//converter.generateOutput(new File("/tmp/test.svg"), SvgConverter.SVG_PRETTY_XML);
+		converter.generateOutput(new File("/tmp/test.svg"), SvgConverter.SVG);
 
 
 	}	

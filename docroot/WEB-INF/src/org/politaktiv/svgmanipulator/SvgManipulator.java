@@ -594,6 +594,10 @@ public class SvgManipulator {
 			String newTransformAtt = transformAtt;
 			newTransformAtt = newTransformAtt + " "+ SvgTransformationHelper.transformToJpegOrientation(jpegOrientation,
 						rectSize);
+			
+			// FIXME: testing
+			//newTransformAtt = " scale(1.5 , 1.5 ) " + newTransformAtt;
+			
 			newTransformAtt = newTransformAtt.trim();
 			
 			// insert transform attribute if it actually contains stuff
@@ -604,8 +608,9 @@ public class SvgManipulator {
 			
 			// need to flip width and height?
 			if (ImageMetadataHelper.needsWidhtHeightSwap(jpegOrientation)) {
-				rectSize.swapWidhtHeight();
+				//rectSize.swapWidhtHeight();
 			}
+			
 			
 			// copy information from <rect> into an <image>
 			newImage.setAttribute("x", rectSize.getX());
