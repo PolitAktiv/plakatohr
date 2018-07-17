@@ -1,5 +1,6 @@
 package org.politaktiv.portlet.plakatohr.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
@@ -30,9 +32,12 @@ import org.apache.commons.io.FileUtils;
 import org.politaktiv.portlet.plakatohr.configurator.OhrConfigConstants;
 import org.politaktiv.svgmanipulator.SvgConverter;
 import org.politaktiv.svgmanipulator.SvgManipulator;
+import org.politaktiv.svgmanipulator.util.IllegalExifOrientation;
+import org.politaktiv.svgmanipulator.util.ImageRotator;
 import org.politaktiv.svgmanipulator.util.MimeTypeException;
 import org.politaktiv.svgmanipulator.util.base64Encoder;
 
+import com.drew.imaging.ImageProcessingException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -102,8 +107,10 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * Opinion
 	 * @param request
 	 * @param reponse
+	 * @throws IllegalExifOrientation 
+	 * @throws ImageProcessingException 
 	 */
-	public void userDataSubmit(ActionRequest request, ActionResponse response) throws IOException {
+	public void userDataSubmit(ActionRequest request, ActionResponse response) throws IOException, ImageProcessingException, IllegalExifOrientation {
 
 		UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(request);
 		String firstname = ParamUtil.getString(uploadPortletRequest, "firstname");
@@ -136,10 +143,19 @@ public class PlakatohrPortlet extends MVCPortlet {
 		} */
 
 		try {
-			InputStream inStream = new FileInputStream(file);
 
 			_log.debug("User data: " +  firstname + " " + lastname + ", " + email + ", " + opinion);
 			_log.debug("Background ID from UI: " + backgroundID);
+			
+			// read image into buffer and rotate it if needed
+			_log.debug("Reading uploaded image, and doing EXIF-orientation transformation, and converting to JPG...");
+			BufferedImage img = ImageRotator.correctOrientation(file);
+			
+			// store image in JPEG format into an InputStream
+			ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+			ImageIO.write(img, "jpg", bOut);
+			ByteArrayInputStream inStream = new ByteArrayInputStream(bOut.toByteArray());
+			_log.debug("... image processing done.");
 			
 			
 			OhrMediaHelper media = new OhrMediaHelper();
@@ -188,7 +204,7 @@ public class PlakatohrPortlet extends MVCPortlet {
 	 * data from the form and background selection
 	 * @param firstname
 	 * @param lastname
-	 * @param oppinion
+	 * @param opinion
 	 * @param imagePath
 	 * @param svgPath
 	 * @throws IOException 
