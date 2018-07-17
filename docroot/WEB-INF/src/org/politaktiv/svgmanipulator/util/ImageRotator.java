@@ -21,6 +21,8 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 /**
  * Helper class that rotates bitmap images according to JPEG/EXIF orientation values. This
  * code is taken and adapted from https://code.i-harness.com/de/q/5a1dcc
+ * There have been some heavy modifications, especially bug fixes (original example does not work properly)
+ * and everything is more failsafe
  * @author otn
  *
  */
