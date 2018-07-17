@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -26,7 +25,10 @@ public class base64Encoder {
 	 * @throws IOException if anything goes wrong with the file IO
 	 */
 	public static String getBase64(File f) throws IOException {
-		return(getBase64(new FileInputStream(f)));
+		FileInputStream inS = new FileInputStream(f);
+		String result = getBase64(inS);
+		inS.close();
+		return result;
 	}
 	
 	/**
@@ -36,7 +38,7 @@ public class base64Encoder {
 	 * @throws IOException on any error in IO
 	 */
 	public static String getBase64(InputStream istream) throws IOException {
-		byte[] buf = read(istream);
+		byte[] buf = StreamSlurper.read(istream);
 		return bytesToBase64(buf);
 	}
 	
@@ -48,7 +50,7 @@ public class base64Encoder {
 	 * @throws IOException in case of any IO error or when the file type cannot be determined.
 	 */
 	public static String getBase64svg(InputStream istream) throws MimeTypeException, IOException {
-		byte[] buf = read(istream);
+		byte[] buf = StreamSlurper.read(istream);
 		String mimeType = simpleFileMagic(buf);
 		if (mimeType == null) {
 			throw new MimeTypeException("Cannot determine MIME type for image data");
@@ -87,57 +89,6 @@ public class base64Encoder {
 		
 	}
 	
-	/*
-	
-	private static byte[] read(File file) throws IOException {
 
-	    byte[] buffer = new byte[(int) file.length()];
-	    InputStream ios = null;
-	    try {
-	        ios = new FileInputStream(file);
-	        if (ios.read(buffer) == -1) {
-	            throw new IOException(
-	                    "EOF reached while trying to read the whole file");
-	        }
-	    } finally {
-	        try {
-	            if (ios != null)
-	                ios.close();
-	        } catch (IOException e) {
-	        }
-	    }
-	    return buffer;
-	}
-	*/
-	
-	private static byte[] read(InputStream istream) throws IOException {
-		
-		// initial buffer size: estimate of the data to read
-		byte[] result = new byte[0];
-		byte[] buffer = new byte[istream.available()];
-		
-	    try {		
-	    	while ( istream.read(buffer) != -1 ) {
-	    		result = concat(result, buffer);
-	    	}
-	    } finally {
-	        try {
-	            if (istream != null)
-	                istream.close();
-	        } catch (IOException e) {
-	        }
-	    }
-		
-		
-		return buffer;
-		
-	}
-	
-	public static byte[] concat(byte[] first, byte[] second) {
-		  byte[] result = Arrays.copyOf(first, first.length + second.length);
-		  System.arraycopy(second, 0, result, first.length, second.length);
-		  return result;
-		}
-	
 	
 }

@@ -24,10 +24,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.politaktiv.svgmanipulator.util.EscapeUtil;
-import org.politaktiv.svgmanipulator.util.IllegalJpegOrientation;
-import org.politaktiv.svgmanipulator.util.ImageMetadataHelper;
 import org.politaktiv.svgmanipulator.util.IterableNodeList;
-import org.politaktiv.svgmanipulator.util.SvgTransformationHelper;
 import org.politaktiv.svgmanipulator.util.cssHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -510,23 +507,6 @@ public class SvgManipulator {
 		return new svgRectSize(rect);
 	}
 
-	/**
-	 * Replace any flowPara SVG node that contains a certain string by an image.
-	 * Multiple occurrences of $$text$$ ($$ added automatically) will all be replaced by this image.
-	 * Attention: Supports only first flowRegion, so a text flowing into multiple elements will not be supported
-	 * @param text the text contents of the flowPara that is to be replaced.
-	 * @param imageHref Link to the Image or base64 encoded data
-	 * @return The number of flowParas replaced by images
-	 */
-	public int replaceFlowParaByImage(String text, String imageHref) {
-		try {
-			return replaceFlowParaByImage(text, imageHref,1);
-		} catch (IllegalJpegOrientation e) {
-			// this will not happen since the supplied argument is always correct
-			return 0;
-		}
-	}
-	
 
 	/**
 	 * Replace any flowPara SVG node that contains a certain string by an image.
@@ -536,9 +516,8 @@ public class SvgManipulator {
 	 * @param imageHref Link to the Image or base64 encoded data
 	 * @param jpegOrientation rotate and flip the image according to this JPEG/EXIF orientation value (range 1-8)
 	 * @return The number of flowParas replaced by images
-	 * @throws IllegalJpegOrientation if the jpegOrientation valu is invalid
 	 */
-	public int replaceFlowParaByImage(String text, String imageHref, int jpegOrientation) throws IllegalJpegOrientation {
+	public int replaceFlowParaByImage(String text, String imageHref)  {
 		
 		int replaced = 0;
 		
@@ -592,25 +571,13 @@ public class SvgManipulator {
 			
 			// apply JPEG/EXIF rotation/flipping if necessary -> add to the transformation chain
 			String newTransformAtt = transformAtt;
-			newTransformAtt = newTransformAtt + " "+ SvgTransformationHelper.transformToJpegOrientation(jpegOrientation,
-						rectSize);
-			
-			// FIXME: testing
-			//newTransformAtt = " scale(1.5 , 1.5 ) " + newTransformAtt;
-			
 			newTransformAtt = newTransformAtt.trim();
 			
 			// insert transform attribute if it actually contains stuff
 			if (! "".equals(newTransformAtt)) {
 				newImage.setAttribute("transform", newTransformAtt);
-				System.err.println(newTransformAtt);
 			}
-			
-			// need to flip width and height?
-			if (ImageMetadataHelper.needsWidhtHeightSwap(jpegOrientation)) {
-				//rectSize.swapWidhtHeight();
-			}
-			
+		
 			
 			// copy information from <rect> into an <image>
 			newImage.setAttribute("x", rectSize.getX());
