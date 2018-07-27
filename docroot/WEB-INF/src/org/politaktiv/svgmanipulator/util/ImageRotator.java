@@ -108,13 +108,13 @@ public class ImageRotator {
 	                t.translate(height, 0);
 	                t.rotate(Math.PI / 2);
 	                return transform(bimg, t,true);
-	            case 7: // PI/2 and Flip
-	                t.scale(-1.0, 1.0);
-	                t.translate(height, 0);
+	            case 7: // 3/2 * PI and Flip
 	                t.translate(0, width);
 	                t.rotate(  3 * Math.PI / 2);
+	                t.scale(1.0, -1.0);
+	                t.translate(0, -height);
 	                return transform(bimg, t,true);
-	            case 8: // PI / 2
+	            case 8: // 3/2 * PI 
 	                t.translate(0, width);
 	                t.rotate(  3 * Math.PI / 2);
 	                return transform(bimg, t,true);
