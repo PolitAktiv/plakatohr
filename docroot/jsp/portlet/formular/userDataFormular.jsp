@@ -256,8 +256,8 @@ portlet:namespace />spinner {
 			<%
 				}
 			%>
-			<label for="plakatohrOpinion">Meinung</label>
-			<textarea id="plakatohrOpinion" name="opinion" placeholder="Meinung"
+			<label for="plakatohrOpinion">Meinung (<span id="plakatOhrOpinionCountdown"><%=opinionMaxLen%></span> Zeichen übrig)</label>
+			<textarea id="plakatohrOpinion" name="opinion" maxlength="<%=opinionMaxLen%>" placeholder="Meinung"
 				style="width: 100%; max-width: 100%; height: 200px;" required></textarea>
 			<%-- <input name="opinion" label="Meinung" placeholder="Meinung"
 				required="<%=true%>" type="textarea"
@@ -298,6 +298,20 @@ portlet:namespace />spinner {
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> --%>
 
 	<script>
+	// textarea countdown (keypress event handler)
+	function countCharacters(e) {
+		
+		var textEntered = document.getElementById('plakatohrOpinion').value;
+		var countdownDisplay = document.getElementById('plakatOhrOpinionCountdown');
+		
+		var maxLen = <%=opinionMaxLen%>;
+    	var textEntered, countRemaining, counter;  
+    	var counter = (maxLen - (textEntered.length)); 
+    	countdownDisplay.textContent = counter;  
+	}	
+	
+	el = document.getElementById('plakatohrOpinion').addEventListener('keyup', countCharacters, false);	                   
+	
 	//We have to check for the mime type of the file selected mby the user to make sure it's one of the valid ones
 	//Magic Numbers try to watch the header of the file so it is way harder to trick the validation
 	//This is necessary because of files with a wrong ending or none at all
