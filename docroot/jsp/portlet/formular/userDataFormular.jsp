@@ -310,7 +310,9 @@ portlet:namespace />spinner {
     	countdownDisplay.textContent = counter;  
 	}	
 	
-	el = document.getElementById('plakatohrOpinion').addEventListener('keyup', countCharacters, false);	                   
+	document.getElementById('plakatohrOpinion').addEventListener('keyup', countCharacters, false);	
+	// initialize countdown manually just in case there is data already in the box
+	document.addEventListener("DOMContentLoaded", countCharacters);
 	
 	//We have to check for the mime type of the file selected mby the user to make sure it's one of the valid ones
 	//Magic Numbers try to watch the header of the file so it is way harder to trick the validation
