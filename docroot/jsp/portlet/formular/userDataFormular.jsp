@@ -176,8 +176,7 @@ portlet:namespace />spinner {
 		var actionURL = '<%=termsCondRenderURL%>';
 			Liferay.Util.openWindow({
 				id : '$<portlet:namespace />showTermsCond',
-				title : '<%=termsCondTitle%>
-		',
+				title : '<%=termsCondTitle%>',
 				uri : actionURL
 			});
 		}
@@ -284,8 +283,11 @@ portlet:namespace />spinner {
 
 		<div>
 			<%-- <button-row> --%>
-			<button class="btn btn-cancel"
+			<%-- <button class="btn btn-cancel"
 				value="Zurück: Hintergrundmotiv auswählen" onClick="history.go(-1)">Zurück:
+				Hintergrundmotiv auswählen</button> --%>
+			<button class="btn btn-cancel"
+				value="Zurück: Hintergrundmotiv auswählen" onClick="location.href=location.protocol + '//' + location.host + location.pathname">Zurück:
 				Hintergrundmotiv auswählen</button>
 			<button class="btn btn-primary acceptTermsButton" id="buttonSubmit"
 				name="buttonSubmit" type="submit" value="Weiter zur Vorschau">Weiter</button>
@@ -299,6 +301,10 @@ portlet:namespace />spinner {
 
 	<script>
 	// textarea countdown (keypress event handler)
+	window.onload = function () {
+        countCharacters();
+    }
+	
 	function countCharacters(e) {
 		
 		var textEntered = document.getElementById('plakatohrOpinion').value;
